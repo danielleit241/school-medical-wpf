@@ -1,0 +1,63 @@
+﻿<Window x:Class="SchoolMedicalWpf.App.Parent.ParentMainWindow"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       Title="Phụ huynh - Health Care System" Height="700" Width="1040"
+       Background="{DynamicResource SecondaryGreenBrush}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SchoolMedicalWpf.App;component/Themes/SchoolMedicalTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Sidebar: Full height, no top margin -->
+        <StackPanel Grid.Column="0" Background="{DynamicResource PrimaryBlueBrush}" 
+                   Orientation="Vertical" VerticalAlignment="Stretch" MinWidth="72" Margin="0">
+            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Home" Click="SidebarButton_Click" Margin="0,32,0,30">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image Source="/Assets/home.png" Width="32" Height="32"/>
+                    <TextBlock Text="Trang chủ" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Profile" Click="SidebarButton_Click" Margin="0,0,0,30">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image Source="/Assets/user.png" Width="32" Height="32"/>
+                    <TextBlock Text="Hồ sơ" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Medicine" Click="SidebarButton_Click" Margin="0,0,0,30">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image Source="/Assets/pill.png" Width="32" Height="32"/>
+                    <TextBlock Text="Đơn thuốc" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Health" Click="SidebarButton_Click" Margin="0,0,0,30">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image Source="/Assets/heart.png" Width="32" Height="32"/>
+                    <TextBlock Text="Sức khỏe" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Exam" Click="SidebarButton_Click" Margin="0,0,0,30">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image Source="/Assets/checkup.png" Width="32" Height="32"/>
+                    <TextBlock Text="Khám bệnh" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Notification" Click="SidebarButton_Click">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image Source="/Assets/bell.png" Width="32" Height="32"/>
+                    <TextBlock Text="Thông báo" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        <!-- Main content: Card with margin -->
+        <Border Grid.Column="1" Style="{StaticResource CardContainer}" Margin="32">
+            <ContentControl x:Name="MainContent"/>
+        </Border>
+    </Grid>
+</Window>

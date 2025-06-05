@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="SchoolMedicalWpf.App.Parent.ParentHomePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <TextBlock Text="Chào mừng phụ huynh đến với hệ thống chăm sóc sức khỏe học đường!"
+                   Style="{StaticResource TitleText}" Margin="0,0,0,16" TextWrapping="Wrap"/>
+        <TextBlock Text="Tại đây, quý phụ huynh có thể:" Style="{StaticResource SubtitleText}"/>
+        <TextBlock Text="• Xem hồ sơ và thông tin sức khỏe của học sinh" Margin="0,4,0,0"/>
+        <TextBlock Text="• Đăng ký thuốc, khai báo y tế cho học sinh"/>
+        <TextBlock Text="• Theo dõi các đợt khám sức khỏe, nhận thông báo từ nhà trường"/>
+        <TextBlock Text="Chúc quý phụ huynh và các em học sinh thật nhiều sức khỏe!" Margin="0,16,0,0"/>
+    </StackPanel>
+</UserControl>
