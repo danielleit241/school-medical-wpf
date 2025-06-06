@@ -2,6 +2,7 @@
 using SchoolMedicalWpf.Dal.Entities;
 using SchoolMedicalWpf.Dal.Repositories;
 
+
 namespace SchoolMedicalWpf.Bll.Services
 {
     public class UserService

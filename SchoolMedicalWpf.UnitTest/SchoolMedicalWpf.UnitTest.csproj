@@ -21,6 +21,7 @@
 		<ProjectReference Include="..\SchoolMedicalWpf.Bll\SchoolMedicalWpf.Bll.csproj">
 			<Private>True</Private>
 		</ProjectReference>
+		<ProjectReference Include="..\SchoolMedicalWpf.DAL\SchoolMedicalWpf.Dal.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

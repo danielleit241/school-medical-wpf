@@ -22,7 +22,7 @@ namespace SchoolMedicalWpf.App.Parent
         private void SidebarButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            string tag = button?.Tag?.ToString();
+            string tag = button?.Tag?.ToString()!;
             switch (tag)
             {
                 case "Home":

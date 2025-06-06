@@ -28,7 +28,7 @@ public class UserServiceTest
         {
             UserId = Guid.NewGuid(),
             PhoneNumber = "1234567890",
-            PasswordHash = hash.HashPassword(null, "password123")
+            PasswordHash = hash.HashPassword(null!, "password123")
         };
         context.Users.Add(user);
         context.SaveChanges();
@@ -52,7 +52,7 @@ public class UserServiceTest
         {
             UserId = Guid.NewGuid(),
             PhoneNumber = "1234567890",
-            PasswordHash = hash.HashPassword(null, "password123")
+            PasswordHash = hash.HashPassword(null!, "password123")
         };
         context.Users.Add(user);
         context.SaveChanges();

@@ -358,7 +358,7 @@ public partial class SchoolmedicalWpfContext : DbContext
                 FullName = "System Admin",
                 PhoneNumber = "0900000001",
                 EmailAddress = "admin@system.local",
-                PasswordHash = ph.HashPassword(null, "admin@123"),
+                PasswordHash = ph.HashPassword(null!, "admin@123"),
                 RoleId = 1
             },
             new User
@@ -367,7 +367,7 @@ public partial class SchoolmedicalWpfContext : DbContext
                 FullName = "System Manager",
                 PhoneNumber = "0900000002",
                 EmailAddress = "manager@system.local",
-                PasswordHash = ph.HashPassword(null, "manager@123"),
+                PasswordHash = ph.HashPassword(null!, "manager@123"),
                 RoleId = 2
             },
             new User
@@ -376,7 +376,7 @@ public partial class SchoolmedicalWpfContext : DbContext
                 FullName = "System Nurse",
                 PhoneNumber = "0900000003",
                 EmailAddress = "nurse@system.local",
-                PasswordHash = ph.HashPassword(null, "nurse@123"),
+                PasswordHash = ph.HashPassword(null!, "nurse@123"),
                 RoleId = 3
             },
             new User
@@ -385,7 +385,7 @@ public partial class SchoolmedicalWpfContext : DbContext
                 FullName = "System Parent",
                 PhoneNumber = "0900000004",
                 EmailAddress = "parent@system.local",
-                PasswordHash = ph.HashPassword(null, "parent@123"),
+                PasswordHash = ph.HashPassword(null!, "parent@123"),
                 RoleId = 4
             }
         );
