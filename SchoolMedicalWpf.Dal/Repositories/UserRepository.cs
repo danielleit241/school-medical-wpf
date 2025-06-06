@@ -1,28 +1,21 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.Dal.Repositories
 {
     public class UserRepository
     {
-        private SchoolmedicalWpfContext _context;
+        private readonly SchoolmedicalWpfContext _context;
 
-        public async Task<User?> Login(string phoneNumber, string password)
+        public UserRepository(SchoolmedicalWpfContext context)
         {
-            _context = new();
+            _context = context;
+        }
 
-            var user = await _context.Users
-                .Where(u => u.PhoneNumber == phoneNumber)
-                .FirstOrDefaultAsync();
-
-            if (user == null)
-                return null;
-
-            if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, password) == PasswordVerificationResult.Failed)
-                return null;
-
-            return user;
+        public async Task<User?> GetUserByPhoneNumber(string phoneNumber)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
         }
     }
 }

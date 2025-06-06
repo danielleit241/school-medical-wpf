@@ -10,12 +10,14 @@ namespace SchoolMedicalWpf.App
     /// </summary>
     public partial class LoginWindow : Window
     {
-        private readonly UserService _userService = new();
+        private readonly UserService _userService;
         private User _currentUser;
 
-        public LoginWindow()
+        // Inject UserService qua constructor
+        public LoginWindow(UserService userService)
         {
             InitializeComponent();
+            _userService = userService;
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
