@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="SchoolMedicalWpf.App.Parent.StudentInfoCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="220"
+             MinHeight="110">
+    <Border Style="{StaticResource CardContainer}" Padding="10">
+        <StackPanel>
+            <TextBlock Text="Thông tin học sinh"
+                       Style="{StaticResource TitleText}"
+                       FontSize="13"
+                       Margin="0,0,0,8"
+                       TextAlignment="Left"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="56"/>
+                    <!-- label width -->
+                    <ColumnDefinition Width="8"/>
+                    <!-- separator/spacing -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- value -->
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Mã số:" Style="{StaticResource LabelText}" 
+                           FontSize="12"
+                           Grid.Row="0" Grid.Column="0" 
+                           VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <TextBlock Text="{Binding Code}" Style="{StaticResource SubtitleText}" 
+                           FontSize="12"
+                           Grid.Row="0" Grid.Column="2" 
+                           VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+                <TextBlock Text="Tên:" Style="{StaticResource LabelText}" 
+                           FontSize="12"
+                           Grid.Row="1" Grid.Column="0" 
+                           VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <TextBlock Text="{Binding Name}" Style="{StaticResource SubtitleText}" 
+                           FontSize="12"
+                           Grid.Row="1" Grid.Column="2" 
+                           VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+                <TextBlock Text="Lớp:" Style="{StaticResource LabelText}" 
+                           FontSize="12"
+                           Grid.Row="2" Grid.Column="0" 
+                           VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <TextBlock Text="{Binding ClassName}" Style="{StaticResource SubtitleText}" 
+                           FontSize="12"
+                           Grid.Row="2" Grid.Column="2" 
+                           VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            </Grid>
+            <Button x:Name="DeclarationButton" Content="Khai báo"
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,8,0,0"
+                    HorizontalAlignment="Right"
+                    Width="84"
+                    Height="28"
+                    FontSize="12"
+                    Command="{Binding ShowDeclareFormCommand}" Click="DeclarationButton_Click"/>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -42,21 +42,21 @@ public partial class SchoolmedicalWpfContext : DbContext
 
     public virtual DbSet<VaccineDetail> VaccineDetails { get; set; }
 
-    private string? GetConnectionString()
-    {
-        IConfiguration configuration = new ConfigurationBuilder()
-                       .SetBasePath(Directory.GetCurrentDirectory())
-                       .AddJsonFile("appsettings.json", true, true).Build();
-        return configuration["ConnectionStrings:DBDefault"];
-    }
+    //private string? GetConnectionString()
+    //{
+    //    IConfiguration configuration = new ConfigurationBuilder()
+    //                   .SetBasePath(Directory.GetCurrentDirectory())
+    //                   .AddJsonFile("appsettings.json", true, true).Build();
+    //    return configuration["ConnectionStrings:DBDefault"];
+    //}
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(GetConnectionString());
-        }
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    if (!optionsBuilder.IsConfigured)
+    //    {
+    //        optionsBuilder.UseSqlServer(GetConnectionString());
+    //    }
+    //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
