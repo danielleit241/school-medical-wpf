@@ -1,0 +1,44 @@
+
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    runs-on: windows-latest  # For a list of available runner types, refer to
+                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      Solution_Name: school-medical-wpf.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Test_Project_Path: SchoolMedicalWpf.UnitTest/SchoolMedicalWpf.UnitTest.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore dependencies
+      run: msbuild $env:Solution_Name /t:Restore
+
+    - name: Build solution
+      run: msbuild $env:Solution_Name /p:Configuration=Release
+
+    - name: Run tests
+      run: dotnet test $env:Test_Project_Path --no-build --verbosity normal
