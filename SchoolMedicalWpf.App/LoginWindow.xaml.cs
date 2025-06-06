@@ -36,7 +36,7 @@ namespace SchoolMedicalWpf.App
                 if (user.RoleId == 4)
                 {
                     _currentUser = user;
-                    var prmw = new ParentMainWindow(_currentUser);
+                    var prmw = new ParentMainWindow(_currentUser, _userService);
                     prmw.Show();
                     this.Close();
                 }

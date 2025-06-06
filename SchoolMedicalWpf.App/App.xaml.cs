@@ -33,6 +33,8 @@ namespace SchoolMedicalWpf.App
                     services.AddTransient<ParentMainWindow>();
                     services.AddTransient<ParentHomePage>();
                     services.AddTransient<ParentProfilePage>();
+                    services.AddTransient<ParentHealthDeclarationPage>();
+                    services.AddTransient<HealthDeclarationForm>();
                 })
                 .Build();
         }

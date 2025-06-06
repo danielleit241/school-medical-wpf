@@ -17,5 +17,18 @@ namespace SchoolMedicalWpf.Dal.Repositories
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
         }
+
+        public async Task<User?> GetUserById(Guid userId)
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }

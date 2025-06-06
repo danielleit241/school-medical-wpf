@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
@@ -10,11 +11,13 @@ namespace SchoolMedicalWpf.App.Parent
     public partial class ParentMainWindow : Window
     {
         private User _currentUser;
+        private UserService _userService;
 
-        public ParentMainWindow(User user)
+        public ParentMainWindow(User user, UserService service)
         {
             InitializeComponent();
             _currentUser = user;
+            _userService = service;
             // Load homepage mặc định
             MainContent.Content = new ParentHomePage(_currentUser);
         }
@@ -29,7 +32,7 @@ namespace SchoolMedicalWpf.App.Parent
                     MainContent.Content = new ParentHomePage(_currentUser);
                     break;
                 case "Profile":
-                    MainContent.Content = new ParentProfilePage(_currentUser);
+                    MainContent.Content = new ParentProfilePage(_currentUser, _userService);
                     break;
                 //case "Medicine":
                 //    MainContent.Content = new RegisterMedicinePage();

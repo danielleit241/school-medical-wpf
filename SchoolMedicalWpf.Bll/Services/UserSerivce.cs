@@ -27,5 +27,23 @@ namespace SchoolMedicalWpf.Bll.Services
             }
             return user;
         }
+
+        public async Task<User?> GetUserById(Guid userId)
+        {
+            if (userId == Guid.Empty)
+            {
+                throw new ArgumentException("User ID cannot be empty.", nameof(userId));
+            }
+            return await _repository.GetUserById(userId);
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            await _repository.UpdateUser(user);
+        }
     }
 }
