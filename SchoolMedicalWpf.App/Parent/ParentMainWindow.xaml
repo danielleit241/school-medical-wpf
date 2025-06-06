@@ -1,8 +1,10 @@
 ﻿<Window x:Class="SchoolMedicalWpf.App.Parent.ParentMainWindow"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-       Title="Phụ huynh - Health Care System" Height="700" Width="1040"
-       Background="{DynamicResource SecondaryGreenBrush}">
+       Title="Phụ huynh - Health Care System" 
+       WindowState="Normal"
+       Background="{DynamicResource SecondaryGreenBrush}"
+       WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

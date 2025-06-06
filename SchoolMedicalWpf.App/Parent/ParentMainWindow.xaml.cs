@@ -24,24 +24,24 @@ namespace SchoolMedicalWpf.App.Parent
                 case "Home":
                     MainContent.Content = new ParentHomePage();
                     break;
-                    //case "Profile":
-                    //    MainContent.Content = new ParentProfilePage();
-                    //    break;
-                    //case "Medicine":
-                    //    MainContent.Content = new RegisterMedicinePage();
-                    //    break;
-                    //case "Health":
-                    //    MainContent.Content = new StudentHealthPage();
-                    //    break;
-                    //case "Exam":
-                    //    MainContent.Content = new HealthExamHistoryPage();
-                    //    break;
-                    //case "Notification":
-                    //    MainContent.Content = new NotificationPage();
-                    //    break;
-                    //default:
-                    //    MainContent.Content = new ParentHomePage();
-                    //    break;
+                case "Profile":
+                    MainContent.Content = new ParentProfilePage();
+                    break;
+                //case "Medicine":
+                //    MainContent.Content = new RegisterMedicinePage();
+                //    break;
+                //case "Health":
+                //    MainContent.Content = new StudentHealthPage();
+                //    break;
+                //case "Exam":
+                //    MainContent.Content = new HealthExamHistoryPage();
+                //    break;
+                //case "Notification":
+                //    MainContent.Content = new NotificationPage();
+                //    break;
+                default:
+                    MainContent.Content = new ParentHomePage();
+                    break;
             }
         }
     }
