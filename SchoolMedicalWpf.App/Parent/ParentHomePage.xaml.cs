@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
 {
@@ -20,9 +21,13 @@ namespace SchoolMedicalWpf.App.Parent
     /// </summary>
     public partial class ParentHomePage : UserControl
     {
-        public ParentHomePage()
+        private User _currentUser;
+
+        public ParentHomePage(User user)
         {
             InitializeComponent();
+            _currentUser = user;
+
         }
     }
 }

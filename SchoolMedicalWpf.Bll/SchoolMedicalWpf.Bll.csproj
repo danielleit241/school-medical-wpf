@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SchoolMedicalWpf.DAL\SchoolMedicalWpf.Dal.csproj" />
+    <ProjectReference Include="..\SchoolMedicalWpf.DAL\SchoolMedicalWpf.Dal.csproj">
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

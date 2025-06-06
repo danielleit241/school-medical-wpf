@@ -16,7 +16,7 @@
                             BorderBrush="#2D9CDB" BorderThickness="2"
                             HorizontalAlignment="Center" VerticalAlignment="Center"
                             Margin="0,0,0,24">
-                        <Image Source="pack://application:,,,/Assets/avatar.png"
+                        <Image x:Name="AvatarUrl" Source="pack://application:,,,/Assets/avatar.png"
                                Width="130" Height="130" Stretch="UniformToFill"
                                ClipToBounds="True"/>
                     </Border>
@@ -27,9 +27,9 @@
                         <Button Content="Đổi mật khẩu" Width="160" Height="44"
                                 Style="{StaticResource SecondaryButtonStyle}" Click="Button_Click"/>
                     </StackPanel>
-                    <!-- Info -->
                     <Grid HorizontalAlignment="Center" Margin="0,0,0,0">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -40,13 +40,15 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Họ tên:" FontWeight="Bold" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Nguyễn Văn A" FontSize="20" Margin="0,0,0,16"/>
+                        <TextBlock x:Name="FullNameTextBlock" Grid.Row="0" Grid.Column="1" Text="" FontSize="20" Margin="0,0,0,16"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Ngày sinh:" FontWeight="Bold" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="01/01/1980" FontSize="20" Margin="0,0,0,16"/>
+                        <TextBlock x:Name="DoBTextBlock" Grid.Row="1" Grid.Column="1" Text="" FontSize="20" Margin="0,0,0,16"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Địa chỉ:" FontWeight="Bold" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="123 Đường ABC, Quận 1, TP.HCM" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Số điện thoại:" FontWeight="Bold" FontSize="20"/>
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="0901234567" FontSize="20"/>
+                        <TextBlock x:Name="AddressTextBlock" Grid.Row="2" Grid.Column="1" Text="" FontSize="20" Margin="0,0,0,16"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Số điện thoại:" FontWeight="Bold" FontSize="20" Margin="0,0,0,16"/>
+                        <TextBlock x:Name="PhoneNumberTextBlock" Grid.Row="3" Grid.Column="1" Text="" FontSize="20" Margin="0,0,0,16"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Email:" FontWeight="Bold" FontSize="20"/>
+                        <TextBlock x:Name="EmailTextBlock" Grid.Row="4" Grid.Column="1" Text="" FontSize="20"/>
                     </Grid>
                 </StackPanel>
             </Border>

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
 {
@@ -8,11 +9,14 @@ namespace SchoolMedicalWpf.App.Parent
     /// </summary>
     public partial class ParentMainWindow : Window
     {
-        public ParentMainWindow()
+        private User _currentUser;
+
+        public ParentMainWindow(User user)
         {
             InitializeComponent();
+            _currentUser = user;
             // Load homepage mặc định
-            MainContent.Content = new ParentHomePage();
+            MainContent.Content = new ParentHomePage(_currentUser);
         }
 
         private void SidebarButton_Click(object sender, RoutedEventArgs e)
@@ -22,10 +26,10 @@ namespace SchoolMedicalWpf.App.Parent
             switch (tag)
             {
                 case "Home":
-                    MainContent.Content = new ParentHomePage();
+                    MainContent.Content = new ParentHomePage(_currentUser);
                     break;
                 case "Profile":
-                    MainContent.Content = new ParentProfilePage();
+                    MainContent.Content = new ParentProfilePage(_currentUser);
                     break;
                 //case "Medicine":
                 //    MainContent.Content = new RegisterMedicinePage();
@@ -40,7 +44,7 @@ namespace SchoolMedicalWpf.App.Parent
                 //    MainContent.Content = new NotificationPage();
                 //    break;
                 default:
-                    MainContent.Content = new ParentHomePage();
+                    MainContent.Content = new ParentHomePage(_currentUser);
                     break;
             }
         }
