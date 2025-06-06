@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal;
@@ -10,19 +9,14 @@ namespace SchoolMedicalWpf.UnitTest;
 
 public class UserServiceTest
 {
-    private SqliteConnection _connection = default!;
-    private SchoolmedicalWpfContext _dbContext = default!;
 
     private SchoolmedicalWpfContext GetDbContext()
     {
-        _connection = new SqliteConnection("DataSource=:memory:");
-        _connection.Open();
         var options = new DbContextOptionsBuilder<SchoolmedicalWpfContext>()
-            .UseSqlite(_connection)
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        _dbContext = new SchoolmedicalWpfContext(options);
-        _dbContext.Database.EnsureCreated();
-        return _dbContext;
+
+        return new SchoolmedicalWpfContext(options);
     }
 
     [Fact]
