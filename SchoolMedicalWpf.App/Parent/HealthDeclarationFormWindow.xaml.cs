@@ -6,11 +6,11 @@ namespace SchoolMedicalWpf.App.Parent
     /// <summary>
     /// Interaction logic for HealthDeclarationForm.xaml
     /// </summary>
-    public partial class HealthDeclarationForm : Window
+    public partial class HealthDeclarationFormWindow : Window
     {
         private Student _currentStudent;
 
-        public HealthDeclarationForm(Student student)
+        public HealthDeclarationFormWindow(Student student)
         {
             InitializeComponent();
             _currentStudent = student;
