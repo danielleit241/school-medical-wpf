@@ -149,7 +149,7 @@ namespace SchoolMedicalWpf.App
                 return null;
 
             // Lưu vào thư mục Assets cùng với file .exe khi chạy
-            string assetsFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets");
+            string assetsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets");
             Directory.CreateDirectory(assetsFolder);
 
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(sourcePath);

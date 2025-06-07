@@ -34,9 +34,9 @@ namespace SchoolMedicalWpf.App.Parent
                 case "Profile":
                     MainContent.Content = new ProfilePage(_currentUser, _userService);
                     break;
-                //case "Medicine":
-                //    MainContent.Content = new RegisterMedicinePage();
-                //    break;
+                case "Medicine":
+                    MainContent.Content = new MedicalRegistrationHistoryPage();
+                    break;
                 case "Health":
                     MainContent.Content = new ParentHealthDeclarationPage(_currentUser);
                     break;
