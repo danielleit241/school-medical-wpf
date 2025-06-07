@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
 {
@@ -15,7 +16,14 @@ namespace SchoolMedicalWpf.App.Parent
 
         private void DeclarationButton_Click(object sender, RoutedEventArgs e)
         {
-            var form = new HealthDeclarationForm();
+            var student = DataContext as Student;
+            if (student == null)
+            {
+                MessageBox.Show("Student information is not available.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var form = new HealthDeclarationForm(student);
             form.Owner = Window.GetWindow(this);
             form.ShowDialog();
         }

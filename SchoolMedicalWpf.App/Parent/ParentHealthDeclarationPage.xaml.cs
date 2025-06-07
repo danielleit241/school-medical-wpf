@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
@@ -22,21 +23,33 @@ namespace SchoolMedicalWpf.App.Parent
     /// </summary>
     public partial class ParentHealthDeclarationPage : UserControl
     {
-        public ObservableCollection<StudentDto> StudentList { get; set; } = new ObservableCollection<StudentDto>();
+        public ObservableCollection<Student> StudentList { get; set; } = new ObservableCollection<Student>();
+        private User _currentUser;
+        private StudentService _studentService = new();
 
-        public ParentHealthDeclarationPage()
+        public ParentHealthDeclarationPage(User user)
         {
             InitializeComponent();
-            StudentList.Add(new StudentDto { Code = "HS001", Name = "Nguyễn Văn A", ClassName = "10A1" });
-            StudentList.Add(new StudentDto { Code = "HS002", Name = "Lê Thị B", ClassName = "10A2" });
+            _currentUser = user;
+            LoadStudentListAsync();
             DataContext = this;
         }
 
-    }
-    public class StudentDto
-    {
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public string ClassName { get; set; }
+        public void LoadStudentListAsync()
+        {
+            try
+            {
+                var students = _studentService.GetStudentsByUserId(_currentUser.UserId);
+                StudentList.Clear();
+                foreach (var student in students)
+                {
+                    StudentList.Add(student);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải danh sách học sinh: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

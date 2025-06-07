@@ -38,7 +38,7 @@ namespace SchoolMedicalWpf.App.Parent
                 //    MainContent.Content = new RegisterMedicinePage();
                 //    break;
                 case "Health":
-                    MainContent.Content = new ParentHealthDeclarationPage();
+                    MainContent.Content = new ParentHealthDeclarationPage(_currentUser);
                     break;
                 //case "Exam":
                 //    MainContent.Content = new HealthExamHistoryPage();

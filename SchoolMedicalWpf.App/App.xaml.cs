@@ -28,8 +28,8 @@ namespace SchoolMedicalWpf.App
                     // Đăng ký DI cho repo, service, window
                     services.AddScoped<UserRepository>();
                     services.AddScoped<UserService>();
-                    services.AddTransient<LoginWindow>();
 
+                    services.AddTransient<LoginWindow>();
                     services.AddTransient<ParentMainWindow>();
                     services.AddTransient<ParentHomePage>();
                     services.AddTransient<ParentProfilePage>();

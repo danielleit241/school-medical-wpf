@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
 {
@@ -7,9 +8,12 @@ namespace SchoolMedicalWpf.App.Parent
     /// </summary>
     public partial class HealthDeclarationForm : Window
     {
-        public HealthDeclarationForm()
+        private Student _currentStudent;
+
+        public HealthDeclarationForm(Student student)
         {
             InitializeComponent();
+            _currentStudent = student;
         }
     }
 }
