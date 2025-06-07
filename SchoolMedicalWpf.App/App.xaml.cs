@@ -13,6 +13,7 @@ namespace SchoolMedicalWpf.App
     public partial class App : Application
     {
         private readonly IHost _host;
+        public static IServiceProvider Services => ((App)Current)._host.Services;
 
         public App()
         {

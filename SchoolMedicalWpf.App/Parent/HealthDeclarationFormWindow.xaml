@@ -4,46 +4,32 @@
         Title="Khai báo y tế" Height="540" Width="600" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="#F5F6FA">
     <Grid>
         <Border Style="{StaticResource CardContainer}" Padding="36">
-            <StackPanel>
+            <StackPanel x:Name="MainPanel">
                 <TextBlock Text="Khai báo y tế"
                            Style="{StaticResource TitleText}"
                            Margin="0,0,0,20"
                            TextAlignment="Center"
                            FontWeight="SemiBold"
                            FontSize="22"/>
-                <UniformGrid Columns="2" Rows="5" Margin="0,0,0,18">
-                    <TextBlock Text="Bệnh mãn tính:" Style="{StaticResource LabelText}" 
-                               VerticalAlignment="Center" Margin="0,6"/>
-                    <TextBox Style="{StaticResource InputBox}" 
-                             Text="{Binding ChronicDiseases, UpdateSourceTrigger=PropertyChanged}" 
-                             MaxLength="255" Margin="0,6"/>
+                <UniformGrid Columns="2" Rows="5" Margin="0,0,0,18" IsEnabled="{Binding IsInputEnabled, RelativeSource={RelativeSource AncestorType=Window}}">
+                    <TextBlock Text="Bệnh mãn tính:" Style="{StaticResource LabelText}" VerticalAlignment="Center" Margin="0,6"/>
+                    <TextBox x:Name="txtChronicDiseases" Style="{StaticResource InputBox}" MaxLength="255" Margin="0,6"/>
 
-                    <TextBlock Text="Ngày khai báo:" Style="{StaticResource LabelText}" 
-                               VerticalAlignment="Center" Margin="0,6"/>
-                    <DatePicker Style="{StaticResource DatePickerStyle}" 
-                                SelectedDate="{Binding DeclarationDate, UpdateSourceTrigger=PropertyChanged}" 
-                                Margin="0,6"/>
+                    <TextBlock Text="Ngày khai báo:" Style="{StaticResource LabelText}" VerticalAlignment="Center" Margin="0,6"/>
+                    <DatePicker x:Name="dpDeclarationDate" Style="{StaticResource DatePickerStyle}" Margin="0,6"/>
 
-                    <TextBlock Text="Dị ứng thuốc:" Style="{StaticResource LabelText}" 
-                               VerticalAlignment="Center" Margin="0,6"/>
-                    <TextBox Style="{StaticResource InputBox}" 
-                             Text="{Binding DrugAllergies, UpdateSourceTrigger=PropertyChanged}" 
-                             MaxLength="255" Margin="0,6"/>
+                    <TextBlock Text="Dị ứng thuốc:" Style="{StaticResource LabelText}" VerticalAlignment="Center" Margin="0,6"/>
+                    <TextBox x:Name="txtDrugAllergies" Style="{StaticResource InputBox}" MaxLength="255" Margin="0,6"/>
 
-                    <TextBlock Text="Dị ứng thực phẩm:" Style="{StaticResource LabelText}" 
-                               VerticalAlignment="Center" Margin="0,6"/>
-                    <TextBox Style="{StaticResource InputBox}" 
-                             Text="{Binding FoodAllergies, UpdateSourceTrigger=PropertyChanged}" 
-                             MaxLength="255" Margin="0,6"/>
+                    <TextBlock Text="Dị ứng thực phẩm:" Style="{StaticResource LabelText}" VerticalAlignment="Center" Margin="0,6"/>
+                    <TextBox x:Name="txtFoodAllergies" Style="{StaticResource InputBox}" MaxLength="255" Margin="0,6"/>
 
-                    <TextBlock Text="Ghi chú:" Style="{StaticResource LabelText}" 
-                               VerticalAlignment="Center" Margin="0,6"/>
-                    <TextBox Style="{StaticResource InputBox}" 
-                             Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" 
-                             MaxLength="255" Margin="0,6"/>
+                    <TextBlock Text="Ghi chú:" Style="{StaticResource LabelText}" VerticalAlignment="Center" Margin="0,6"/>
+                    <TextBox x:Name="txtNotes" Style="{StaticResource InputBox}" MaxLength="255" Margin="0,6"/>
                 </UniformGrid>
 
-                <Button Content="Gửi khai báo"
+                <Button x:Name="btnSubmit"
+                        Content="Gửi khai báo"
                         Style="{StaticResource PrimaryButton}"
                         Margin="0,16,0,0"
                         HorizontalAlignment="Right"
@@ -51,7 +37,9 @@
                         Height="42"
                         FontWeight="SemiBold"
                         FontSize="16"
-                        Command="{Binding SubmitCommand}"/>
+                        Click="SubmitButton_Click"
+                        IsEnabled="{Binding IsInputEnabled, RelativeSource={RelativeSource AncestorType=Window}}"
+                        Visibility="{Binding SubmitButtonVisibility, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </StackPanel>
         </Border>
     </Grid>
