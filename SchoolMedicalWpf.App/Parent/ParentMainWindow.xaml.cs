@@ -32,7 +32,7 @@ namespace SchoolMedicalWpf.App.Parent
                     MainContent.Content = new ParentHomePage(_currentUser);
                     break;
                 case "Profile":
-                    MainContent.Content = new ParentProfilePage(_currentUser, _userService);
+                    MainContent.Content = new ProfilePage(_currentUser, _userService);
                     break;
                 //case "Medicine":
                 //    MainContent.Content = new RegisterMedicinePage();

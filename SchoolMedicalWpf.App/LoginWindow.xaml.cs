@@ -33,6 +33,7 @@ namespace SchoolMedicalWpf.App
             var user = await _userService.Authenticate(phoneNumber, password);
             if (user != null)
             {
+
                 if (user.RoleId == 4)
                 {
                     _currentUser = user;

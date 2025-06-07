@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -8,17 +7,17 @@ using Microsoft.Win32;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
 
-namespace SchoolMedicalWpf.App.Parent
+namespace SchoolMedicalWpf.App
 {
     /// <summary>
     /// Interaction logic for ParentProfilePage.xaml
     /// </summary>
-    public partial class ParentProfilePage : UserControl
+    public partial class ProfilePage : UserControl
     {
         private User _currentUser;
         private UserService _userService;
 
-        public ParentProfilePage(User user, UserService service)
+        public ProfilePage(User user, UserService service)
         {
             InitializeComponent();
             _currentUser = user;
