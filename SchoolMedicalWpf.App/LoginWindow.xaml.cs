@@ -41,6 +41,13 @@ namespace SchoolMedicalWpf.App
                     prmw.Show();
                     this.Close();
                 }
+                if(user.RoleId == 1)
+                {
+                    var amw = new Admin.AdminMainWindow(user, _userService);
+                    amw.Show();
+                    this.Close();
+                }
+
             }
             else
             {

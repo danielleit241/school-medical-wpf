@@ -9,12 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Account.png" />
     <None Remove="Assets\avatar.png" />
     <None Remove="Assets\bell.png" />
+    <None Remove="Assets\Campaign.png" />
     <None Remove="Assets\checkup.png" />
     <None Remove="Assets\heart.png" />
     <None Remove="Assets\home.png" />
     <None Remove="Assets\pill.png" />
+    <None Remove="Assets\Student.png" />
     <None Remove="Assets\user.png" />
   </ItemGroup>
 
@@ -34,10 +37,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Account.png" />
     <Resource Include="Assets\avatar.png" />
     <Resource Include="Assets\bell.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Campaign.png" />
     <Resource Include="Assets\checkup.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -50,6 +55,7 @@
     <Resource Include="Assets\pill.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Student.png" />
     <Resource Include="Assets\user.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

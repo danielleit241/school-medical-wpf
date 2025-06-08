@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="SchoolMedicalWpf.App.Admin.AdminHomePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <TextBlock Text="Chào mừng Admin đến với hệ thống chăm sóc sức khỏe học đường!"
+                   Style="{StaticResource TitleText}" Margin="0,0,0,16" TextWrapping="Wrap"/>
+        <TextBlock Text="Tại đây, Admin có thể:" Style="{StaticResource SubtitleText}"/>
+        <TextBlock Text="• Xem và tạo lịch tiêm chủng" Margin="0,4,0,0"/>
+        <TextBlock Text="• Quản lí thông tin người dùng"/>
+        <TextBlock Text="• QUản lí danh sách học sinh"/>
+        <TextBlock Text="• Xem hồ sơ cá nhân"/>
+        <TextBlock Text="Chúc bạn thành công!" Margin="0,16,0,0"/>
+    </StackPanel>
+</UserControl>
+
