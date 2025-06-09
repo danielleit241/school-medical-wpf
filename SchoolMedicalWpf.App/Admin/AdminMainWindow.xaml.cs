@@ -42,6 +42,15 @@ namespace SchoolMedicalWpf.App.Admin
                 case "Home":
                     MainContent.Content = new AdminHomePage(_currentUser);
                     break;
+                case "Campaign":
+                        MainContent.Content = new CampaignPage();
+                    break;
+                case "Account":
+                    MainContent.Content = new AccountManagementPage(_userService);
+                    break;
+                case "Student":
+                    MainContent.Content = new StudentManagementPage();
+                    break;
                 case "Profile":
                     MainContent.Content = new ProfilePage(_currentUser, _userService);
                     break;
