@@ -24,13 +24,16 @@ namespace SchoolMedicalWpf.App.Admin
     {
         private User _currentUser;
         private UserService _userService;
-        public AdminMainWindow(User user, UserService service)
+        private RoleService _roleService;
+
+        // Sử dụng DI để khởi tạo UserService và RoleService
+        public AdminMainWindow(User user, UserService userService, RoleService roleService)
         {
             InitializeComponent();
-            _currentUser = user; // Giả sử bạn đã có một đối tượng User hiện tại
-            _userService = service; // Khởi tạo dịch vụ người dùng
-            // Load homepage mặc định
-            MainContent.Content = new AdminHomePage(_currentUser);
+            _currentUser = user;
+            _userService = userService;
+            _roleService = roleService;
+            MainContent.Content = new AdminHomePage(_currentUser); // Khởi tạo AdminHomePage mặc định
         }
 
         public void SidebarButton_Click(object sender, RoutedEventArgs e)
@@ -43,10 +46,10 @@ namespace SchoolMedicalWpf.App.Admin
                     MainContent.Content = new AdminHomePage(_currentUser);
                     break;
                 case "Campaign":
-                        MainContent.Content = new CampaignPage();
+                    MainContent.Content = new CampaignPage();
                     break;
                 case "Account":
-                    MainContent.Content = new AccountManagementPage(_userService);
+                    MainContent.Content = new AccountManagementPage(_userService, _roleService);
                     break;
                 case "Student":
                     MainContent.Content = new StudentManagementPage();
@@ -60,4 +63,5 @@ namespace SchoolMedicalWpf.App.Admin
             }
         }
     }
+
 }

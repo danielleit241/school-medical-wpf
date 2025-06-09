@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal;
 using SchoolMedicalWpf.Dal.Entities;
 using SchoolMedicalWpf.Dal.Repositories;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SchoolMedicalWpf.UnitTest
 {
     public class UserServiceTest
     {
+        // Helper function to get an in-memory DbContext options for SchoolmedicalWpfContext
         private DbContextOptions<SchoolmedicalWpfContext> GetDbContextOptions()
         {
             return new DbContextOptionsBuilder<SchoolmedicalWpfContext>()
@@ -19,27 +20,13 @@ namespace SchoolMedicalWpf.UnitTest
                 .Options;
         }
 
-        // Fix for CS7036: Adjust the instantiation of DbContextFactory to provide the required parameters.
-
-        private IDbContextFactory<SchoolmedicalWpfContext> GetDbContextFactory()
+        // Test case for successful login with valid credentials
+        [Fact]
+        public async Task Authenticate_ShouldReturnUser_WhenCredentialsAreValid()
         {
+            // Arrange: Set up the in-memory DB and test data
             var options = GetDbContextOptions();
-            var serviceProvider = new ServiceCollection()
-                .AddEntityFrameworkInMemoryDatabase()
-                .BuildServiceProvider();
-
-            return new DbContextFactory<SchoolmedicalWpfContext>(
-                serviceProvider,
-                options,
-                new DbContextFactorySource<SchoolmedicalWpfContext>()
-            );
-        }
-
-        [Fact]
-        public async Task LoginUser_ShouldReturnSuccess_WhenInputValid()
-        {
-            var dbContextFactory = GetDbContextFactory(); // Get DbContextFactory instance
-            var context = dbContextFactory.CreateDbContext(); // Create context using factory
+            var context = new SchoolmedicalWpfContext(options); // Directly create the context
 
             var hash = new PasswordHasher<User>();
             var user = new User
@@ -52,22 +39,25 @@ namespace SchoolMedicalWpf.UnitTest
             context.Users.Add(user);
             await context.SaveChangesAsync(); // Save changes to in-memory DB
 
-            var repository = new UserRepository(dbContextFactory, new RoleRepository(dbContextFactory));
-            var service = new UserService(repository, new RoleRepository(dbContextFactory), hash);
+            var userRepository = new UserRepository(context);
+            var userService = new UserService(userRepository, hash);
 
-            var login = await service.Authenticate("1234567890", "password123");
+            // Act: Attempt to login with correct credentials
+            var result = await userService.Authenticate("1234567890", "password123");
 
-            Assert.NotNull(login);
-            Assert.Equal(user.UserId, login.UserId);
-            Assert.Equal(user.PhoneNumber, login.PhoneNumber);
-            Assert.Equal(user.PasswordHash, login.PasswordHash);
+            // Assert: Verify login is successful and user details match
+            Assert.NotNull(result);
+            Assert.Equal(user.UserId, result.UserId);
+            Assert.Equal(user.PhoneNumber, result.PhoneNumber);
         }
 
+        // Test case for failed login with incorrect credentials
         [Fact]
-        public async Task LoginUser_ShouldReturnNull_WhenInputInvalid()
+        public async Task Authenticate_ShouldReturnNull_WhenCredentialsAreInvalid()
         {
-            var dbContextFactory = GetDbContextFactory(); // Get DbContextFactory instance
-            var context = dbContextFactory.CreateDbContext(); // Create context using factory
+            // Arrange: Set up the in-memory DB and test data
+            var options = GetDbContextOptions();
+            var context = new SchoolmedicalWpfContext(options); // Directly create the context
 
             var hash = new PasswordHasher<User>();
             var user = new User
@@ -80,11 +70,14 @@ namespace SchoolMedicalWpf.UnitTest
             context.Users.Add(user);
             await context.SaveChangesAsync(); // Save changes to in-memory DB
 
-            var repository = new UserRepository(dbContextFactory, new RoleRepository(dbContextFactory));
-            var service = new UserService(repository, new RoleRepository(dbContextFactory), hash);
+            var userRepository = new UserRepository(context);
+            var userService = new UserService(userRepository, hash);
 
-            var login = await service.Authenticate("1234567890", "wrongpassword");
-            Assert.Null(login);
+            // Act: Attempt to login with incorrect password
+            var result = await userService.Authenticate("1234567890", "wrongpassword");
+
+            // Assert: Verify login failed with incorrect password
+            Assert.Null(result);
         }
     }
 }

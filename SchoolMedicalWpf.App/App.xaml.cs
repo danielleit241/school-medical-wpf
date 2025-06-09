@@ -25,9 +25,11 @@ namespace SchoolMedicalWpf.App
                     var config = context.Configuration;
                     var sqlServerConn = config.GetConnectionString("DBDefault");
 
+                    // Sử dụng AddDbContext cho UserRepository (hoặc các service khác sử dụng DbContext trực tiếp)
                     services.AddDbContext<SchoolmedicalWpfContext>(options =>
                         options.UseSqlServer(sqlServerConn));
 
+                    // Sử dụng DbContextFactory cho RoleRepository (nếu cần)
                     services.AddDbContextFactory<SchoolmedicalWpfContext>(options =>
                         options.UseSqlServer(sqlServerConn));
 
@@ -39,6 +41,7 @@ namespace SchoolMedicalWpf.App
                     services.AddScoped<UserRepository>();
                     services.AddScoped<UserService>();
                     services.AddScoped<RoleRepository>();
+                    services.AddScoped<RoleService>();
 
                     services.AddTransient<LoginWindow>();
                     //services.AddTransient<ParentMainWindow>();
