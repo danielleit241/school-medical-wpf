@@ -1,28 +1,46 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal;
 using SchoolMedicalWpf.Dal.Entities;
 using SchoolMedicalWpf.Dal.Repositories;
-using Moq;
+using Xunit;
 
 namespace SchoolMedicalWpf.UnitTest
 {
     public class UserServiceTest
     {
-        private SchoolmedicalWpfContext GetDbContext()
+        private DbContextOptions<SchoolmedicalWpfContext> GetDbContextOptions()
         {
-            var options = new DbContextOptionsBuilder<SchoolmedicalWpfContext>()
+            return new DbContextOptionsBuilder<SchoolmedicalWpfContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
+        }
 
-            return new SchoolmedicalWpfContext(options);
+        // Fix for CS7036: Adjust the instantiation of DbContextFactory to provide the required parameters.
+
+        private IDbContextFactory<SchoolmedicalWpfContext> GetDbContextFactory()
+        {
+            var options = GetDbContextOptions();
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
+
+            return new DbContextFactory<SchoolmedicalWpfContext>(
+                serviceProvider,
+                options,
+                new DbContextFactorySource<SchoolmedicalWpfContext>()
+            );
         }
 
         [Fact]
         public async Task LoginUser_ShouldReturnSuccess_WhenInputValid()
         {
-            var context = GetDbContext();  // New DbContext instance for each test
+            var dbContextFactory = GetDbContextFactory(); // Get DbContextFactory instance
+            var context = dbContextFactory.CreateDbContext(); // Create context using factory
+
             var hash = new PasswordHasher<User>();
             var user = new User
             {
@@ -30,12 +48,12 @@ namespace SchoolMedicalWpf.UnitTest
                 PhoneNumber = "1234567890",
                 PasswordHash = hash.HashPassword(null!, "password123")
             };
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
 
-            var roleRepository = new RoleRepository(context);  // Added RoleRepository instance
-            var repository = new UserRepository(context, roleRepository);  // Pass RoleRepository to UserRepository
-            var service = new UserService(repository, roleRepository, hash);
+            context.Users.Add(user);
+            await context.SaveChangesAsync(); // Save changes to in-memory DB
+
+            var repository = new UserRepository(dbContextFactory, new RoleRepository(dbContextFactory));
+            var service = new UserService(repository, new RoleRepository(dbContextFactory), hash);
 
             var login = await service.Authenticate("1234567890", "password123");
 
@@ -48,7 +66,9 @@ namespace SchoolMedicalWpf.UnitTest
         [Fact]
         public async Task LoginUser_ShouldReturnNull_WhenInputInvalid()
         {
-            var context = GetDbContext();  // New DbContext instance for each test
+            var dbContextFactory = GetDbContextFactory(); // Get DbContextFactory instance
+            var context = dbContextFactory.CreateDbContext(); // Create context using factory
+
             var hash = new PasswordHasher<User>();
             var user = new User
             {
@@ -56,17 +76,15 @@ namespace SchoolMedicalWpf.UnitTest
                 PhoneNumber = "1234567890",
                 PasswordHash = hash.HashPassword(null!, "password123")
             };
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
 
-            var roleRepository = new RoleRepository(context);  // Added RoleRepository instance
-            var repository = new UserRepository(context, roleRepository);  // Pass RoleRepository to UserRepository
-            var service = new UserService(repository, roleRepository, hash);
+            context.Users.Add(user);
+            await context.SaveChangesAsync(); // Save changes to in-memory DB
+
+            var repository = new UserRepository(dbContextFactory, new RoleRepository(dbContextFactory));
+            var service = new UserService(repository, new RoleRepository(dbContextFactory), hash);
 
             var login = await service.Authenticate("1234567890", "wrongpassword");
-
             Assert.Null(login);
         }
     }
-
 }
