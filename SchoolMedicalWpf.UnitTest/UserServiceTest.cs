@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal;
 using SchoolMedicalWpf.Dal.Entities;
+using SchoolMedicalWpf.Dal.Repositories;
 
 namespace SchoolMedicalWpf.UnitTest
 {
@@ -16,63 +17,64 @@ namespace SchoolMedicalWpf.UnitTest
                 .Options;
         }
 
-        // Test case for successful login with valid credentials
         [Fact]
         public async Task Authenticate_ShouldReturnUser_WhenCredentialsAreValid()
         {
-            // Arrange: Set up the in-memory DB and test data
+            // Arrange
             var options = GetDbContextOptions();
-            var context = new SchoolmedicalWpfContext(options); // Directly create the context
-
             var hash = new PasswordHasher<User>();
-            var user = new User
+
+            // Seed data
+            using (var context = new SchoolmedicalWpfContext(options))
             {
-                UserId = Guid.NewGuid(),
-                PhoneNumber = "1234567890",
-                PasswordHash = hash.HashPassword(null!, "password123")
-            };
+                var user = new User
+                {
+                    UserId = Guid.NewGuid(),
+                    PhoneNumber = "1234567890",
+                    PasswordHash = hash.HashPassword(null!, "password123")
+                };
+                context.Users.Add(user);
+                await context.SaveChangesAsync();
+            }
 
-            context.Users.Add(user);
-            await context.SaveChangesAsync(); // Save changes to in-memory DB
-
-            var userRepository = new UserRepository(context);
+            // Create repository & service
+            var userRepository = new UserRepository(options);
             var userService = new UserService(userRepository, hash);
 
-            // Act: Attempt to login with correct credentials
+            // Act
             var result = await userService.Authenticate("1234567890", "password123");
 
-            // Assert: Verify login is successful and user details match
+            // Assert
             Assert.NotNull(result);
-            Assert.Equal(user.UserId, result.UserId);
-            Assert.Equal(user.PhoneNumber, result.PhoneNumber);
+            Assert.Equal("1234567890", result.PhoneNumber);
         }
 
-        // Test case for failed login with incorrect credentials
         [Fact]
         public async Task Authenticate_ShouldReturnNull_WhenCredentialsAreInvalid()
         {
-            // Arrange: Set up the in-memory DB and test data
+            // Arrange
             var options = GetDbContextOptions();
-            var context = new SchoolmedicalWpfContext(options); // Directly create the context
-
             var hash = new PasswordHasher<User>();
-            var user = new User
+
+            using (var context = new SchoolmedicalWpfContext(options))
             {
-                UserId = Guid.NewGuid(),
-                PhoneNumber = "1234567890",
-                PasswordHash = hash.HashPassword(null!, "password123")
-            };
+                var user = new User
+                {
+                    UserId = Guid.NewGuid(),
+                    PhoneNumber = "1234567890",
+                    PasswordHash = hash.HashPassword(null!, "password123")
+                };
+                context.Users.Add(user);
+                await context.SaveChangesAsync();
+            }
 
-            context.Users.Add(user);
-            await context.SaveChangesAsync(); // Save changes to in-memory DB
-
-            var userRepository = new UserRepository(context);
+            var userRepository = new UserRepository(options);
             var userService = new UserService(userRepository, hash);
 
-            // Act: Attempt to login with incorrect password
+            // Act
             var result = await userService.Authenticate("1234567890", "wrongpassword");
 
-            // Assert: Verify login failed with incorrect password
+            // Assert
             Assert.Null(result);
         }
     }

@@ -13,16 +13,16 @@ namespace SchoolMedicalWpf.App
     public partial class LoginWindow : Window
     {
         private readonly UserService _userService;
-        private readonly RoleService _roleService;  // Tiêm RoleService
-
+        private readonly RoleService _roleService;
+        private readonly StudentService _studentService;
         private User _currentUser;
-
         // Inject UserService và RoleService qua constructor
-        public LoginWindow(UserService userService, RoleService roleService)
+        public LoginWindow(UserService userService, RoleService roleService, StudentService studentService)
         {
             InitializeComponent();
             _userService = userService;
-            _roleService = roleService;  // Khởi tạo RoleService từ DI
+            _roleService = roleService;
+            _studentService = studentService;
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -43,7 +43,7 @@ namespace SchoolMedicalWpf.App
 
                 if (user.RoleId == 4)
                 {
-                    var prmw = new ParentMainWindow(_currentUser, _userService);
+                    var prmw = new ParentMainWindow(_currentUser, _userService, _studentService);
                     prmw.Show();
                     this.Close();
                 }

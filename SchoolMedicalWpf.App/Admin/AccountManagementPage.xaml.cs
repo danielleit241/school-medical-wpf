@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using SchoolMedicalWpf.Bll.Services;
@@ -12,18 +9,20 @@ namespace SchoolMedicalWpf.App.Admin
     public partial class AccountManagementPage : UserControl
     {
         private readonly UserService _userService;
-        private readonly RoleService _roleService = new();
+        private readonly RoleService _roleService;
         private ObservableCollection<User> _users = new();
         private ObservableCollection<Role> _roles = new();
+        private User EditedUser;
 
         public AccountManagementPage(UserService userService, RoleService roleService)
         {
             InitializeComponent();
             _userService = userService;
-            Loaded += AccountManagementPage_Loaded;
+            _roleService = roleService;
+            LoadData();
         }
 
-        private async void AccountManagementPage_Loaded(object sender, RoutedEventArgs e)
+        private async void LoadData()
         {
             await LoadRoles();
             await LoadUsers();
@@ -31,62 +30,42 @@ namespace SchoolMedicalWpf.App.Admin
 
         private async Task LoadRoles()
         {
-            try
+            var roles = await _roleService.GetAllRoles();
+
+            if (roles == null || roles.Count == 0)
             {
-                // Lấy tất cả các role từ RoleService
-                var roles = await _roleService.GetAllRoles();
-
-                if (roles == null || roles.Count == 0)
-                {
-                    MessageBox.Show("No roles were found!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                _roles = new ObservableCollection<Role>(roles);
-
-                // Gán roles cho ComboBox
-                RoleComboBox.ItemsSource = _roles;
-                FilterRoleComboBox.ItemsSource = _roles;
-
-                // Đặt chỉ mục mặc định cho ComboBox lọc
-                FilterRoleComboBox.SelectedIndex = 0; // Hoặc có thể để -1 để không chọn gì mặc định
+                MessageBox.Show("No roles were found!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading roles: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+
+            _roles = new ObservableCollection<Role>(roles);
+            RoleComboBox.ItemsSource = _roles;
+            FilterRoleComboBox.ItemsSource = _roles;
+
+            if (_roles.Count > 0)
+                FilterRoleComboBox.SelectedIndex = 0;
+            else
+                FilterRoleComboBox.SelectedIndex = -1;
         }
-
 
         private async Task LoadUsers(int? roleId = null)
         {
-            var users = roleId.HasValue
-                ? await _userService.GetUsersByRoleId(roleId.Value) // Lọc người dùng theo RoleId
-                : await _userService.GetAllUsers(); // Lấy tất cả người dùng
+            var users = await _userService.GetAllUsers();
 
-            // Chỉ hiển thị người dùng có trạng thái "active"
             _users = new ObservableCollection<User>(users.Where(u => u.Status != false));
             AccountDataGrid.ItemsSource = _users;
         }
 
         private async void FilterRoleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Kiểm tra nếu có role được chọn
             if (FilterRoleComboBox.SelectedItem is Role selectedRole)
-            {
-                // Nếu có role được chọn, lọc người dùng theo RoleId
                 await LoadUsers(selectedRole.RoleId);
-            }
             else
-            {
-                // Nếu không có role nào được chọn, tải tất cả người dùng
                 await LoadUsers();
-            }
         }
 
         private async void ClearFilterButton_Click(object sender, RoutedEventArgs e)
         {
-            // Xóa lựa chọn trong ComboBox lọc và tải lại tất cả người dùng
             FilterRoleComboBox.SelectedIndex = -1;
             await LoadUsers();
         }
@@ -95,8 +74,7 @@ namespace SchoolMedicalWpf.App.Admin
         {
             try
             {
-                var selectedRole = RoleComboBox.SelectedItem as Role;
-                if (selectedRole == null)
+                if (RoleComboBox.SelectedItem is not Role selectedRole)
                 {
                     MessageBox.Show("Vui lòng chọn quyền cho tài khoản.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -107,9 +85,11 @@ namespace SchoolMedicalWpf.App.Admin
                     FullName = FullNameTextBox.Text,
                     PhoneNumber = PhoneNumberTextBox.Text,
                     EmailAddress = EmailTextBox.Text,
-                    DayOfBirth = DateOnly.TryParse(DayOfBirthTextBox.Text, out DateOnly parsedDate) ? parsedDate : null,
+                    DayOfBirth = DayOfBirthTextBox.SelectedDate.HasValue
+                        ? DateOnly.FromDateTime(DayOfBirthTextBox.SelectedDate.Value)
+                        : null,
                     Address = AddressTextBox.Text,
-                    RoleId = selectedRole.RoleId, // Lưu RoleId vào User
+                    RoleId = selectedRole.RoleId,
                     Status = true
                 };
 
@@ -125,12 +105,12 @@ namespace SchoolMedicalWpf.App.Admin
 
         private async void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            // Implement Edit logic here if needed
+            // Implement Edit logic if needed
         }
 
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            // Implement Delete logic here if needed
+            // Implement Delete logic if needed
         }
 
         private void AccountDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -140,9 +120,9 @@ namespace SchoolMedicalWpf.App.Admin
                 FullNameTextBox.Text = selectedUser.FullName;
                 PhoneNumberTextBox.Text = selectedUser.PhoneNumber;
                 EmailTextBox.Text = selectedUser.EmailAddress;
-                DayOfBirthTextBox.Text = selectedUser.DayOfBirth?.ToString() ?? "";
+                DayOfBirthTextBox.SelectedDate = selectedUser.DayOfBirth?.ToDateTime(TimeOnly.MinValue);
                 AddressTextBox.Text = selectedUser.Address;
-                RoleComboBox.SelectedItem = _roles.FirstOrDefault(r => r.RoleId == selectedUser.RoleId); // Chọn role cho người dùng
+                RoleComboBox.SelectedItem = _roles.FirstOrDefault(r => r.RoleId == selectedUser.RoleId);
             }
         }
     }

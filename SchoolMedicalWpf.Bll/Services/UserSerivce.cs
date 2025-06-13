@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SchoolMedicalWpf.Dal.Entities;
-using SchoolMedicalWpf.Dal.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SchoolMedicalWpf.Bll.Services
 {

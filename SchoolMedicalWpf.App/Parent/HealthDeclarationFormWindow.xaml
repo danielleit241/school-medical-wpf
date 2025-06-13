@@ -37,7 +37,7 @@
                         Height="42"
                         FontWeight="SemiBold"
                         FontSize="16"
-                        Click="SubmitButton_Click"
+                        
                         IsEnabled="{Binding IsInputEnabled, RelativeSource={RelativeSource AncestorType=Window}}"
                         Visibility="{Binding SubmitButtonVisibility, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </StackPanel>

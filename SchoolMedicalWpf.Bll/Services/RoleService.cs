@@ -2,7 +2,11 @@
 
 public class RoleService
 {
-    private readonly RoleRepository _roleRepository = new();
+    private readonly RoleRepository _roleRepository;
+    public RoleService(RoleRepository roleRepository)
+    {
+        _roleRepository = roleRepository;
+    }
 
     public async Task<List<Role>> GetAllRoles()
     {

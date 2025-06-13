@@ -13,12 +13,13 @@ namespace SchoolMedicalWpf.App.Parent
     {
         public ObservableCollection<Student> StudentList { get; set; } = new ObservableCollection<Student>();
         private User _currentUser;
-        private StudentService _studentService = new();
+        private StudentService _studentService;
 
-        public ParentHealthDeclarationPage(User user)
+        public ParentHealthDeclarationPage(User user, StudentService studentService)
         {
             InitializeComponent();
             _currentUser = user;
+            _studentService = studentService;
             LoadStudentListAsync();
             DataContext = this;
         }

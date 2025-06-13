@@ -23,9 +23,9 @@ namespace SchoolMedicalWpf.App.Parent
                 return;
             }
 
-            var form = new HealthDeclarationFormWindow(student);
-            form.Owner = Window.GetWindow(this);
-            form.ShowDialog();
+            //var form = new HealthDeclarationFormWindow(student);
+            //form.Owner = Window.GetWindow(this);
+            //form.ShowDialog();
         }
     }
 }

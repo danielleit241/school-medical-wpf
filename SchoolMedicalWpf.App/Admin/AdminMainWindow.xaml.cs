@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
 
@@ -32,8 +21,8 @@ namespace SchoolMedicalWpf.App.Admin
             InitializeComponent();
             _currentUser = user;
             _userService = userService;
-            _roleService = roleService;
             MainContent.Content = new AdminHomePage(_currentUser); // Khởi tạo AdminHomePage mặc định
+            _roleService = roleService;
         }
 
         public void SidebarButton_Click(object sender, RoutedEventArgs e)

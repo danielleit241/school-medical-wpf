@@ -5,7 +5,11 @@ namespace SchoolMedicalWpf.Bll.Services
 {
     public class StudentService
     {
-        private readonly StudentRepository _studentRepository = new();
+        private readonly StudentRepository _studentRepository;
+        public StudentService(StudentRepository studentRepository)
+        {
+            _studentRepository = studentRepository;
+        }
 
         public List<Student> GetStudentsByUserId(Guid userId)
         {

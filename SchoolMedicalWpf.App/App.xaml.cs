@@ -25,26 +25,29 @@ namespace SchoolMedicalWpf.App
                     var config = context.Configuration;
                     var sqlServerConn = config.GetConnectionString("DBDefault");
 
-                    // Sử dụng AddDbContext cho UserRepository (hoặc các service khác sử dụng DbContext trực tiếp)
                     services.AddDbContext<SchoolmedicalWpfContext>(options =>
                         options.UseSqlServer(sqlServerConn));
 
-
-                    // Đăng ký PasswordHasher<User> vào DI
+                    services.AddScoped<SchoolmedicalWpfContext>();
                     services.AddScoped<PasswordHasher<User>>();
-
-                    // Đăng ký DI cho repo, service, window
                     services.AddScoped<UserRepository>();
                     services.AddScoped<UserService>();
                     services.AddScoped<RoleRepository>();
                     services.AddScoped<RoleService>();
+                    services.AddScoped<StudentService>();
+                    services.AddScoped<StudentRepository>();
 
                     services.AddTransient<LoginWindow>();
-                    //services.AddTransient<ParentMainWindow>();
-                    //services.AddTransient<ParentHomePage>();
-                    //services.AddTransient<ParentProfilePage>();
-                    //services.AddTransient<ParentHealthDeclarationPage>();
-                    //services.AddTransient<HealthDeclarationForm>();
+                    services.AddTransient<ParentMainWindow>();
+                    services.AddTransient<ParentHomePage>();
+                    services.AddTransient<ProfilePage>();
+                    services.AddTransient<ParentHealthDeclarationPage>();
+                    services.AddTransient<MedicalRegistrationHistoryPage>();
+                    services.AddTransient<Admin.AdminMainWindow>();
+                    services.AddTransient<Admin.AdminHomePage>();
+                    services.AddTransient<Admin.AccountManagementPage>();
+                    services.AddTransient<Admin.CampaignPage>();
+                    services.AddTransient<Admin.StudentManagementPage>();
                 })
                 .Build();
         }

@@ -12,14 +12,16 @@ namespace SchoolMedicalWpf.App.Parent
     {
         private User _currentUser;
         private UserService _userService;
+        private StudentService _studentService;
 
-        public ParentMainWindow(User user, UserService service)
+        public ParentMainWindow(User user, UserService service, StudentService studentService)
         {
             InitializeComponent();
             _currentUser = user;
             _userService = service;
             // Load homepage mặc định
             MainContent.Content = new ParentHomePage(_currentUser);
+            _studentService = studentService;
         }
 
         private void SidebarButton_Click(object sender, RoutedEventArgs e)
@@ -38,7 +40,7 @@ namespace SchoolMedicalWpf.App.Parent
                     MainContent.Content = new MedicalRegistrationHistoryPage();
                     break;
                 case "Health":
-                    MainContent.Content = new ParentHealthDeclarationPage(_currentUser);
+                    MainContent.Content = new ParentHealthDeclarationPage(_currentUser, _studentService);
                     break;
                 //case "Exam":
                 //    MainContent.Content = new HealthExamHistoryPage();

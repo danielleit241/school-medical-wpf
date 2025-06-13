@@ -1,20 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SchoolMedicalWpf.Dal.Entities;
+﻿using SchoolMedicalWpf.Dal.Entities;
 using SchoolMedicalWpf.Dal;
+using Microsoft.EntityFrameworkCore;
 
 public class RoleRepository
 {
-    private SchoolmedicalWpfContext _context;
+    private readonly SchoolmedicalWpfContext _context;
+
+    public RoleRepository(SchoolmedicalWpfContext context)
+    {
+        _context = context;
+    }
 
     public async Task<List<Role>> GetAllRoles()
     {
-        _context = new();
         return await _context.Roles.ToListAsync();
     }
 
     public async Task<Role?> GetRoleById(int roleId)
     {
-        _context = new();
         return await _context.Roles
             .Include(r => r.Users)
             .FirstOrDefaultAsync(r => r.RoleId == roleId);
