@@ -4,23 +4,18 @@ using SchoolMedicalWpf.Dal;
 
 public class RoleRepository
 {
-    private readonly IDbContextFactory<SchoolmedicalWpfContext> _contextFactory;
-
-    public RoleRepository(IDbContextFactory<SchoolmedicalWpfContext> contextFactory)
-    {
-        _contextFactory = contextFactory;
-    }
+    private SchoolmedicalWpfContext _context;
 
     public async Task<List<Role>> GetAllRoles()
     {
-        using var context = _contextFactory.CreateDbContext();
-        return await context.Roles.ToListAsync();
+        _context = new();
+        return await _context.Roles.ToListAsync();
     }
 
     public async Task<Role?> GetRoleById(int roleId)
     {
-        using var context = _contextFactory.CreateDbContext();
-        return await context.Roles
+        _context = new();
+        return await _context.Roles
             .Include(r => r.Users)
             .FirstOrDefaultAsync(r => r.RoleId == roleId);
     }

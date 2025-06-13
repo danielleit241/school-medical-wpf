@@ -12,7 +12,7 @@ namespace SchoolMedicalWpf.App.Admin
     public partial class AccountManagementPage : UserControl
     {
         private readonly UserService _userService;
-        private readonly RoleService _roleService;
+        private readonly RoleService _roleService = new();
         private ObservableCollection<User> _users = new();
         private ObservableCollection<Role> _roles = new();
 
@@ -20,7 +20,6 @@ namespace SchoolMedicalWpf.App.Admin
         {
             InitializeComponent();
             _userService = userService;
-            _roleService = roleService;
             Loaded += AccountManagementPage_Loaded;
         }
 

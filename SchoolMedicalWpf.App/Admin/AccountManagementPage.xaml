@@ -67,7 +67,7 @@
             <TextBlock Text="Email" Style="{StaticResource LabelText}"/>
             <TextBox x:Name="EmailTextBox" Style="{StaticResource InputBox}"/>
             <TextBlock Text="Ngày sinh" Style="{StaticResource LabelText}"/>
-            <TextBox x:Name="DayOfBirthTextBox" Style="{StaticResource InputBox}"/>
+            <DatePicker x:Name="DayOfBirthTextBox" Style="{StaticResource DatePickerStyle}"/>
             <TextBlock Text="Địa chỉ" Style="{StaticResource LabelText}"/>
             <TextBox x:Name="AddressTextBox" Style="{StaticResource InputBox}"/>
 
