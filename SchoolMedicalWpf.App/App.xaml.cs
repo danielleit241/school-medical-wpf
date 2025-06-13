@@ -29,10 +29,6 @@ namespace SchoolMedicalWpf.App
                     services.AddDbContext<SchoolmedicalWpfContext>(options =>
                         options.UseSqlServer(sqlServerConn));
 
-                    // Sử dụng DbContextFactory cho RoleRepository (nếu cần)
-                    services.AddDbContextFactory<SchoolmedicalWpfContext>(options =>
-                        options.UseSqlServer(sqlServerConn));
-
 
                     // Đăng ký PasswordHasher<User> vào DI
                     services.AddScoped<PasswordHasher<User>>();
