@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using SchoolMedicalWpf.Bll.Services;
@@ -12,7 +13,6 @@ namespace SchoolMedicalWpf.App.Admin
         private readonly RoleService _roleService;
         private ObservableCollection<User> _users = new();
         private ObservableCollection<Role> _roles = new();
-        private User EditedUser;
 
         public AccountManagementPage(UserService userService, RoleService roleService)
         {
@@ -21,7 +21,6 @@ namespace SchoolMedicalWpf.App.Admin
             _roleService = roleService;
             LoadData();
         }
-
         private async void LoadData()
         {
             await LoadRoles();
@@ -38,21 +37,24 @@ namespace SchoolMedicalWpf.App.Admin
                 return;
             }
 
+            // Clear existing roles and set new ones
             _roles = new ObservableCollection<Role>(roles);
-            RoleComboBox.ItemsSource = _roles;
             FilterRoleComboBox.ItemsSource = _roles;
+            FilterRoleComboBox.SelectedIndex = -1;
 
-            if (_roles.Count > 0)
-                FilterRoleComboBox.SelectedIndex = 0;
-            else
-                FilterRoleComboBox.SelectedIndex = -1;
         }
 
         private async Task LoadUsers(int? roleId = null)
         {
             var users = await _userService.GetAllUsers();
+            if (roleId.HasValue)
+                users = users.Where(u => u.RoleId == roleId.Value && u.Status != false).ToList();
+            else
+                users = users.Where(u => u.Status != false).ToList();
 
-            _users = new ObservableCollection<User>(users.Where(u => u.Status != false));
+            _users = new ObservableCollection<User>(users);
+
+            AccountDataGrid.ItemsSource = null; // Reset the ItemsSource to refresh the DataGrid
             AccountDataGrid.ItemsSource = _users;
         }
 
@@ -70,59 +72,52 @@ namespace SchoolMedicalWpf.App.Admin
             await LoadUsers();
         }
 
-        private async void AddButton_Click(object sender, RoutedEventArgs e)
+        private async void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                if (RoleComboBox.SelectedItem is not Role selectedRole)
-                {
-                    MessageBox.Show("Vui lòng chọn quyền cho tài khoản.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+            CreateUpdateAccount createUpdateAccount = new CreateUpdateAccount(_userService, _roleService);
+            createUpdateAccount.ShowDialog();
 
-                var user = new User
-                {
-                    FullName = FullNameTextBox.Text,
-                    PhoneNumber = PhoneNumberTextBox.Text,
-                    EmailAddress = EmailTextBox.Text,
-                    DayOfBirth = DayOfBirthTextBox.SelectedDate.HasValue
-                        ? DateOnly.FromDateTime(DayOfBirthTextBox.SelectedDate.Value)
-                        : null,
-                    Address = AddressTextBox.Text,
-                    RoleId = selectedRole.RoleId,
-                    Status = true
-                };
-
-                await _userService.AddUser(user);
-                await LoadUsers();
-                MessageBox.Show("Thêm tài khoản thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            // Sau khi tạo tài khoản mới, tải lại danh sách người dùng
+            await LoadUsers();
         }
 
-        private async void EditButton_Click(object sender, RoutedEventArgs e)
+        private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            // Implement Edit logic if needed
+            User? selected = AccountDataGrid.SelectedItem as User;
+            if (selected == null)
+            {
+                MessageBox.Show("Vui lòng chọn tài khoản để sửa.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            CreateUpdateAccount createUpdateAccount = new CreateUpdateAccount(_userService, _roleService, selected);
+            createUpdateAccount.EditedUser = selected;
+            createUpdateAccount.ShowDialog();
+            await LoadUsers();
         }
 
+
+        // Nút "Xóa tài khoản"
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            // Implement Delete logic if needed
-        }
-
-        private void AccountDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (AccountDataGrid.SelectedItem is User selectedUser)
+            if (AccountDataGrid.SelectedItem is not User selectedUser)
             {
-                FullNameTextBox.Text = selectedUser.FullName;
-                PhoneNumberTextBox.Text = selectedUser.PhoneNumber;
-                EmailTextBox.Text = selectedUser.EmailAddress;
-                DayOfBirthTextBox.SelectedDate = selectedUser.DayOfBirth?.ToDateTime(TimeOnly.MinValue);
-                AddressTextBox.Text = selectedUser.Address;
-                RoleComboBox.SelectedItem = _roles.FirstOrDefault(r => r.RoleId == selectedUser.RoleId);
+                MessageBox.Show("Vui lòng chọn tài khoản để xóa.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var result = MessageBox.Show($"Bạn có chắc muốn xóa tài khoản '{selectedUser.FullName}'?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    await _userService.DeleteUser(selectedUser.UserId);
+                    await LoadUsers();
+                    MessageBox.Show("Xóa tài khoản thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }

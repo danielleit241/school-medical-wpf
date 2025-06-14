@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SchoolMedicalWpf.App.Admin"
              MinHeight="450" MinWidth="800"
-             >
+             Background="{StaticResource BackgroundWhiteBrush}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,72 +14,84 @@
     </UserControl.Resources>
 
     <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="1.2*"/>
+            <ColumnDefinition Width="2.5*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Bộ lọc Role -->
-        <StackPanel Grid.Column="0" Margin="0,0,16,0">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,8">
-                <TextBlock Text="Lọc theo quyền:" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
-                <ComboBox x:Name="FilterRoleComboBox"
-                          Style="{StaticResource ComboBoxInputBox}"
-                          DisplayMemberPath="RoleName"
-                          SelectedValuePath="RoleId"
-                          Width="180"
-                          Margin="8,0,0,0"
-                          SelectionChanged="FilterRoleComboBox_SelectionChanged">
-                    <!-- Các mục sẽ được điền vào từ code-behind -->
-                </ComboBox>
-                <Button Content="Xóa lọc" Style="{StaticResource PrimaryButton}" Click="ClearFilterButton_Click" Margin="8,0,0,0"/>
-            </StackPanel>
+        <!-- Tiêu đề và lời chào -->
+        <DockPanel Grid.Row="0" Grid.ColumnSpan="2" LastChildFill="False" Margin="0,0,0,24">
+            <TextBlock Text="Quản Lý Tài Khoản"
+                       Style="{StaticResource TitleText}"
+                       VerticalAlignment="Center" DockPanel.Dock="Left"/>
+            <TextBlock Text="Hello, Administrator"
+                       FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryBlueBrush}"
+                       VerticalAlignment="Center" DockPanel.Dock="Right" Margin="0,0,16,0"/>
+        </DockPanel>
 
-            <!-- Danh sách tài khoản -->
+        <!-- Bộ lọc và DataGrid -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,24,0">
+            <Border Background="{StaticResource AccentYellowBrush}" CornerRadius="8" Padding="12" Margin="0,0,0,16">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Lọc theo quyền:"
+                               FontWeight="Bold" Foreground="{StaticResource TextGrayBrush}" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="FilterRoleComboBox"
+                              Style="{StaticResource ComboBoxInputBox}"
+                              DisplayMemberPath="RoleName"
+                              SelectedValuePath="RoleId"
+                              Width="180"
+                              Margin="8,0,0,0"
+                              SelectionChanged="FilterRoleComboBox_SelectionChanged"/>
+                    <Button Content="Xóa lọc"
+                            Style="{StaticResource PrimaryButton}"
+                            Margin="8,0,0,0"
+                            Click="ClearFilterButton_Click"/>
+                </StackPanel>
+            </Border>
             <DataGrid x:Name="AccountDataGrid"
                       AutoGenerateColumns="False"
                       SelectionMode="Single"
-                      SelectionChanged="AccountDataGrid_SelectionChanged"
                       IsReadOnly="True"
                       CanUserAddRows="False"
-                      CanUserDeleteRows="False">
+                      CanUserDeleteRows="False"
+                      Background="{StaticResource BackgroundWhiteBrush}"
+                      Foreground="{StaticResource TextGrayBrush}"
+                      FontWeight="SemiBold"
+                      RowHeight="32"
+                      HeadersVisibility="Column"
+                      Margin="0,0,0,0">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Họ tên" Binding="{Binding FullName}" Width="*"/>
                     <DataGridTextColumn Header="SĐT" Binding="{Binding PhoneNumber}" Width="*"/>
                     <DataGridTextColumn Header="Ngày sinh" Binding="{Binding DayOfBirth}" Width="*"/>
                     <DataGridTextColumn Header="Email" Binding="{Binding EmailAddress}" Width="*"/>
                     <DataGridTextColumn Header="Địa chỉ" Binding="{Binding Address}" Width="*"/>
-                    <DataGridTextColumn Header="Trạng thái" 
-                                        Binding="{Binding Status, Converter={StaticResource StatusToStringConverter}}" 
+                    <DataGridTextColumn Header="Trạng thái"
+                                        Binding="{Binding Status, Converter={StaticResource StatusToStringConverter}}"
                                         Width="*" />
                     <DataGridTextColumn Header="Quyền" Binding="{Binding Role.RoleName}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
 
-        <!-- Form nhập/sửa -->
-        <StackPanel Grid.Column="1" Margin="16,0,0,0">
-            <TextBlock Text="Quản lý tài khoản" Style="{StaticResource TitleText}" Margin="0,0,0,16"/>
-            <TextBlock Text="Họ tên" Style="{StaticResource LabelText}"/>
-            <TextBox x:Name="FullNameTextBox" Style="{StaticResource InputBox}"/>
-            <TextBlock Text="Số điện thoại" Style="{StaticResource LabelText}"/>
-            <TextBox x:Name="PhoneNumberTextBox" Style="{StaticResource InputBox}"/>
-            <TextBlock Text="Email" Style="{StaticResource LabelText}"/>
-            <TextBox x:Name="EmailTextBox" Style="{StaticResource InputBox}"/>
-            <TextBlock Text="Ngày sinh" Style="{StaticResource LabelText}"/>
-            <DatePicker x:Name="DayOfBirthTextBox" Style="{StaticResource DatePickerStyle}"/>
-            <TextBlock Text="Địa chỉ" Style="{StaticResource LabelText}"/>
-            <TextBox x:Name="AddressTextBox" Style="{StaticResource InputBox}"/>
-
-            <TextBlock Text="Quyền" Style="{StaticResource LabelText}"/>
-            <!-- ComboBox cho quyền khi Add/Edit User -->
-            <ComboBox x:Name="RoleComboBox" Style="{StaticResource ComboBoxInputBox}" DisplayMemberPath="RoleName" SelectedValuePath="RoleId"/>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
-                <Button Content="Thêm" Style="{StaticResource PrimaryButton}" Click="AddButton_Click" Margin="0,0,8,0"/>
-                <Button Content="Sửa" Style="{StaticResource SecondaryButtonStyle}" Click="EditButton_Click" Margin="0,0,8,0"/>
-                <Button Content="Xóa" Style="{StaticResource SecondaryButtonStyle}" Click="DeleteButton_Click"/>
-            </StackPanel>
+        <!-- Các nút chức năng -->
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" >
+            <Button x:Name="CreateButton" Content="Tạo tài khoản"
+                    Style="{StaticResource PrimaryButton}"
+                    FontSize="16" Height="48" Margin="0,0,0,16"
+                    Click="CreateButton_Click"/>
+            <Button x:Name="UpdateButton" Content="Sửa tài khoản"
+                    Style="{StaticResource PrimaryButton}"
+                    FontSize="16" Height="48" Margin="0,0,0,16"
+                    Click="UpdateButton_Click"/>
+            <Button Content="Xóa tài khoản"
+                    Style="{StaticResource PrimaryButton}"
+                    FontSize="16" Height="48" Margin="0,0,0,16"
+                    Click="DeleteButton_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>
