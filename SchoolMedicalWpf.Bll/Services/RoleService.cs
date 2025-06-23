@@ -3,6 +3,7 @@
 public class RoleService
 {
     private readonly RoleRepository _roleRepository;
+
     public RoleService(RoleRepository roleRepository)
     {
         _roleRepository = roleRepository;
