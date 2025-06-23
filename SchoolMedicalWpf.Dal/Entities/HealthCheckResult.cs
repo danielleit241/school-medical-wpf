@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SchoolMedicalWpf.Dal.Entities;
+﻿namespace SchoolMedicalWpf.Dal.Entities;
 
 public partial class HealthCheckResult
 {

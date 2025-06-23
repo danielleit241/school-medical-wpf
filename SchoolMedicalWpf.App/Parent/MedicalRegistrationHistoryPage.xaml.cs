@@ -1,87 +1,52 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using SchoolMedicalWpf.Bll.Services;
+using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
 {
-    public class StudentDto
-    {
-        public Guid StudentId { get; set; }
-        public string FullName { get; set; }
-    }
-
-    public class MedicalRegistration
-    {
-        public Guid RegistrationId { get; set; }
-        public StudentDto Student { get; set; }
-        public string MedicationName { get; set; }
-        public string TotalDosages { get; set; }
-        public string Notes { get; set; }
-        public bool ParentalConsent { get; set; }
-        public bool Status { get; set; }
-        public DateTime DateSubmitted { get; set; }
-        public DateTime? DateApproved { get; set; }
-    }
-
     public partial class MedicalRegistrationHistoryPage : UserControl
     {
+        private readonly MedicalRegistrationService _registrationService;
+        private readonly User _currentUser;
+
         public ObservableCollection<MedicalRegistration> MedicalRegistrationList { get; set; } = [];
 
-        public MedicalRegistrationHistoryPage()
+        public MedicalRegistrationHistoryPage(MedicalRegistrationService registrationService, User currentUser)
         {
             InitializeComponent();
-            // Dữ liệu học sinh giả
-            var student1 = new StudentDto { StudentId = Guid.NewGuid(), FullName = "Nguyễn Văn An" };
-            var student2 = new StudentDto { StudentId = Guid.NewGuid(), FullName = "Trần Thị Bình" };
-
-            //Data giả cho lịch sử tiêm thuốc
-            MedicalRegistrationList = new ObservableCollection<MedicalRegistration>
-            {
-                 new MedicalRegistration
-                 {
-                     RegistrationId = Guid.NewGuid(),
-                     Student = student1,
-                     MedicationName = "Vắc xin Cúm",
-                     TotalDosages = "1 mũi",
-                     Notes = "Không có phản ứng phụ",
-                     ParentalConsent = true,
-                     Status = true,
-                     DateSubmitted = DateTime.Today.AddDays(-10),
-                     DateApproved = DateTime.Today.AddDays(-9)
-                 },
-                 new MedicalRegistration
-                 {
-                     RegistrationId = Guid.NewGuid(),
-                     Student = student2,
-                     MedicationName = "Vắc xin Sởi",
-                     TotalDosages = "2 mũi",
-                     Notes = "Mệt nhẹ sau tiêm",
-                     ParentalConsent = true,
-                     Status = false,
-                     DateSubmitted = DateTime.Today.AddDays(-5),
-                     DateApproved = null
-                 },
-                 new MedicalRegistration
-                 {
-                     RegistrationId = Guid.NewGuid(),
-                     Student = student1,
-                     MedicationName = "Vắc xin Viêm gan B",
-                     TotalDosages = "1 mũi",
-                     Notes = "Đã tiêm tại trường",
-                     ParentalConsent = true,
-                     Status = true,
-                     DateSubmitted = DateTime.Today.AddDays(-30),
-                     DateApproved = DateTime.Today.AddDays(-29)
-                 }
-            };
-            this.DataContext = this;
+            _registrationService = registrationService;
+            _currentUser = currentUser;
         }
+
         private void CreateMedicalRegistration_Click(object sender, RoutedEventArgs e)
         {
-            var form = new MedicalRegistrationFormWindow();
+            var form = ActivatorUtilities.CreateInstance<MedicalRegistrationFormWindow>(App.Services, _currentUser);
             form.Owner = Window.GetWindow(this);
             form.ShowDialog();
+            FillData();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            FillData();
+        }
+
+        private void FillData()
+        {
+            var registrationsHistory = _registrationService.GetAllRegistrations();
+            var userRegistrations = registrationsHistory
+                .Where(r => r.UserId == _currentUser.UserId)
+                .ToList();
+
+            MedicalRegistrationList.Clear();
+            foreach (var registration in userRegistrations)
+            {
+                MedicalRegistrationList.Add(registration);
+            }
+            this.DataContext = this;
         }
     }
 }

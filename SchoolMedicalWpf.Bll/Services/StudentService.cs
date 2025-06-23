@@ -11,6 +11,16 @@ namespace SchoolMedicalWpf.Bll.Services
             _studentRepository = studentRepository;
         }
 
+        public List<Student> GetStudents()
+        {
+            var res = _studentRepository.GetAll();
+            if (res == null)
+            {
+                return [];
+            }
+            return res;
+        }
+
         public List<Student> GetStudentsByUserId(Guid userId)
         {
             if (userId == Guid.Empty)

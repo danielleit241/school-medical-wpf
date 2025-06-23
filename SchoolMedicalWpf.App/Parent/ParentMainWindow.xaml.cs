@@ -32,7 +32,7 @@ namespace SchoolMedicalWpf.App.Parent
                     MainContent.Content = ActivatorUtilities.CreateInstance<ProfilePage>(App.Services, _currentUser);
                     break;
                 case "Medicine":
-                    MainContent.Content = new MedicalRegistrationHistoryPage();
+                    MainContent.Content = ActivatorUtilities.CreateInstance<MedicalRegistrationHistoryPage>(App.Services, _currentUser);
                     break;
                 case "Health":
                     MainContent.Content = ActivatorUtilities.CreateInstance<ParentHealthDeclarationPage>(App.Services, _currentUser); ;

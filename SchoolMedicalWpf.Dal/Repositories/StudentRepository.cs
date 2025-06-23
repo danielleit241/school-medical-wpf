@@ -9,6 +9,12 @@ namespace SchoolMedicalWpf.Dal.Repositories
         {
             _context = context;
         }
+
+        public List<Student> GetAll()
+        {
+            return _context.Students.ToList();
+        }
+
         public List<Student> GetStudentsByUserId(Guid userId)
         {
             return _context.Students.Where(s => s.UserId == userId)

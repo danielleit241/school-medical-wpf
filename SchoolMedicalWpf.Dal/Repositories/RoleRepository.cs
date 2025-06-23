@@ -1,6 +1,6 @@
-﻿using SchoolMedicalWpf.Dal.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 using SchoolMedicalWpf.Dal;
-using Microsoft.EntityFrameworkCore;
+using SchoolMedicalWpf.Dal.Entities;
 
 public class RoleRepository
 {

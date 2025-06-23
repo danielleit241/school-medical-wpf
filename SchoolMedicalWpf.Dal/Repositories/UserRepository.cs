@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SchoolMedicalWpf.Dal.Entities;
 using SchoolMedicalWpf.Dal;
+using SchoolMedicalWpf.Dal.Entities;
 
 public class UserRepository
 {

@@ -4,7 +4,7 @@
         Title="Đăng ký lịch sử tiêm thuốc"
         Height="790" Width="680"
         Background="{DynamicResource BackgroundWhiteBrush}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Grid>
         <Border Style="{StaticResource CardContainer}" 
                 HorizontalAlignment="Center" VerticalAlignment="Center"

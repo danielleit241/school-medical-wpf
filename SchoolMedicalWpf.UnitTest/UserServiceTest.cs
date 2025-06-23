@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal;
 using SchoolMedicalWpf.Dal.Entities;
-using SchoolMedicalWpf.Dal.Repositories;
 
 namespace SchoolMedicalWpf.UnitTest
 {

@@ -38,13 +38,20 @@ namespace SchoolMedicalWpf.App
                     services.AddScoped<StudentRepository>();
                     services.AddScoped<HealthProfileRepo>();
                     services.AddScoped<HealthProfileService>();
+                    services.AddScoped<MedicalRegistrationRepo>();
+                    services.AddScoped<MedicalRegistrationService>();
 
                     services.AddTransient<LoginWindow>();
+
                     services.AddTransient<ParentMainWindow>();
                     services.AddTransient<ParentHomePage>();
                     services.AddTransient<ProfilePage>();
                     services.AddTransient<ParentHealthDeclarationPage>();
                     services.AddTransient<MedicalRegistrationHistoryPage>();
+                    services.AddTransient<MedicalRegistrationFormWindow>();
+
+
+
                     services.AddTransient<Admin.AdminMainWindow>();
                     services.AddTransient<Admin.AdminHomePage>();
                     services.AddTransient<Admin.AccountManagementPage>();
