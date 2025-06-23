@@ -11,23 +11,29 @@ namespace SchoolMedicalWpf.App.Parent
     /// </summary>
     public partial class ParentHealthDeclarationPage : UserControl
     {
-        public ObservableCollection<Student> StudentList { get; set; } = new ObservableCollection<Student>();
-        private User _currentUser;
-        private StudentService _studentService;
+        public ObservableCollection<Student> StudentList { get; set; } = new();
+        private readonly User _currentUser;
+        private readonly StudentService _studentService;
 
         public ParentHealthDeclarationPage(User user, StudentService studentService)
         {
             InitializeComponent();
-            _currentUser = user;
-            _studentService = studentService;
-            LoadStudentListAsync();
+            _currentUser = user ?? throw new ArgumentNullException(nameof(user));
+            _studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
+            LoadStudentList();
             DataContext = this;
         }
 
-        public void LoadStudentListAsync()
+        public void LoadStudentList()
         {
             try
             {
+                if (_currentUser == null || _studentService == null)
+                {
+                    MessageBox.Show("Không có dữ liệu đăng nhập hoặc dịch vụ học sinh.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 var students = _studentService.GetStudentsByUserId(_currentUser.UserId);
                 StudentList.Clear();
                 foreach (var student in students)

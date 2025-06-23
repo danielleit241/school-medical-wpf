@@ -11,7 +11,6 @@ namespace SchoolMedicalWpf.Dal.Repositories
         }
         public List<Student> GetStudentsByUserId(Guid userId)
         {
-            _context = new();
             return _context.Students.Where(s => s.UserId == userId)
                 .ToList();
         }

@@ -1,114 +1,116 @@
-﻿//using Microsoft.Extensions.DependencyInjection;
-//using SchoolMedicalWpf.Dal;
-//using SchoolMedicalWpf.Dal.Entities;
-//using System.ComponentModel;
-//using System.Linq;
-//using System.Windows;
+﻿using System.Windows;
+using Microsoft.IdentityModel.Tokens;
+using SchoolMedicalWpf.Bll.Services;
+using SchoolMedicalWpf.Dal.Entities;
 
-//namespace SchoolMedicalWpf.App.Parent
-//{
-//    public partial class HealthDeclarationFormWindow : Window, INotifyPropertyChanged
-//    {
-//        private Student _currentStudent;
-//        private readonly SchoolmedicalWpfContext _dbContext;
+namespace SchoolMedicalWpf.App.Parent
+{
+    public partial class HealthDeclarationFormWindow : Window
+    {
+        private Student _currentStudent;
+        private readonly HealthProfileService _profileService;
 
-//        private bool _isInputEnabled = true;
-//        public bool IsInputEnabled
-//        {
-//            get => _isInputEnabled;
-//            set { _isInputEnabled = value; OnPropertyChanged(nameof(IsInputEnabled)); }
-//        }
+        public HealthDeclarationFormWindow(Student student, HealthProfileService profileService)
+        {
+            InitializeComponent();
+            _currentStudent = student ?? throw new ArgumentNullException(nameof(student), "Student cannot be null");
+            _profileService = profileService ?? throw new ArgumentNullException(nameof(profileService), "HealthProfileService cannot be null");
+        }
 
-//        private Visibility _submitButtonVisibility = Visibility.Visible;
-//        public Visibility SubmitButtonVisibility
-//        {
-//            get => _submitButtonVisibility;
-//            set { _submitButtonVisibility = value; OnPropertyChanged(nameof(SubmitButtonVisibility)); }
-//        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            FillData();
+        }
 
-//        public HealthDeclarationFormWindow(Student student)
-//        {
-//            InitializeComponent();
-//            _currentStudent = student;
-//            _dbContext = App.Services.GetRequiredService<SchoolmedicalWpfContext>();
-//            this.DataContext = this;
+        private void FillData()
+        {
+            var existedProfile = _profileService.GetHealthProfileByStudentId(_currentStudent.StudentId);
+            if (existedProfile != null)
+            {
+                txtChronicDiseases.Text = existedProfile.ChronicDiseases ?? string.Empty;
+                txtDrugAllergies.Text = existedProfile.DrugAllergies ?? string.Empty;
+                txtFoodAllergies.Text = existedProfile.FoodAllergies ?? string.Empty;
+                txtNotes.Text = existedProfile.Notes ?? string.Empty;
+                dpDeclarationDate.SelectedDate = existedProfile.DeclarationDate.HasValue ? existedProfile.DeclarationDate.Value.ToDateTime(new TimeOnly(0, 0)) : null;
+                btnSubmit.Visibility = Visibility.Collapsed;
+            }
+        }
 
-//            // Nếu đã có hồ sơ, disable luôn và ẩn nút
-//            var existedProfile = _dbContext.HealthProfiles
-//                .FirstOrDefault(hp => hp.StudentId == _currentStudent.StudentId);
+        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        {
 
-//            if (existedProfile != null)
-//            {
-//                IsInputEnabled = false;
-//                SubmitButtonVisibility = Visibility.Collapsed;
+            if (_currentStudent == null)
+            {
+                MessageBox.Show("Không tìm thấy thông tin học sinh!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-//                // Hiển thị lại thông tin nếu muốn, hoặc chỉ disable là đủ
-//                txtChronicDiseases.Text = existedProfile.ChronicDiseases;
-//                dpDeclarationDate.SelectedDate = existedProfile.DeclarationDate.HasValue ?
-//                    new System.DateTime(existedProfile.DeclarationDate.Value.Year, existedProfile.DeclarationDate.Value.Month, existedProfile.DeclarationDate.Value.Day) : null;
-//                txtDrugAllergies.Text = existedProfile.DrugAllergies;
-//                txtFoodAllergies.Text = existedProfile.FoodAllergies;
-//                txtNotes.Text = existedProfile.Notes;
-//            }
-//            else
-//            {
-//                IsInputEnabled = true;
-//                SubmitButtonVisibility = Visibility.Visible;
-//            }
-//        }
+            var existedProfile = _profileService.GetHealthProfileByStudentId(_currentStudent.StudentId);
 
-//        private void SubmitButton_Click(object sender, RoutedEventArgs e)
-//        {
-//            if (_currentStudent == null)
-//            {
-//                MessageBox.Show("Không tìm thấy thông tin học sinh!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-//                return;
-//            }
+            if (existedProfile != null)
+            {
+                btnSubmit.IsEnabled = false;
+                return;
+            }
 
-//            var existedProfile = _dbContext.HealthProfiles
-//                .FirstOrDefault(hp => hp.StudentId == _currentStudent.StudentId);
 
-//            if (existedProfile != null)
-//            {
-//                MessageBox.Show("Học sinh này đã khai báo y tế. Không thể khai báo lần 2!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-//                IsInputEnabled = false;
-//                SubmitButtonVisibility = Visibility.Collapsed;
-//                return;
-//            }
+            if (txtChronicDiseases.Text.IsNullOrEmpty())
+            {
+                MessageBox.Show("Vui lòng khai báo bệnh mãn tính!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (txtDrugAllergies.Text.IsNullOrEmpty())
+            {
+                MessageBox.Show("Vui lòng khai báo dị ứng thuốc!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (txtFoodAllergies.Text.IsNullOrEmpty())
+            {
+                MessageBox.Show("Vui lòng khai báo dị ứng thực phẩm!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (dpDeclarationDate.SelectedDate < DateTime.Now.AddDays(-1))
+            {
+                MessageBox.Show("Ngày khai báo không được trước ngày hôm nay!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (dpDeclarationDate.SelectedDate == null)
+            {
+                MessageBox.Show("Vui lòng chọn ngày khai báo!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (txtNotes.Text.IsNullOrEmpty())
+            {
+                MessageBox.Show("Vui lòng nhập ghi chú!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-//            DateOnly? declarationDate = null;
-//            if (dpDeclarationDate.SelectedDate.HasValue)
-//            {
-//                var selected = dpDeclarationDate.SelectedDate.Value;
-//                declarationDate = new DateOnly(selected.Year, selected.Month, selected.Day);
-//            }
+            var healthProfile = new HealthProfile
+            {
+                HealthProfileId = Guid.NewGuid(),
+                StudentId = _currentStudent.StudentId,
+                CreatedDate = DateTime.Now,
+                Notes = txtNotes.Text,
+                ChronicDiseases = txtChronicDiseases.Text,
+                DeclarationDate = DateOnly.FromDateTime(dpDeclarationDate.SelectedDate!.Value),
+                DrugAllergies = txtDrugAllergies.Text,
+                FoodAllergies = txtFoodAllergies.Text
+            };
 
-//            var healthProfile = new HealthProfile
-//            {
-//                HealthProfileId = Guid.NewGuid(),
-//                StudentId = _currentStudent.StudentId,
-//                CreatedDate = System.DateTime.Now,
-//                Notes = txtNotes.Text,
-//                ChronicDiseases = txtChronicDiseases.Text,
-//                DeclarationDate = declarationDate,
-//                DrugAllergies = txtDrugAllergies.Text,
-//                FoodAllergies = txtFoodAllergies.Text
-//            };
+            _profileService.Add(healthProfile);
 
-//            _dbContext.HealthProfiles.Add(healthProfile);
-//            _dbContext.SaveChanges();
+            MessageBox.Show("Khai báo y tế đã được lưu!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
 
-//            MessageBox.Show("Khai báo y tế đã được lưu!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+            this.Close();
+        }
 
-//            IsInputEnabled = false; // Disable sau khi gửi xong
-//            SubmitButtonVisibility = Visibility.Collapsed; // Ẩn nút sau khi gửi xong
-//        }
-
-//        public event PropertyChangedEventHandler PropertyChanged;
-
-//        private void OnPropertyChanged(string propertyName)
-//        {
-//            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-//        }
-//    }
-//}
+        private void btnExit_Click(object sender, RoutedEventArgs e)
+        {
+            var res = MessageBox.Show("Bạn muốn thoát?", "Thoát", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (res == MessageBoxResult.Yes)
+            {
+                this.Close();
+            }
+        }
+    }
+}

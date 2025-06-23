@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using SchoolMedicalWpf.Bll.Services;
+using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
@@ -11,17 +11,12 @@ namespace SchoolMedicalWpf.App.Parent
     public partial class ParentMainWindow : Window
     {
         private User _currentUser;
-        private UserService _userService;
-        private StudentService _studentService;
 
-        public ParentMainWindow(User user, UserService service, StudentService studentService)
+        public ParentMainWindow(User user)
         {
             InitializeComponent();
             _currentUser = user;
-            _userService = service;
-            // Load homepage mặc định
             MainContent.Content = new ParentHomePage(_currentUser);
-            _studentService = studentService;
         }
 
         private void SidebarButton_Click(object sender, RoutedEventArgs e)
@@ -31,16 +26,16 @@ namespace SchoolMedicalWpf.App.Parent
             switch (tag)
             {
                 case "Home":
-                    MainContent.Content = new ParentHomePage(_currentUser);
+                    MainContent.Content = ActivatorUtilities.CreateInstance<ParentHomePage>(App.Services, _currentUser);
                     break;
                 case "Profile":
-                    MainContent.Content = new ProfilePage(_currentUser, _userService);
+                    MainContent.Content = ActivatorUtilities.CreateInstance<ProfilePage>(App.Services, _currentUser);
                     break;
                 case "Medicine":
                     MainContent.Content = new MedicalRegistrationHistoryPage();
                     break;
                 case "Health":
-                    MainContent.Content = new ParentHealthDeclarationPage(_currentUser, _studentService);
+                    MainContent.Content = ActivatorUtilities.CreateInstance<ParentHealthDeclarationPage>(App.Services, _currentUser); ;
                     break;
                 //case "Exam":
                 //    MainContent.Content = new HealthExamHistoryPage();

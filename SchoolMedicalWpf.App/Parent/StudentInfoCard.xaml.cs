@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Parent
@@ -9,6 +10,7 @@ namespace SchoolMedicalWpf.App.Parent
     /// </summary>  
     public partial class StudentInfoCard : UserControl
     {
+
         public StudentInfoCard()
         {
             InitializeComponent();
@@ -23,9 +25,9 @@ namespace SchoolMedicalWpf.App.Parent
                 return;
             }
 
-            //var form = new HealthDeclarationFormWindow(student);
-            //form.Owner = Window.GetWindow(this);
-            //form.ShowDialog();
+            var form = ActivatorUtilities.CreateInstance<HealthDeclarationFormWindow>(App.Services, student);
+            form.Owner = Window.GetWindow(this);
+            form.ShowDialog();
         }
     }
 }

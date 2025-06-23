@@ -1,7 +1,7 @@
 ﻿<Window x:Class="SchoolMedicalWpf.App.Parent.HealthDeclarationFormWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Khai báo y tế" Height="540" Width="600" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="#F5F6FA">
+        Title="Khai báo y tế" Height="540" Width="600" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="#F5F6FA" Loaded="Window_Loaded">
     <Grid>
         <Border Style="{StaticResource CardContainer}" Padding="36">
             <StackPanel x:Name="MainPanel">
@@ -27,19 +27,31 @@
                     <TextBlock Text="Ghi chú:" Style="{StaticResource LabelText}" VerticalAlignment="Center" Margin="0,6"/>
                     <TextBox x:Name="txtNotes" Style="{StaticResource InputBox}" MaxLength="255" Margin="0,6"/>
                 </UniformGrid>
-
-                <Button x:Name="btnSubmit"
-                        Content="Gửi khai báo"
-                        Style="{StaticResource PrimaryButton}"
-                        Margin="0,16,0,0"
-                        HorizontalAlignment="Right"
-                        Width="160"
-                        Height="42"
-                        FontWeight="SemiBold"
-                        FontSize="16"
-                        
-                        IsEnabled="{Binding IsInputEnabled, RelativeSource={RelativeSource AncestorType=Window}}"
-                        Visibility="{Binding SubmitButtonVisibility, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                <Grid Margin="0,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="btnSubmit"
+                            Content="Gửi khai báo"
+                            Style="{StaticResource PrimaryButton}"
+                            Width="160"
+                            Height="42"
+                            FontWeight="SemiBold"
+                            FontSize="16"
+                            Click="btnSubmit_Click"
+                            Grid.Column="0"/>
+                    <Button x:Name="btnExit"
+                            Content="Thoát"
+                            Style="{StaticResource PrimaryButton}"
+                            Width="100"
+                            Height="42"
+                            FontWeight="SemiBold"
+                            FontSize="16"
+                            Click="btnExit_Click"
+                            Grid.Column="2"/>
+                </Grid>
             </StackPanel>
         </Border>
     </Grid>

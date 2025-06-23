@@ -36,6 +36,8 @@ namespace SchoolMedicalWpf.App
                     services.AddScoped<RoleService>();
                     services.AddScoped<StudentService>();
                     services.AddScoped<StudentRepository>();
+                    services.AddScoped<HealthProfileRepo>();
+                    services.AddScoped<HealthProfileService>();
 
                     services.AddTransient<LoginWindow>();
                     services.AddTransient<ParentMainWindow>();

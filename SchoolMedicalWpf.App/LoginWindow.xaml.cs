@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.App.Parent;
 using SchoolMedicalWpf.Bll.Services;
@@ -14,15 +13,13 @@ namespace SchoolMedicalWpf.App
     {
         private readonly UserService _userService;
         private readonly RoleService _roleService;
-        private readonly StudentService _studentService;
         private User _currentUser;
-        // Inject UserService và RoleService qua constructor
-        public LoginWindow(UserService userService, RoleService roleService, StudentService studentService)
+
+        public LoginWindow(UserService userService, RoleService roleService)
         {
             InitializeComponent();
             _userService = userService;
             _roleService = roleService;
-            _studentService = studentService;
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -43,7 +40,7 @@ namespace SchoolMedicalWpf.App
 
                 if (user.RoleId == 4)
                 {
-                    var prmw = new ParentMainWindow(_currentUser, _userService, _studentService);
+                    var prmw = ActivatorUtilities.CreateInstance<ParentMainWindow>(App.Services, _currentUser);
                     prmw.Show();
                     this.Close();
                 }
