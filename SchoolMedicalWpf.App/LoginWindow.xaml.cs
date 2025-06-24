@@ -13,13 +13,15 @@ namespace SchoolMedicalWpf.App
     {
         private readonly UserService _userService;
         private readonly RoleService _roleService;
+        private readonly StudentService _studentService; // Add StudentService field
         private User _currentUser;
 
-        public LoginWindow(UserService userService, RoleService roleService)
+        public LoginWindow(UserService userService, RoleService roleService, StudentService studentService) // Inject StudentService
         {
             InitializeComponent();
             _userService = userService;
             _roleService = roleService;
+            _studentService = studentService; // Initialize StudentService
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -46,7 +48,7 @@ namespace SchoolMedicalWpf.App
                 }
                 else if (user.RoleId == 1)
                 {
-                    var amw = new Admin.AdminMainWindow(user, _userService, _roleService);  // Tiêm RoleService vào AdminMainWindow
+                    var amw = new Admin.AdminMainWindow(user, _userService, _roleService, _studentService); // Pass StudentService to AdminMainWindow
                     amw.Show();
                     this.Close();
                 }
