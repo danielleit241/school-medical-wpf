@@ -72,14 +72,22 @@ namespace SchoolMedicalWpf.App.Parent
 
         public void LoadData(string studentName, IEnumerable<HealthCheckResult> data)
         {
-            StudentNameText.Text = studentName;
             AllResults = [.. data];
-            HealthCheckHistoryDataGrid.ItemsSource = AllResults;
+            HealthHistoryDataGrid.ItemsSource = AllResults;
         }
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
+        private void QuitButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

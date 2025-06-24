@@ -84,7 +84,6 @@ namespace SchoolMedicalWpf.App.Parent
 
         public void LoadData(string studentName, IEnumerable<VaccinationResult> data)
         {
-            StudentNameText.Text = studentName;
             AllResults = [.. data];
             VaccinationHistoryDataGrid.ItemsSource = AllResults;
         }
@@ -99,6 +98,14 @@ namespace SchoolMedicalWpf.App.Parent
             DoFilter();
         }
 
+        private void QuitButton_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
+
+        private void DetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
