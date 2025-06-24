@@ -1,4 +1,5 @@
-﻿using SchoolMedicalWpf.Dal.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.Dal.Repositories
 {
@@ -6,12 +7,21 @@ namespace SchoolMedicalWpf.Dal.Repositories
     {
         public List<VaccinationResult> GetAllVaccinationResults()
         {
-            return _context.VaccinationResults.ToList();
+            return _context.VaccinationResults
+                .Include(vr => vr.HealthProfile).ThenInclude(s => s.Student)
+                .Include(vr => vr.Schedule)
+                .ThenInclude(s => s.Vaccine)
+                .ToList();
         }
         public VaccinationResult? GetVaccinationResultById(Guid id)
         {
-            return _context.VaccinationResults.Find(id);
+            return _context.VaccinationResults
+                .Include(vr => vr.HealthProfile).ThenInclude(s => s.Student)
+                .Include(vr => vr.Schedule)
+                .ThenInclude(s => s.Vaccine)
+                .FirstOrDefault(vr => vr.VaccinationResultId == id);
         }
+
         public void AddVaccinationResult(VaccinationResult vaccinationResult)
         {
             _context.VaccinationResults.Add(vaccinationResult);
