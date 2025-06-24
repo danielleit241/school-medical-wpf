@@ -14,71 +14,38 @@ namespace SchoolMedicalWpf.App.Parent
         private readonly StudentService _studentService;
         private readonly User _currentUser;
         private readonly Student _student;
+        private readonly VaccinationResultService _vaccinationResultService;
 
         public ObservableCollection<VaccinationResult> AllResults { get; set; } = [];
 
-        public VaccinationHistory(StudentService studentService, User currentUser, Student student)
+        public VaccinationHistory(StudentService studentService, VaccinationResultService vaccinationResultService, User currentUser, Student student)
         {
             InitializeComponent();
             _studentService = studentService;
             _currentUser = currentUser;
             _student = student;
+            _vaccinationResultService = vaccinationResultService;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var fakeData = new List<VaccinationResult>
+            var results = _vaccinationResultService.GetAllVaccinationResults();
+
+            var student = _studentService.GetStudent(_student.StudentId);
+            if (student == null || student.HealthProfiles == null || !student.HealthProfiles.Any())
             {
-                new VaccinationResult
-                {
-                    VaccinationResultId = Guid.NewGuid(),
-                    VaccinationDate = new DateOnly(2023, 6, 12),
-                    DoseNumber = 1,
-                    InjectionSite = "Cánh tay trái",
-                    ImmediateReaction = "Không",
-                    ReactionStartTime = null,
-                    ReactionType = null,
-                    SeverityLevel = null,
-                    Notes = "Vắc xin viêm gan B",
-                },
-                new VaccinationResult
-                {
-                    VaccinationResultId = Guid.NewGuid(),
-                    VaccinationDate = new DateOnly(2023, 8, 22),
-                    DoseNumber = 2,
-                    InjectionSite = "Cánh tay phải",
-                    ImmediateReaction = "Sưng nhẹ",
-                    ReactionStartTime = DateTime.Parse("2023-08-22 15:20:00"),
-                    ReactionType = "Phản ứng tại chỗ",
-                    SeverityLevel = "Nhẹ",
-                    Notes = "Vắc xin sởi",
-                },
-                new VaccinationResult
-                {
-                    VaccinationResultId = Guid.NewGuid(),
-                    VaccinationDate = new DateOnly(2024, 1, 10),
-                    DoseNumber = 1,
-                    InjectionSite = "Cẳng chân trái",
-                    ImmediateReaction = "Không",
-                    ReactionStartTime = null,
-                    ReactionType = null,
-                    SeverityLevel = null,
-                    Notes = "Vắc xin thủy đậu",
-                },
-                new VaccinationResult
-                {
-                    VaccinationResultId = Guid.NewGuid(),
-                    VaccinationDate = new DateOnly(2024, 3, 5),
-                    DoseNumber = 2,
-                    InjectionSite = "Cẳng chân phải",
-                    ImmediateReaction = "Sốt nhẹ",
-                    ReactionStartTime = DateTime.Parse("2024-03-05 18:00:00"),
-                    ReactionType = "Sốt",
-                    SeverityLevel = "Nhẹ",
-                    Notes = "Vắc xin cúm",
-                }
-            };
-            LoadData("Nguyễn Văn A", fakeData);
+                MessageBox.Show("Student or health profile data is missing.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var healthProfileId = student.HealthProfiles.First().HealthProfileId;
+
+            var studentResult = results
+                .Where(r => r.HealthProfileId == healthProfileId)
+                .OrderByDescending(r => r.VaccinationDate)
+                .ToList();
+
+            LoadData(student.FullName, studentResult);
             DataContext = this;
         }
 

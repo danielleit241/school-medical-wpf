@@ -4,8 +4,6 @@ public partial class HealthCheckSchedule
 {
     public Guid ScheduleId { get; set; }
 
-    public Guid? StudentId { get; set; }
-
     public string? Title { get; set; }
 
     public string? Description { get; set; }
@@ -19,6 +17,4 @@ public partial class HealthCheckSchedule
     public string? HealthCheckType { get; set; }
 
     public virtual ICollection<HealthCheckResult> HealthCheckResults { get; set; } = new List<HealthCheckResult>();
-
-    public virtual Student? Student { get; set; }
 }

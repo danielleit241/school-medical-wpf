@@ -34,5 +34,19 @@ namespace SchoolMedicalWpf.Bll.Services
             }
             return res;
         }
+
+        public Student? GetStudent(Guid studentId)
+        {
+            if (studentId == Guid.Empty)
+            {
+                return null;
+            }
+            var res = _studentRepository.GetStudentById(studentId);
+            if (res == null)
+            {
+                return null;
+            }
+            return res;
+        }
     }
 }

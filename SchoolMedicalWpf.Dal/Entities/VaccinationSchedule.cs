@@ -4,8 +4,6 @@ public partial class VaccinationSchedule
 {
     public Guid ScheduleId { get; set; }
 
-    public Guid? StudentId { get; set; }
-
     public Guid? VaccineId { get; set; }
 
     public string? Title { get; set; }
@@ -19,8 +17,6 @@ public partial class VaccinationSchedule
     public DateOnly? EndDate { get; set; }
 
     public string? TargetGrade { get; set; }
-
-    public virtual Student? Student { get; set; }
 
     public virtual ICollection<VaccinationResult> VaccinationResults { get; set; } = new List<VaccinationResult>();
 

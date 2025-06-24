@@ -11,18 +11,25 @@ namespace SchoolMedicalWpf.App.Parent
     {
         private readonly MedicalRegistrationService _registrationService;
         private readonly User _currentUser;
+        private readonly StudentService _studentService;
 
         public ObservableCollection<MedicalRegistration> MedicalRegistrationList { get; set; } = [];
 
-        public MedicalRegistrationHistoryPage(MedicalRegistrationService registrationService, User currentUser)
+        public MedicalRegistrationHistoryPage(MedicalRegistrationService registrationService, StudentService studentService, User currentUser)
         {
             InitializeComponent();
             _registrationService = registrationService;
             _currentUser = currentUser;
+            _studentService = studentService;
         }
 
         private void CreateMedicalRegistration_Click(object sender, RoutedEventArgs e)
         {
+            if (_studentService.GetStudentsByUserId(_currentUser.UserId).Count == 0)
+            {
+                MessageBox.Show("You must have at least one student to create a medical registration.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             var form = ActivatorUtilities.CreateInstance<MedicalRegistrationFormWindow>(App.Services, _currentUser);
             form.Owner = Window.GetWindow(this);
             form.ShowDialog();

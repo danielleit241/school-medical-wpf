@@ -79,13 +79,8 @@ public partial class SchoolmedicalWpfContext : DbContext
                 .HasColumnName("ScheduleID");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.HealthCheckType).HasMaxLength(30);
-            entity.Property(e => e.StudentId).HasColumnName("StudentID");
             entity.Property(e => e.TargetGrade).HasMaxLength(12);
             entity.Property(e => e.Title).HasMaxLength(100);
-
-            entity.HasOne(d => d.Student).WithMany(p => p.HealthCheckSchedules)
-                .HasForeignKey(d => d.StudentId)
-                .HasConstraintName("FK__HealthChe__Stude__534D60F1");
         });
 
         modelBuilder.Entity<HealthProfile>(entity =>
@@ -290,14 +285,10 @@ public partial class SchoolmedicalWpfContext : DbContext
                 .HasColumnName("ScheduleID");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Round).HasMaxLength(10);
-            entity.Property(e => e.StudentId).HasColumnName("StudentID");
             entity.Property(e => e.TargetGrade).HasMaxLength(12);
             entity.Property(e => e.Title).HasMaxLength(100);
             entity.Property(e => e.VaccineId).HasColumnName("VaccineID");
 
-            entity.HasOne(d => d.Student).WithMany(p => p.VaccinationSchedules)
-                .HasForeignKey(d => d.StudentId)
-                .HasConstraintName("FK__Vaccinati__Stude__66603565");
 
             entity.HasOne(d => d.Vaccine).WithMany(p => p.VaccinationSchedules)
                 .HasForeignKey(d => d.VaccineId)
@@ -375,4 +366,12 @@ public partial class SchoolmedicalWpfContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Data Source=(local);Initial Catalog=schoolmedical_wpf;User ID=sa;Password=12345;Trusted_Connection=True;Trust Server Certificate=True");
+        }
+    }
 }

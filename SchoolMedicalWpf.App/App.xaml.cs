@@ -40,6 +40,10 @@ namespace SchoolMedicalWpf.App
                     services.AddScoped<HealthProfileService>();
                     services.AddScoped<MedicalRegistrationRepo>();
                     services.AddScoped<MedicalRegistrationService>();
+                    services.AddScoped<HealthCheckResultRepo>();
+                    services.AddScoped<HealthCheckResultService>();
+                    services.AddScoped<VaccinationResultRepo>();
+                    services.AddScoped<VaccinationResultService>();
 
                     services.AddTransient<LoginWindow>();
 
