@@ -15,10 +15,12 @@ namespace SchoolMedicalWpf.App.Parent
         public List<Student> Students { get; set; } = [];
         public ObservableCollection<HealthCheckResult> AllHealthResults { get; set; } = [];
         public ObservableCollection<VaccinationResult> AllVaccinations { get; set; } = [];
+        public ObservableCollection<MedicalEvent> AllMedicalEvents { get; set; } = []; // Add this
 
         // Store original data for filtering
         private List<HealthCheckResult> _originalHealthResults = [];
         private List<VaccinationResult> _originalVaccinationResults = [];
+        private List<MedicalEvent> _originalMedicalEvents = []; // Add this
         #endregion
 
         #region Private Fields
@@ -27,6 +29,7 @@ namespace SchoolMedicalWpf.App.Parent
         private readonly StudentService _studentService;
         private readonly HealthCheckResultService _healthCheckResultService;
         private readonly VaccinationResultService _vaccinationResultService;
+        private readonly MedicalEventService _medicalEventService; // Add this
         private readonly User _currentUser;
         #endregion
 
@@ -36,6 +39,7 @@ namespace SchoolMedicalWpf.App.Parent
             StudentService studentService,
             HealthCheckResultService healthCheckResultService,
             VaccinationResultService vaccinationResultService,
+            MedicalEventService medicalEventService, // Add this parameter
             User currentUser,
             ContentControl mainContent)
         {
@@ -44,6 +48,7 @@ namespace SchoolMedicalWpf.App.Parent
             _studentService = studentService;
             _healthCheckResultService = healthCheckResultService;
             _vaccinationResultService = vaccinationResultService;
+            _medicalEventService = medicalEventService; // Add this
             _currentUser = currentUser;
             _mainContent = mainContent;
 
@@ -58,6 +63,7 @@ namespace SchoolMedicalWpf.App.Parent
             LoadStudents();
             LoadAllHealthHistory();
             LoadAllVaccinationHistory();
+            LoadAllMedicalEvents(); // Add this
             UpdateSummaryInfo();
         }
 
@@ -105,6 +111,33 @@ namespace SchoolMedicalWpf.App.Parent
         }
         #endregion
 
+        #region Medical Events Tab Events - ADD THESE
+        private void EventFromDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterMedicalEvents();
+        }
+
+        private void EventToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterMedicalEvents();
+        }
+
+        private void EventTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterMedicalEvents();
+        }
+
+        private void EventStudentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterMedicalEvents();
+        }
+
+        private void EventSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            FilterMedicalEvents();
+        }
+        #endregion
+
         #region Action Button Events
         private void DetailsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -132,6 +165,17 @@ namespace SchoolMedicalWpf.App.Parent
                 }
                 ShowVaccinationDetails(selectedVaccination);
             }
+            else if (selectedTab == 2) // Medical Events Tab - ADD THIS
+            {
+                var selectedEvent = MedicalEventsDataGrid.SelectedItem as MedicalEvent;
+                if (selectedEvent == null)
+                {
+                    MessageBox.Show("Vui lòng chọn một sự kiện để xem chi tiết.", "Thông báo",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                ShowMedicalEventDetails(selectedEvent);
+            }
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
@@ -145,6 +189,10 @@ namespace SchoolMedicalWpf.App.Parent
             else if (selectedTab == 1) // Vaccination Tab
             {
                 ExportVaccinationReport();
+            }
+            else if (selectedTab == 2) // Medical Events Tab - ADD THIS
+            {
+                ExportMedicalEventsReport();
             }
         }
         #endregion
@@ -162,14 +210,14 @@ namespace SchoolMedicalWpf.App.Parent
                 var allStudentsOption = new Student { StudentId = Guid.Empty, FullName = "Tất cả học sinh" };
                 Students.Insert(0, allStudentsOption);
 
-                // Set default selection
+                // Set default selection for all ComboBoxes
                 HealthStudentComboBox.ItemsSource = Students;
                 VaccinationStudentComboBox.ItemsSource = Students;
-
-
+                EventStudentComboBox.ItemsSource = Students; // Add this
 
                 HealthStudentComboBox.SelectedIndex = 0;
                 VaccinationStudentComboBox.SelectedIndex = 0;
+                EventStudentComboBox.SelectedIndex = 0; // Add this
             }
             catch (Exception ex)
             {
@@ -196,6 +244,20 @@ namespace SchoolMedicalWpf.App.Parent
                         var studentResults = allResults
                             .Where(r => r.HealthProfileId == healthProfileId)
                             .ToList();
+
+                        // Ensure navigation properties are populated
+                        foreach (var result in studentResults)
+                        {
+                            if (result.HealthProfile == null)
+                            {
+                                result.HealthProfile = student.HealthProfiles.First();
+                            }
+                            if (result.HealthProfile.Student == null)
+                            {
+                                result.HealthProfile.Student = student;
+                            }
+                        }
+
                         userResults.AddRange(studentResults);
                     }
                 }
@@ -229,6 +291,20 @@ namespace SchoolMedicalWpf.App.Parent
                         var studentResults = allResults
                             .Where(r => r.HealthProfileId == healthProfileId)
                             .ToList();
+
+                        // Ensure navigation properties are populated
+                        foreach (var result in studentResults)
+                        {
+                            if (result.HealthProfile == null)
+                            {
+                                result.HealthProfile = student.HealthProfiles.First();
+                            }
+                            if (result.HealthProfile.Student == null)
+                            {
+                                result.HealthProfile.Student = student;
+                            }
+                        }
+
                         userResults.AddRange(studentResults);
                     }
                 }
@@ -240,6 +316,39 @@ namespace SchoolMedicalWpf.App.Parent
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi tải lịch sử tiêm chủng: {ex.Message}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // ADD THIS NEW METHOD
+        private void LoadAllMedicalEvents()
+        {
+            try
+            {
+                var allEvents = _medicalEventService.GetAllMedicalEvents();
+                var userStudentIds = Students.Where(s => s.StudentId != Guid.Empty).Select(s => s.StudentId).ToList();
+
+                // Get events for all user's students
+                var userEvents = allEvents
+                    .Where(e => userStudentIds.Contains((Guid)e.StudentId))
+                    .ToList();
+
+                // Ensure Student data is populated
+                foreach (var medEvent in userEvents)
+                {
+                    if (medEvent.Student == null)
+                    {
+                        medEvent.Student = Students.FirstOrDefault(s => s.StudentId == medEvent.StudentId);
+                    }
+                }
+
+                _originalMedicalEvents = userEvents.OrderByDescending(e => e.EventDate).ToList();
+                AllMedicalEvents = new ObservableCollection<MedicalEvent>(_originalMedicalEvents);
+                MedicalEventsDataGrid.ItemsSource = AllMedicalEvents;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải sự kiện y tế: {ex.Message}", "Lỗi",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -285,9 +394,7 @@ namespace SchoolMedicalWpf.App.Parent
                 }
 
                 // Update summary
-                HealthRecordCountTextBlock.Text = AllHealthResults.Count.ToString();
-                var uniqueStudents = AllHealthResults.Select(r => r.HealthProfile?.Student?.StudentId).Distinct().Count();
-                HealthStudentCountTextBlock.Text = uniqueStudents.ToString();
+                UpdateHealthSummary();
             }
             catch (Exception ex)
             {
@@ -339,9 +446,7 @@ namespace SchoolMedicalWpf.App.Parent
                 }
 
                 // Update summary
-                VaccinationRecordCountTextBlock.Text = AllVaccinations.Count.ToString();
-                var uniqueStudents = AllVaccinations.Select(r => r.HealthProfile?.Student?.StudentId).Distinct().Count();
-                VaccinationStudentCountTextBlock.Text = uniqueStudents.ToString();
+                UpdateVaccinationSummary();
             }
             catch (Exception ex)
             {
@@ -350,17 +455,92 @@ namespace SchoolMedicalWpf.App.Parent
             }
         }
 
+        // ADD THIS NEW METHOD
+        private void FilterMedicalEvents()
+        {
+            try
+            {
+                if (!_originalMedicalEvents.Any()) return;
+
+                var filteredEvents = _originalMedicalEvents.AsEnumerable();
+
+                // Filter by date range
+                var fromDate = EventFromDatePicker.SelectedDate;
+                var toDate = EventToDatePicker.SelectedDate;
+
+                if (fromDate.HasValue)
+                {
+                    filteredEvents = filteredEvents.Where(e => e.EventDate >= DateOnly.FromDateTime(fromDate.Value));
+                }
+
+                if (toDate.HasValue)
+                {
+                    filteredEvents = filteredEvents.Where(e => e.EventDate <= DateOnly.FromDateTime(toDate.Value));
+                }
+
+                // Filter by event type
+                var selectedEventType = (EventTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+                if (!string.IsNullOrEmpty(selectedEventType) && selectedEventType != "Tất cả")
+                {
+                    filteredEvents = filteredEvents.Where(e => e.EventType == selectedEventType);
+                }
+
+                // Filter by student
+                var selectedStudent = EventStudentComboBox.SelectedItem as Student;
+                if (selectedStudent != null && selectedStudent.StudentId != Guid.Empty)
+                {
+                    filteredEvents = filteredEvents.Where(e => e.StudentId == selectedStudent.StudentId);
+                }
+
+                var finalEvents = filteredEvents
+                    .OrderByDescending(e => e.EventDate)
+                    .ToList();
+
+                AllMedicalEvents.Clear();
+                foreach (var medEvent in finalEvents)
+                {
+                    AllMedicalEvents.Add(medEvent);
+                }
+
+                // Update summary
+                UpdateMedicalEventSummary();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi lọc sự kiện y tế: {ex.Message}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // ADD THESE SUMMARY METHODS
+        private void UpdateHealthSummary()
+        {
+            HealthRecordCountTextBlock.Text = AllHealthResults.Count.ToString();
+            var uniqueStudents = AllHealthResults.Select(r => r.HealthProfile?.Student?.StudentId).Distinct().Where(id => id.HasValue).Count();
+            HealthStudentCountTextBlock.Text = uniqueStudents.ToString();
+        }
+
+        private void UpdateVaccinationSummary()
+        {
+            VaccinationRecordCountTextBlock.Text = AllVaccinations.Count.ToString();
+            var uniqueStudents = AllVaccinations.Select(r => r.HealthProfile?.Student?.StudentId).Distinct().Where(id => id.HasValue).Count();
+            VaccinationStudentCountTextBlock.Text = uniqueStudents.ToString();
+        }
+
+        private void UpdateMedicalEventSummary()
+        {
+            EventRecordCountTextBlock.Text = AllMedicalEvents.Count.ToString();
+            var uniqueStudents = AllMedicalEvents.Select(e => e.StudentId).Distinct().Count();
+            EventStudentCountTextBlock.Text = uniqueStudents.ToString();
+            var severeEvents = AllMedicalEvents.Count(e => e.SeverityLevel == "Nghiêm trọng");
+            EventSevereCountTextBlock.Text = severeEvents.ToString();
+        }
+
         private void UpdateSummaryInfo()
         {
-            // Update health summary
-            HealthRecordCountTextBlock.Text = AllHealthResults.Count.ToString();
-            var uniqueHealthStudents = AllHealthResults.Select(r => r.HealthProfile?.Student?.StudentId).Distinct().Where(id => id.HasValue).Count();
-            HealthStudentCountTextBlock.Text = uniqueHealthStudents.ToString();
-
-            // Update vaccination summary
-            VaccinationRecordCountTextBlock.Text = AllVaccinations.Count.ToString();
-            var uniqueVaccinationStudents = AllVaccinations.Select(r => r.HealthProfile?.Student?.StudentId).Distinct().Where(id => id.HasValue).Count();
-            VaccinationStudentCountTextBlock.Text = uniqueVaccinationStudents.ToString();
+            UpdateHealthSummary();
+            UpdateVaccinationSummary();
+            UpdateMedicalEventSummary(); // Add this
         }
 
         private void ShowHealthDetails(HealthCheckResult healthResult)
@@ -397,12 +577,31 @@ namespace SchoolMedicalWpf.App.Parent
                          $"Tên vaccine: {vaccineName}\n" +
                          $"Liều số: {vaccinationResult.DoseNumber}\n" +
                          $"Nhà sản xuất: {manufacturer}\n" +
-                         $"Số lô: {vaccinationResult.Schedule.Vaccine.BatchNumber}\n" +
+                         $"Số lô: {vaccinationResult.Schedule?.Vaccine?.BatchNumber ?? "N/A"}\n" +
                          $"Vị trí tiêm: {vaccinationResult.InjectionSite}\n" +
-                         //$"Phản ứng: {vaccinationResult.Reaction ?? "Không có"}\n" +
                          $"Ghi chú: {vaccinationResult.Notes}";
 
             MessageBox.Show(details, "Chi tiết tiêm chủng",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        // ADD THIS NEW METHOD
+        private void ShowMedicalEventDetails(MedicalEvent medicalEvent)
+        {
+            var studentName = medicalEvent.Student?.FullName ?? "N/A";
+            var studentClass = medicalEvent.Student?.Grade ?? "N/A";
+
+            var details = $"Chi tiết sự kiện y tế\n\n" +
+                         $"Học sinh: {studentName} - Lớp: {studentClass}\n" +
+                         $"Ngày giờ: {medicalEvent.EventDate:dd/MM/yyyy HH:mm}\n" +
+                         $"Loại sự kiện: {medicalEvent.EventType}\n" +
+                         $"Mô tả: {medicalEvent.EventDescription}\n" +
+                         $"Địa điểm: {medicalEvent.Location}\n" +
+                         $"Mức độ nghiêm trọng: {medicalEvent.SeverityLevel}\n" +
+                         $"Y tá xử lý: {medicalEvent.StaffNurse?.FullName ?? "N/A"}\n" +
+                         $"Ghi chú: {medicalEvent.Notes}";
+
+            MessageBox.Show(details, "Chi tiết sự kiện y tế",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -427,6 +626,7 @@ namespace SchoolMedicalWpf.App.Parent
             }
         }
 
+        // ADD THIS NEW METHOD
         private void ExportVaccinationReport()
         {
             try
@@ -437,6 +637,30 @@ namespace SchoolMedicalWpf.App.Parent
                 var summary = $"Báo cáo lịch sử tiêm chủng\n\n" +
                              $"Tổng số mũi tiêm: {recordCount}\n" +
                              $"Số học sinh: {studentCount}\n" +
+                             $"Ngày xuất báo cáo: {DateTime.Now:dd/MM/yyyy HH:mm}";
+
+                MessageBox.Show(summary, "Xuất báo cáo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi xuất báo cáo: {ex.Message}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // ADD THIS NEW METHOD
+        private void ExportMedicalEventsReport()
+        {
+            try
+            {
+                var recordCount = AllMedicalEvents.Count;
+                var studentCount = AllMedicalEvents.Select(e => e.StudentId).Distinct().Count();
+                var severeCount = AllMedicalEvents.Count(e => e.SeverityLevel == "Nghiêm trọng");
+
+                var summary = $"Báo cáo sự kiện y tế\n\n" +
+                             $"Tổng số sự kiện: {recordCount}\n" +
+                             $"Số học sinh: {studentCount}\n" +
+                             $"Sự kiện nghiêm trọng: {severeCount}\n" +
                              $"Ngày xuất báo cáo: {DateTime.Now:dd/MM/yyyy HH:mm}";
 
                 MessageBox.Show(summary, "Xuất báo cáo", MessageBoxButton.OK, MessageBoxImage.Information);
