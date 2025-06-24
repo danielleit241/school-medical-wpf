@@ -40,6 +40,10 @@ namespace SchoolMedicalWpf.App
                     services.AddScoped<HealthProfileService>();
                     services.AddScoped<MedicalRegistrationRepo>();
                     services.AddScoped<MedicalRegistrationService>();
+                    services.AddScoped<HealthCheckResultRepo>();
+                    services.AddScoped<HealthCheckResultService>();
+                    services.AddScoped<VaccinationResultRepo>();
+                    services.AddScoped<VaccinationResultService>();
 
                     services.AddTransient<LoginWindow>();
 
@@ -49,8 +53,9 @@ namespace SchoolMedicalWpf.App
                     services.AddTransient<ParentHealthDeclarationPage>();
                     services.AddTransient<MedicalRegistrationHistoryPage>();
                     services.AddTransient<MedicalRegistrationFormWindow>();
-
-
+                    services.AddTransient<HealthHistoryPage>();
+                    services.AddTransient<VaccinationHistory>();
+                    services.AddTransient<HealthCheckHistory>();
 
                     services.AddTransient<Admin.AdminMainWindow>();
                     services.AddTransient<Admin.AdminHomePage>();

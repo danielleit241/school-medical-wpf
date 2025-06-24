@@ -22,13 +22,10 @@ public partial class Student
 
     public string? ParentEmailAddress { get; set; }
 
-    public virtual ICollection<HealthCheckSchedule> HealthCheckSchedules { get; set; } = new List<HealthCheckSchedule>();
-
     public virtual ICollection<HealthProfile> HealthProfiles { get; set; } = new List<HealthProfile>();
 
     public virtual ICollection<MedicalEvent> MedicalEvents { get; set; } = new List<MedicalEvent>();
 
     public virtual ICollection<MedicalRegistration> MedicalRegistrations { get; set; } = new List<MedicalRegistration>();
 
-    public virtual ICollection<VaccinationSchedule> VaccinationSchedules { get; set; } = new List<VaccinationSchedule>();
 }
