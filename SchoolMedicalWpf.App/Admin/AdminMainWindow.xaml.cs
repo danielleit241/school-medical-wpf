@@ -8,21 +8,22 @@ namespace SchoolMedicalWpf.App.Admin
     /// <summary>
     /// Interaction logic for AdminMainWindow.xaml
     /// </summary>
-    /// 
     public partial class AdminMainWindow : Window
     {
         private User _currentUser;
         private UserService _userService;
         private RoleService _roleService;
+        private StudentService _studentService; // Add StudentService field
 
-        // Sử dụng DI để khởi tạo UserService và RoleService
-        public AdminMainWindow(User user, UserService userService, RoleService roleService)
+        // Sử dụng DI để khởi tạo UserService, RoleService, và StudentService
+        public AdminMainWindow(User user, UserService userService, RoleService roleService, StudentService studentService)
         {
             InitializeComponent();
             _currentUser = user;
             _userService = userService;
-            MainContent.Content = new AdminHomePage(_currentUser); // Khởi tạo AdminHomePage mặc định
             _roleService = roleService;
+            _studentService = studentService; // Initialize StudentService
+            MainContent.Content = new AdminHomePage(_currentUser); // Khởi tạo AdminHomePage mặc định
         }
 
         public void SidebarButton_Click(object sender, RoutedEventArgs e)
@@ -41,7 +42,7 @@ namespace SchoolMedicalWpf.App.Admin
                     MainContent.Content = new AccountManagementPage(_userService, _roleService);
                     break;
                 case "Student":
-                    MainContent.Content = new StudentManagementPage();
+                    MainContent.Content = new StudentManagementPage(_studentService); // Pass StudentService to StudentManagementPage
                     break;
                 case "Profile":
                     MainContent.Content = new ProfilePage(_currentUser, _userService);

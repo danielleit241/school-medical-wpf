@@ -24,7 +24,7 @@ namespace SchoolMedicalWpf.App.Parent
             DataContext = this;
         }
 
-        public void LoadStudentList()
+        public async void LoadStudentList()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace SchoolMedicalWpf.App.Parent
                     return;
                 }
 
-                var students = _studentService.GetStudentsByUserId(_currentUser.UserId);
+                var students = await _studentService.GetStudentsByUserId(_currentUser.UserId); // <-- await ở đây
                 StudentList.Clear();
                 foreach (var student in students)
                 {

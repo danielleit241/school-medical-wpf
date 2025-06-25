@@ -45,10 +45,11 @@ namespace SchoolMedicalWpf.App.Parent
             FillComboBox();
         }
 
-        private void FillComboBox()
+        private async void FillComboBox()
         {
             StudentComboBox.ItemsSource = null;
-            StudentComboBox.ItemsSource = _studentService.GetStudentsByUserId(_currentUser.UserId);
+            StudentComboBox.ItemsSource = await _studentService.GetStudentsByUserId(_currentUser.UserId);
+
             StudentComboBox.DisplayMemberPath = "FullName";
             StudentComboBox.SelectedValuePath = "StudentId";
         }

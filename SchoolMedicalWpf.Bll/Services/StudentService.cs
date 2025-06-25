@@ -1,52 +1,47 @@
 ﻿using SchoolMedicalWpf.Dal.Entities;
-using SchoolMedicalWpf.Dal.Repositories;
 
 namespace SchoolMedicalWpf.Bll.Services
 {
     public class StudentService
     {
         private readonly StudentRepository _studentRepository;
+
         public StudentService(StudentRepository studentRepository)
         {
             _studentRepository = studentRepository;
         }
 
-        public List<Student> GetStudents()
+        public async Task<List<Student>> GetAllStudents()
         {
-            var res = _studentRepository.GetAll();
-            if (res == null)
-            {
-                return [];
-            }
-            return res;
+            return await _studentRepository.GetAllStudents();
         }
 
-        public List<Student> GetStudentsByUserId(Guid userId)
+        public async Task<Student?> GetStudentById(Guid studentId)
         {
-            if (userId == Guid.Empty)
-            {
-                return [];
-            }
-            var res = _studentRepository.GetStudentsByUserId(userId);
-            if (res == null)
-            {
-                return [];
-            }
-            return res;
+            return await _studentRepository.GetStudentById(studentId);
         }
 
-        public Student? GetStudent(Guid studentId)
+        public async Task AddStudent(Student student)
         {
-            if (studentId == Guid.Empty)
-            {
-                return null;
-            }
-            var res = _studentRepository.GetStudentById(studentId);
-            if (res == null)
-            {
-                return null;
-            }
-            return res;
+            student.StudentId = Guid.NewGuid();
+            await _studentRepository.AddStudent(student);
         }
+
+        public async Task UpdateStudent(Student student)
+        {
+            await _studentRepository.UpdateStudent(student);
+        }
+
+        public async Task DeleteStudent(Guid studentId)
+        {
+            await _studentRepository.DeleteStudent(studentId);
+        }
+
+        public async Task<List<Student>> GetStudentsByUserId(Guid userId)
+        {
+            return await _studentRepository.GetStudentsByUserId(userId);
+        }
+
+
     }
 }

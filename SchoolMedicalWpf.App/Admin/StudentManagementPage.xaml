@@ -1,16 +1,93 @@
 ﻿<UserControl x:Class="SchoolMedicalWpf.App.Admin.StudentManagementPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SchoolMedicalWpf.App.Admin"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Student Management" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       HorizontalAlignment="Center" 
-                       Margin="0,20,0,20"/>
+             MinHeight="450" MinWidth="800"
+             Background="{StaticResource BackgroundWhiteBrush}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SchoolMedicalWpf.App;component/Themes/SchoolMedicalTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.5*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Tiêu đề và lời chào -->
+        <DockPanel Grid.Row="0" Grid.ColumnSpan="2" LastChildFill="False" Margin="0,0,0,24">
+            <TextBlock Text="Quản Lý Học Sinh"
+                       Style="{StaticResource TitleText}"
+                       VerticalAlignment="Center" DockPanel.Dock="Left"/>
+            <TextBlock Text="Hello, Administrator"
+                       FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryBlueBrush}"
+                       VerticalAlignment="Center" DockPanel.Dock="Right" Margin="0,0,16,0"/>
+        </DockPanel>
+
+        <!-- Bộ lọc và DataGrid -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,24,0">
+            <Border Background="{StaticResource AccentYellowBrush}" CornerRadius="8" Padding="12" Margin="0,0,0,16">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Lọc theo khối lớp:"
+                               FontWeight="Bold" Foreground="{StaticResource TextGrayBrush}" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="FilterGradeComboBox"
+                              Style="{StaticResource ComboBoxInputBox}"
+                              Width="180"
+                              Margin="8,0,0,0"
+                              SelectionChanged="FilterGradeComboBox_SelectionChanged"/>
+                    <Button Content="Xóa lọc"
+                            Style="{StaticResource PrimaryButton}"
+                            Margin="8,0,0,0"
+                            Click="ClearFilterButton_Click"/>
+                </StackPanel>
+            </Border>
+            <DataGrid x:Name="StudentDataGrid"
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      Background="{StaticResource BackgroundWhiteBrush}"
+                      Foreground="{StaticResource TextGrayBrush}"
+                      FontWeight="SemiBold"
+                      RowHeight="32"
+                      HeadersVisibility="Column"
+                      Margin="0,0,0,0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã học sinh" Binding="{Binding StudentCode}" Width="*"/>
+                    <DataGridTextColumn Header="Họ tên" Binding="{Binding FullName}" Width="*"/>
+                    <DataGridTextColumn Header="Ngày sinh" Binding="{Binding DayOfBirth}" Width="*"/>
+                    <DataGridTextColumn Header="Giới tính" Binding="{Binding Gender}" Width="*"/>
+                    <DataGridTextColumn Header="Khối lớp" Binding="{Binding Grade}" Width="*"/>
+                    <DataGridTextColumn Header="Địa chỉ" Binding="{Binding Address}" Width="*"/>
+                    <DataGridTextColumn Header="SĐT phụ huynh" Binding="{Binding ParentPhoneNumber}" Width="*"/>
+                    <DataGridTextColumn Header="Email phụ huynh" Binding="{Binding ParentEmailAddress}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <!-- Các nút chức năng -->
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" >
+            <Button x:Name="CreateButton" Content="Thêm học sinh"
+                    Style="{StaticResource PrimaryButton}"
+                    FontSize="16" Height="48" Margin="0,0,0,16"
+                    Click="CreateButton_Click"/>
+            <Button x:Name="UpdateButton" Content="Sửa học sinh"
+                    Style="{StaticResource PrimaryButton}"
+                    FontSize="16" Height="48" Margin="0,0,0,16"
+                    Click="UpdateButton_Click"/>
+            <Button Content="Xóa học sinh"
+                    Style="{StaticResource PrimaryButton}"
+                    FontSize="16" Height="48" Margin="0,0,0,16"
+                    Click="DeleteButton_Click"/>
+        </StackPanel>
     </Grid>
 </UserControl>

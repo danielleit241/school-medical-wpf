@@ -1,30 +1,58 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SchoolMedicalWpf.Dal;
 using SchoolMedicalWpf.Dal.Entities;
 
-namespace SchoolMedicalWpf.Dal.Repositories
+public class StudentRepository
 {
-    public class StudentRepository
+    private readonly DbContextOptions<SchoolmedicalWpfContext> _options;
+
+    public StudentRepository(DbContextOptions<SchoolmedicalWpfContext> options)
     {
-        private SchoolmedicalWpfContext _context;
-        public StudentRepository(SchoolmedicalWpfContext context)
-        {
-            _context = context;
-        }
+        _options = options;
+    }
 
-        public List<Student> GetAll()
-        {
-            return _context.Students.Include(s => s.HealthProfiles).ToList();
-        }
+    public async Task<List<Student>> GetAllStudents()
+    {
+        using var context = new SchoolmedicalWpfContext(_options);
+        return await context.Students.ToListAsync();
+    }
 
-        public List<Student> GetStudentsByUserId(Guid userId)
+    public async Task<Student?> GetStudentById(Guid studentId)
+    {
+        using var context = new SchoolmedicalWpfContext(_options);
+        return await context.Students.FirstOrDefaultAsync(s => s.StudentId == studentId);
+    }
+
+    public async Task AddStudent(Student student)
+    {
+        using var context = new SchoolmedicalWpfContext(_options);
+        context.Students.Add(student);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task UpdateStudent(Student student)
+    {
+        using var context = new SchoolmedicalWpfContext(_options);
+        context.Students.Update(student);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task DeleteStudent(Guid studentId)
+    {
+        using var context = new SchoolmedicalWpfContext(_options);
+        var student = await context.Students.FindAsync(studentId);
+        if (student != null)
         {
-            return _context.Students.Include(s => s.HealthProfiles).Where(s => s.UserId == userId)
-                .ToList();
+            context.Students.Remove(student);
+            await context.SaveChangesAsync();
         }
-        public Student? GetStudentById(Guid studentId)
-        {
-            return _context.Students.Include(s => s.HealthProfiles)
-                .FirstOrDefault(s => s.StudentId == studentId);
-        }
+    }
+
+    public async Task<List<Student>> GetStudentsByUserId(Guid userId)
+    {
+        using var context = new SchoolmedicalWpfContext(_options);
+        return await context.Students
+            .Where(s => s.UserId == userId)
+            .ToListAsync();
     }
 }
