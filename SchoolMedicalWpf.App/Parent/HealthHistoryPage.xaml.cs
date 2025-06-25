@@ -203,7 +203,7 @@ namespace SchoolMedicalWpf.App.Parent
         {
             try
             {
-                var students = _studentService.GetStudents();
+                var students = _studentService.GetAllStudents().Result;
                 Students = students.Where(s => s.UserId == _currentUser.UserId).ToList();
 
                 // Add "Tất cả" option
@@ -237,7 +237,7 @@ namespace SchoolMedicalWpf.App.Parent
                 var userResults = new List<HealthCheckResult>();
                 foreach (var studentId in userStudentIds)
                 {
-                    var student = _studentService.GetStudent(studentId);
+                    var student = _studentService.GetStudentById(studentId).Result;
                     if (student?.HealthProfiles != null && student.HealthProfiles.Any())
                     {
                         var healthProfileId = student.HealthProfiles.First().HealthProfileId;
@@ -284,7 +284,7 @@ namespace SchoolMedicalWpf.App.Parent
                 var userResults = new List<VaccinationResult>();
                 foreach (var studentId in userStudentIds)
                 {
-                    var student = _studentService.GetStudent(studentId);
+                    var student = _studentService.GetStudentById(studentId).Result;
                     if (student?.HealthProfiles != null && student.HealthProfiles.Any())
                     {
                         var healthProfileId = student.HealthProfiles.First().HealthProfileId;

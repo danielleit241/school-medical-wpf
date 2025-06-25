@@ -41,7 +41,5 @@ namespace SchoolMedicalWpf.Bll.Services
         {
             return await _studentRepository.GetStudentsByUserId(userId);
         }
-
-
     }
 }

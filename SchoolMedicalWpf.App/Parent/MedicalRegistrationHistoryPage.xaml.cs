@@ -25,7 +25,7 @@ namespace SchoolMedicalWpf.App.Parent
 
         private void CreateMedicalRegistration_Click(object sender, RoutedEventArgs e)
         {
-            if (_studentService.GetStudentsByUserId(_currentUser.UserId).Count == 0)
+            if (_studentService.GetStudentsByUserId(_currentUser.UserId).Result.Count == 0)
             {
                 MessageBox.Show("You must have at least one student to create a medical registration.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
