@@ -17,7 +17,7 @@ namespace SchoolMedicalWpf.App
         private User _currentUser;
         private UserService _userService;
 
-        public ProfilePage(User user, UserService service)
+        public ProfilePage(UserService service, User user)
         {
             InitializeComponent();
             _currentUser = user;

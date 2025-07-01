@@ -57,6 +57,12 @@ namespace SchoolMedicalWpf.App
                     services.AddTransient<MedicalRegistrationFormWindow>();
                     services.AddTransient<HealthHistoryPage>();
 
+                    services.AddTransient<Nurse.NurseMainWindow>();
+                    services.AddTransient<Nurse.NurseHomePage>();
+                    services.AddTransient<Nurse.HealthSchedulePage>();
+                    services.AddTransient<Nurse.MedicalEventPage>();
+                    services.AddTransient<Nurse.MedicalRegistrationPage>();
+
 
                     services.AddTransient<Admin.AdminMainWindow>();
                     services.AddTransient<Admin.AdminHomePage>();

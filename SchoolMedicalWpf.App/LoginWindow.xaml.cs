@@ -52,6 +52,16 @@ namespace SchoolMedicalWpf.App
                     amw.Show();
                     this.Close();
                 }
+                else if (user.RoleId == 3)
+                {
+                    var nmw = ActivatorUtilities.CreateInstance<Nurse.NurseMainWindow>(App.Services, _currentUser);
+                    nmw.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("You do not have permission to access this application.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
 
@@ -45,7 +46,7 @@ namespace SchoolMedicalWpf.App.Admin
                     MainContent.Content = new StudentManagementPage(_studentService); // Pass StudentService to StudentManagementPage
                     break;
                 case "Profile":
-                    MainContent.Content = new ProfilePage(_currentUser, _userService);
+                    MainContent.Content = ActivatorUtilities.CreateInstance<ProfilePage>(App.Services, _currentUser);
                     break;
                 default:
                     MainContent.Content = new AdminHomePage(_currentUser);

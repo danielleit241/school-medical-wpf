@@ -37,6 +37,7 @@ namespace SchoolMedicalWpf.App.Parent
 
             _medicalRegistrationService.AddRegistration(medicalRegistration);
             MessageBox.Show("Medical registration submitted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
             Close();
         }
 
