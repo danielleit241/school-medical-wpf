@@ -45,14 +45,7 @@
             <Button Style="{StaticResource SidebarButtonStyle}" Tag="MedicalRegistration" Click="SidebarButton_Click" Margin="0,0,0,30">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <Image Source="/Assets/registration.png" Width="32" Height="32"/>
-                    <TextBlock Text="Đăng ký khám" FontSize="12" Foreground="White" TextAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Medicine" Click="SidebarButton_Click" Margin="0,0,0,30">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <Image Source="/Assets/pill.png" Width="32" Height="32"/>
-                    <TextBlock Text="Quản lý thuốc" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                    <TextBlock Text="Đăng ký thuốc" FontSize="12" Foreground="White" TextAlignment="Center"/>
                 </StackPanel>
             </Button>
 

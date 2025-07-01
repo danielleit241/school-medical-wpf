@@ -28,7 +28,7 @@ namespace SchoolMedicalWpf.App.Parent
                 RegistrationId = Guid.NewGuid(),
                 StudentId = (Guid?)StudentComboBox.SelectedValue,
                 UserId = _currentUser.UserId,
-                DateSubmitted = DateOnly.FromDateTime(DateTime.Now),
+                DateSubmitted = DateOnly.FromDateTime(DateSubmittedPicker.SelectedDate!.Value),
                 MedicationName = MedicationNameTextBox.Text,
                 TotalDosages = TotalDosagesTextBox.Text,
                 Notes = NotesTextBox.Text,

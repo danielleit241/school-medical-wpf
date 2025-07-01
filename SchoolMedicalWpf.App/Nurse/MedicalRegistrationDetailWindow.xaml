@@ -1,0 +1,194 @@
+﻿<Window x:Class="SchoolMedicalWpf.App.Nurse.MedicalRegistrationDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Chi tiết đơn đăng ký thuốc"
+        Height="550" Width="800"
+        Background="{DynamicResource BackgroundWhiteBrush}"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SchoolMedicalWpf.App;component/Themes/SchoolMedicalTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="SectionHeaderText" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="{StaticResource PrimaryBlueBrush}"/>
+                <Setter Property="Margin" Value="0,12,0,6"/>
+            </Style>
+
+            <Style x:Key="ValueText" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="Foreground" Value="{StaticResource TextGrayBrush}"/>
+                <Setter Property="Margin" Value="0,2"/>
+            </Style>
+
+            <Style x:Key="CompactLabelText" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="Foreground" Value="{StaticResource TextGrayBrush}"/>
+                <Setter Property="Margin" Value="0,2,8,2"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Border Style="{StaticResource CardContainer}" 
+                Margin="20"
+                Padding="24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <TextBlock Text="Chi tiết đơn đăng ký thuốc"
+                           Style="{StaticResource TitleText}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,20"
+                           Grid.Row="0"/>
+
+                <!-- Main Content in Two Columns -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Column -->
+                    <StackPanel Grid.Column="0">
+
+                        <!-- Student Information -->
+                        <TextBlock Text="👤 Thông tin học sinh" 
+                                   Style="{StaticResource SectionHeaderText}"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Tên học sinh:" Style="{StaticResource CompactLabelText}"/>
+                            <TextBlock x:Name="StudentNameText" Style="{StaticResource ValueText}" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                            <TextBlock Text="Mã học sinh:" Style="{StaticResource CompactLabelText}"/>
+                            <TextBlock x:Name="StudentIdText" Style="{StaticResource ValueText}"/>
+                        </StackPanel>
+
+                        <!-- Parent Information -->
+                        <TextBlock Text="👥 Thông tin phụ huynh" 
+                                   Style="{StaticResource SectionHeaderText}"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                            <TextBlock Text="Tên phụ huynh:" Style="{StaticResource CompactLabelText}"/>
+                            <TextBlock x:Name="ParentNameText" Style="{StaticResource ValueText}" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <!-- Medication Information -->
+                        <TextBlock Text="💊 Thông tin thuốc" 
+                                   Style="{StaticResource SectionHeaderText}"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Tên thuốc:" Style="{StaticResource CompactLabelText}"/>
+                            <TextBlock x:Name="MedicationNameText" Style="{StaticResource ValueText}" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Liều dùng:" Style="{StaticResource CompactLabelText}"/>
+                            <TextBlock x:Name="DosageText" Style="{StaticResource ValueText}"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="Ghi chú:" Style="{StaticResource CompactLabelText}" Margin="0,0,0,4"/>
+                            <TextBlock x:Name="NotesText" Style="{StaticResource ValueText}" 
+                                       TextWrapping="Wrap" MaxWidth="300"
+                                       Background="#F8F9FA" Padding="8" 
+                                       />
+                        </StackPanel>
+
+                    </StackPanel>
+
+                    <!-- Right Column -->
+                    <StackPanel Grid.Column="2">
+
+                        <!-- Submission Information -->
+                        <TextBlock Text="📋 Thông tin đăng ký" 
+                                   Style="{StaticResource SectionHeaderText}"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Ngày gửi:" Style="{StaticResource CompactLabelText}"/>
+                            <TextBlock x:Name="DateSubmittedText" Style="{StaticResource ValueText}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Đồng ý PH:" Style="{StaticResource CompactLabelText}"/>
+                            <TextBlock x:Name="ConsentText" Style="{StaticResource ValueText}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                            <TextBlock Text="Trạng thái:" Style="{StaticResource CompactLabelText}"/>
+                            <Border x:Name="StatusBadge" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Processing Information -->
+                        <StackPanel x:Name="ProcessingInfoPanel" Visibility="Collapsed">
+                            <TextBlock Text="⚙️ Thông tin xử lý" 
+                                       Style="{StaticResource SectionHeaderText}"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Ngày xử lý:" Style="{StaticResource CompactLabelText}"/>
+                                <TextBlock x:Name="ProcessedDateText" Style="{StaticResource ValueText}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <TextBlock Text="Xử lý bởi:" Style="{StaticResource CompactLabelText}"/>
+                                <TextBlock x:Name="ProcessedByText" Style="{StaticResource ValueText}" FontWeight="Bold"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Quick Actions (if status is Pending) -->
+                        <StackPanel x:Name="QuickActionsPanel" Visibility="Collapsed">
+                            <TextBlock Text="🎯 Thao tác nhanh" 
+                                       Style="{StaticResource SectionHeaderText}"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <Button x:Name="QuickApproveButton"
+                                        Content="✓ Duyệt"
+                                        Background="#27AE60"
+                                        Foreground="White"
+                                        FontWeight="Bold"
+                                        BorderThickness="0"
+                                        Padding="12,6"
+                                        FontSize="13"
+                                        Margin="0,0,8,0"
+                                        Cursor="Hand"
+                                        Click="QuickApproveButton_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                    </StackPanel>
+                </Grid>
+
+                <!-- Footer -->
+                <StackPanel Grid.Row="2" Orientation="Horizontal" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,20,0,0">
+                    <Button Content="📄 In đơn"
+                            Style="{StaticResource PrimaryButton}"
+                            Width="100"
+                            Margin="10"
+                            Click="PrintButton_Click"/>
+
+                    <Button Content="Đóng"
+                            Style="{StaticResource PrimaryButton}"
+                            Width="100"
+                            Margin="10"
+                            Click="CloseButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

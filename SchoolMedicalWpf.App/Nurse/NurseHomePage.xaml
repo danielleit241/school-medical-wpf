@@ -7,6 +7,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <StackPanel>
+            <TextBlock Text="Chào mừng Nurse đến với hệ thống chăm sóc sức khỏe học đường!"
+               Style="{StaticResource TitleText}" Margin="0,0,0,16" TextWrapping="Wrap"/>
+            <TextBlock Text="Tại đây, Nurse có thể:" Style="{StaticResource SubtitleText}"/>
+            <TextBlock Text="• Xem lịch tiêm chủng" Margin="0,4,0,0"/>
+            <TextBlock Text="• Xem hồ sơ cá nhân"/>
+            <TextBlock Text="Chúc bạn thành công!" Margin="0,16,0,0"/>
+        </StackPanel>
     </Grid>
 </UserControl>

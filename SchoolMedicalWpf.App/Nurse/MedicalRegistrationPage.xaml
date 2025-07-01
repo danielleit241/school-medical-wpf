@@ -5,8 +5,232 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SchoolMedicalWpf.App.Nurse"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="450" d:DesignWidth="800"
+             Loaded="UserControl_Loaded">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SchoolMedicalWpf.App;component/Themes/SchoolMedicalTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- DataGrid Styles -->
+            <Style x:Key="DataGridStyle" TargetType="DataGrid">
+                <Setter Property="Background" Value="{StaticResource BackgroundWhiteBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource BorderGrayBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+                <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderGrayBrush}"/>
+                <Setter Property="RowHeaderWidth" Value="0"/>
+                <Setter Property="SelectionMode" Value="Single"/>
+                <Setter Property="AutoGenerateColumns" Value="False"/>
+                <Setter Property="CanUserReorderColumns" Value="False"/>
+                <Setter Property="CanUserResizeRows" Value="False"/>
+                <Setter Property="HeadersVisibility" Value="Column"/>
+            </Style>
+
+            <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+                <Setter Property="Background" Value="{StaticResource PrimaryBlueBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Padding" Value="8"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="ActionButtonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="2"/>
+                <Setter Property="Padding" Value="8,4"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource BackgroundWhiteBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="24,24,24,0">
+            <TextBlock Text="Quản lý đăng ký thuốc" 
+                       Style="{StaticResource TitleText}" 
+                       VerticalAlignment="Center"/>
+            <Border Background="#F39C12" 
+                    CornerRadius="12" 
+                    Padding="8,4" 
+                    Margin="16,0,0,0">
+                <TextBlock x:Name="PendingCountText" 
+                           Text="0 đơn chờ duyệt" 
+                           Foreground="White" 
+                           FontSize="12" 
+                           FontWeight="Bold"/>
+            </Border>
+        </StackPanel>
+
+        <!-- Filter Section -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="24,16,24,16">
+            <TextBlock Text="Lọc theo trạng thái:" 
+                       Style="{StaticResource LabelText}" 
+                       VerticalAlignment="Center" 
+                       Margin="0,0,12,0"/>
+
+            <ComboBox x:Name="StatusFilterComboBox" 
+                      Style="{StaticResource ComboBoxInputBox}"
+                      Width="160" 
+                      Height="36"
+                      Margin="0,0,12,0"
+                      FontSize="14"
+                      SelectionChanged="StatusFilter_SelectionChanged">
+                <ComboBoxItem Content="Tất cả" Tag="All" IsSelected="True"/>
+                <ComboBoxItem Content="Chờ duyệt" Tag="Pending"/>
+                <ComboBoxItem Content="Đã duyệt" Tag="Approved"/>
+            </ComboBox>
+
+            <Button Content="🔄 Làm mới" 
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Margin="12,0,0,0"
+                    Padding="12,8"
+                    Click="RefreshButton_Click"/>
+        </StackPanel>
+
+        <!-- DataGrid -->
+        <DataGrid x:Name="RegistrationsDataGrid"
+                  Grid.Row="2"
+                  Style="{StaticResource DataGridStyle}"
+                  Margin="24,0,24,24">
+
+            <DataGrid.Columns>
+                <!-- Student Name -->
+                <DataGridTextColumn Header="Học sinh" 
+                                    Binding="{Binding Student.FullName}"
+                                    Width="150"
+                                    HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+
+                <!-- Student ID -->
+                <DataGridTextColumn Header="Mã HS" 
+                                    Binding="{Binding Student.StudentCode}"
+                                    Width="80"
+                                    HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+
+                <!-- Parent Name -->
+                <DataGridTextColumn Header="Phụ huynh" 
+                                    Binding="{Binding User.FullName}"
+                                    Width="120"
+                                    HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+
+                <!-- Medication Name -->
+                <DataGridTextColumn Header="Tên thuốc" 
+                                    Binding="{Binding MedicationName}"
+                                    Width="120"
+                                    HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+
+                <!-- Total Dosages -->
+                <DataGridTextColumn Header="Liều dùng" 
+                                    Binding="{Binding TotalDosages}"
+                                    Width="100"
+                                    HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+
+                <!-- Date Submitted -->
+                <DataGridTextColumn Header="Ngày gửi" 
+                                    Binding="{Binding DateSubmitted, StringFormat=dd/MM/yyyy}"
+                                    Width="90"
+                                    HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+
+                <!-- Status -->
+                <DataGridTemplateColumn Header="Trạng thái" Width="100" HeaderStyle="{StaticResource DataGridHeaderStyle}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="8" Padding="6,2" HorizontalAlignment="Center">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Status}" Value="True">
+                                                <Setter Property="Background" Value="#27AE60"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Status}" Value="False">
+                                                <Setter Property="Background" Value="#F39C12"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Foreground="White" FontSize="10" FontWeight="Bold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="True">
+                                                    <Setter Property="Text" Value="Đã duyệt"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="False">
+                                                    <Setter Property="Text" Value="Chờ duyệt"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Actions -->
+                <DataGridTemplateColumn Header="Thao tác" Width="*" HeaderStyle="{StaticResource DataGridHeaderStyle}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <!-- View Details Button -->
+                                <Button Content="Chi tiết"
+                                        Style="{StaticResource ActionButtonStyle}"
+                                        Background="{StaticResource PrimaryBlueBrush}"
+                                        Foreground="White"
+                                        Tag="{Binding}"
+                                        Click="ViewDetailsButton_Click"/>
+
+                                <!-- Approve Button (only for pending) -->
+                                <Button Content="✓ Duyệt"
+                                        Background="#27AE60"
+                                        Foreground="White"
+                                        Tag="{Binding}"
+                                        Click="ApproveButton_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Loading Indicator -->
+        <Grid x:Name="LoadingGrid" 
+              Grid.Row="2" 
+              Background="#80FFFFFF" 
+              Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" 
+                             Width="100" 
+                             Height="6" 
+                             Foreground="{StaticResource PrimaryBlueBrush}"/>
+                <TextBlock Text="Đang tải dữ liệu..." 
+                           Margin="0,12,0,0" 
+                           Style="{StaticResource LabelText}"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
