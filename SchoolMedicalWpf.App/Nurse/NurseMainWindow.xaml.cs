@@ -52,7 +52,7 @@ namespace SchoolMedicalWpf.App.Nurse
                         userControl = new HealthSchedulePage();
                         break;
                     case "MedicalEvent":
-                        userControl = new MedicalEventPage();
+                        userControl = ActivatorUtilities.CreateInstance<MedicalEventPage>(App.Services, _currentUser);
                         break;
                     case "MedicalRegistration":
                         userControl = ActivatorUtilities.CreateInstance<MedicalRegistrationPage>(App.Services, _currentUser);

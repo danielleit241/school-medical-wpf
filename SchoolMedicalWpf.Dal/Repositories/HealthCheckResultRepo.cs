@@ -1,4 +1,5 @@
-﻿using SchoolMedicalWpf.Dal.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.Dal.Repositories
 {
@@ -6,11 +7,11 @@ namespace SchoolMedicalWpf.Dal.Repositories
     {
         public List<HealthCheckResult> GetAll()
         {
-            return _context.HealthCheckResults.ToList();
+            return _context.HealthCheckResults.Include(hcr => hcr.HealthProfile).ThenInclude(hp => hp.Student).ToList();
         }
         public HealthCheckResult? GetById(Guid id)
         {
-            return _context.HealthCheckResults.FirstOrDefault(h => h.ResultId == id);
+            return _context.HealthCheckResults.Include(hcr => hcr.HealthProfile).ThenInclude(hp => hp.Student).FirstOrDefault(h => h.ResultId == id);
         }
         public void Add(HealthCheckResult healthCheckResult)
         {

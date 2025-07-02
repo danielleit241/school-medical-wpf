@@ -65,7 +65,6 @@ namespace SchoolMedicalWpf.App.Parent
                     button.IsEnabled = true;
                 }
             }
-            _ = RefreshDataAsync().ConfigureAwait(false);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
