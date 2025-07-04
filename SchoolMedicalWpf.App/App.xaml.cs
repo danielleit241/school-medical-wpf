@@ -46,6 +46,10 @@ namespace SchoolMedicalWpf.App
                     services.AddScoped<VaccinationResultService>();
                     services.AddScoped<MedicalEventRepo>();
                     services.AddScoped<MedicalEventService>();
+                    services.AddScoped<HealthCheckScheduleRepo>();
+                    services.AddScoped<HealthCheckScheduleService>();
+                    services.AddScoped<VaccinationScheduleRepo>();
+                    services.AddScoped<VaccinationScheduleService>();
 
                     services.AddTransient<LoginWindow>();
 
@@ -64,6 +68,8 @@ namespace SchoolMedicalWpf.App
                     services.AddTransient<Nurse.MedicalEventFormWindow>();
                     services.AddTransient<Nurse.MedicalRegistrationPage>();
                     services.AddTransient<Nurse.MedicalRegistrationDetailWindow>();
+                    services.AddTransient<Nurse.HealthCheckResultWindow>();
+                    services.AddTransient<Nurse.VaccinationResultWindow>();
 
 
 

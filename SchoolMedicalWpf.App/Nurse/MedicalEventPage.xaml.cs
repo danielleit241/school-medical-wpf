@@ -15,7 +15,6 @@ namespace SchoolMedicalWpf.App.Nurse
         private string _currentFilter = "All";
         private bool _isLoading = false;
 
-        // ✅ Constructor nhận currentUser từ main
         public MedicalEventPage(MedicalEventService medicalEventService, StudentService studentService, User currentUser)
         {
             InitializeComponent();
@@ -122,7 +121,6 @@ namespace SchoolMedicalWpf.App.Nurse
         {
             try
             {
-                // ✅ Truyền currentUser vào MedicalEventFormWindow
                 var createWindow = ActivatorUtilities.CreateInstance<MedicalEventFormWindow>(App.Services, _currentUser);
                 createWindow.Owner = Window.GetWindow(this);
 
@@ -146,7 +144,6 @@ namespace SchoolMedicalWpf.App.Nurse
             {
                 try
                 {
-                    // ✅ Pass current user to detail window
                     var detailWindow = ActivatorUtilities.CreateInstance<MedicalEventDetailWindow>(
                         App.Services, medicalEvent, _currentUser);
                     detailWindow.Owner = Window.GetWindow(this);

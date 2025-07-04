@@ -29,9 +29,8 @@ namespace SchoolMedicalWpf.App.Nurse
         {
             await LoadStudentsAsync();
 
-            // Set defaults
-            EventDatePicker.SelectedDate = new DateTime(2025, 7, 2);
-            SeverityComboBox.SelectedIndex = 1; // Medium
+            EventDatePicker.SelectedDate = DateTime.UtcNow;
+            SeverityComboBox.SelectedIndex = 1;
             ParentNotifiedCheckBox.IsChecked = false;
 
             StudentComboBox.SelectionChanged += StudentComboBox_SelectionChanged;
@@ -95,7 +94,7 @@ namespace SchoolMedicalWpf.App.Nurse
                     ParentNotified = ParentNotifiedCheckBox.IsChecked ?? false,
                     EventDate = EventDatePicker.SelectedDate.HasValue
                         ? DateOnly.FromDateTime(EventDatePicker.SelectedDate.Value)
-                        : new DateOnly(2025, 7, 2),
+                        : DateOnly.FromDateTime(DateTime.UtcNow),
                     Notes = NotesTextBox.Text?.Trim()
                 };
 
@@ -153,14 +152,6 @@ namespace SchoolMedicalWpf.App.Nurse
                 MessageBox.Show("Vui lòng chọn ngày.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
-
-            // Check future date
-            if (EventDatePicker.SelectedDate.Value.Date > new DateTime(2025, 7, 2).Date)
-            {
-                MessageBox.Show("Ngày sự kiện không thể là tương lai.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
             return true;
         }
 

@@ -1,4 +1,5 @@
-﻿using SchoolMedicalWpf.Dal.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.Dal.Repositories
 {
@@ -13,7 +14,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
 
         public HealthProfile? GetHealthProfileByStudentId(Guid? studentId)
         {
-            return _context.HealthProfiles.FirstOrDefault(hp => hp.StudentId == studentId);
+            return _context.HealthProfiles.Include(hp => hp.Student).FirstOrDefault(hp => hp.StudentId == studentId);
         }
 
         public void Add(HealthProfile healthProfile)

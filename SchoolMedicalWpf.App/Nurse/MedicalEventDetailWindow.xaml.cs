@@ -10,7 +10,7 @@ namespace SchoolMedicalWpf.App.Nurse
         private MedicalEvent _medicalEvent;
         private readonly MedicalEventService _medicalEventService;
         private readonly UserService _userService;
-        private readonly User _currentUser; // ✅ Use actual current user
+        private readonly User _currentUser;
 
         public event Action EventUpdated;
 
@@ -20,32 +20,22 @@ namespace SchoolMedicalWpf.App.Nurse
             _medicalEvent = medicalEvent;
             _medicalEventService = medicalEventService;
             _userService = userService;
-            _currentUser = currentUser; // ✅ Store current user from login
-
-            // ✅ Load details asynchronously to prevent hanging
+            _currentUser = currentUser;
             Loaded += async (s, e) => await LoadEventDetailsAsync();
         }
 
-        // ✅ Make LoadEventDetails async to prevent UI freezing
         private async Task LoadEventDetailsAsync()
         {
             try
             {
-                // Student Information
                 StudentNameText.Text = _medicalEvent.Student?.FullName ?? "Không xác định";
                 StudentClassText.Text = _medicalEvent.Student?.Grade ?? "N/A";
-
-                // Event Information
                 EventTypeText.Text = _medicalEvent.EventType ?? "Không xác định";
                 EventDescriptionText.Text = _medicalEvent.EventDescription ?? "Không có mô tả";
                 LocationText.Text = _medicalEvent.Location ?? "Không xác định";
                 EventDateText.Text = _medicalEvent.EventDate?.ToString("dd/MM/yyyy") ?? "N/A";
-
-                // ✅ Enhanced Severity Badge with English/Vietnamese support
                 SetSeverityBadge(_medicalEvent.SeverityLevel ?? "Medium");
-
-                // ✅ Staff Nurse Information - Use async to prevent hanging
-                User staffNurse = null;
+                User? staffNurse = null;
                 if (_medicalEvent.StaffNurseId.HasValue)
                 {
                     try
@@ -68,26 +58,17 @@ namespace SchoolMedicalWpf.App.Nurse
                     }
                 }
 
-                // ✅ Use current user if staff nurse not found
                 StaffNurseText.Text = staffNurse?.FullName ?? _currentUser?.FullName ?? "Không xác định";
-
-                // Parent Notification Status
                 var isNotified = _medicalEvent.ParentNotified == true;
                 ParentNotifiedText.Text = isNotified ? "✅ Đã thông báo" : "❌ Chưa thông báo";
                 ParentNotifiedText.Foreground = isNotified
                     ? new SolidColorBrush(Color.FromRgb(39, 174, 96))
                     : new SolidColorBrush(Color.FromRgb(231, 76, 60));
-
-                // Show notify button if not notified
                 if (!isNotified && NotifyParentButton != null)
                 {
                     NotifyParentButton.Visibility = Visibility.Visible;
                 }
-
-                // Notes
                 NotesText.Text = string.IsNullOrEmpty(_medicalEvent.Notes) ? "Không có ghi chú" : _medicalEvent.Notes;
-
-                // ✅ Use current time and user info
                 this.Title = $"Chi tiết sự kiện y tế - {_medicalEvent.Student?.FullName ?? "N/A"} - {DateTime.Now:dd/MM/yyyy HH:mm}";
             }
             catch (Exception ex)
@@ -99,11 +80,9 @@ namespace SchoolMedicalWpf.App.Nurse
             }
         }
 
-        // ✅ Enhanced SetSeverityBadge with English/Vietnamese support
         private void SetSeverityBadge(string severity)
         {
             if (SeverityBorder == null || SeverityText == null) return;
-
             switch (severity?.ToLower())
             {
                 case "high":
@@ -169,15 +148,10 @@ namespace SchoolMedicalWpf.App.Nurse
                 }
 
                 _medicalEvent.ParentNotified = true;
-
-                // ✅ Use ConfigureAwait(false) to prevent deadlock
                 await Task.Run(() => _medicalEventService.UpdateMedicalEvent(_medicalEvent))
                     .ConfigureAwait(true);
-
-                // Update UI on UI thread
                 Dispatcher.Invoke(() =>
                 {
-                    // Update UI
                     ParentNotifiedText.Text = "✅ Đã thông báo";
                     ParentNotifiedText.Foreground = new SolidColorBrush(Color.FromRgb(39, 174, 96));
 
@@ -243,7 +217,6 @@ namespace SchoolMedicalWpf.App.Nurse
             this.Close();
         }
 
-        // ✅ Add helper method for severity level conversion
         private string GetSeverityDisplayText(string severityLevel)
         {
             return severityLevel?.ToLower() switch
@@ -255,7 +228,6 @@ namespace SchoolMedicalWpf.App.Nurse
             };
         }
 
-        // ✅ Add method to refresh event details if needed
         public async Task RefreshEventDetails()
         {
             await LoadEventDetailsAsync();
