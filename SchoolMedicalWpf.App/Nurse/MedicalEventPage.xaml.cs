@@ -107,7 +107,7 @@ namespace SchoolMedicalWpf.App.Nurse
         {
             if (SeverityFilterComboBox.SelectedItem is ComboBoxItem selectedItem)
             {
-                _currentFilter = selectedItem.Tag.ToString();
+                _currentFilter = selectedItem.Tag.ToString()!;
                 FilterAndDisplayEvents();
             }
         }

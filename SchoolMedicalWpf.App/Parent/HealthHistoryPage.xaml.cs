@@ -77,7 +77,7 @@ namespace SchoolMedicalWpf.App.Parent
             {
                 MessageBox.Show($"❌ Lỗi khi tải dữ liệu: {ex.Message}\n\n" +
                     $"🕐 Thời gian: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                    $"👤 User: {_currentUser?.FullName ?? "N/A"}", "Lỗi",
+                    $"👤 User: {_currentUser?.FullName ?? "danielleit241"}", "Lỗi",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
@@ -115,6 +115,16 @@ namespace SchoolMedicalWpf.App.Parent
         {
             FilterHealthResults();
         }
+
+        // Thêm double-click event cho Health DataGrid
+        private void HealthHistoryDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var selectedItem = HealthHistoryDataGrid.SelectedItem as HealthCheckResult;
+            if (selectedItem != null)
+            {
+                ShowHealthDetails(selectedItem);
+            }
+        }
         #endregion
 
         #region Vaccination Tab Events
@@ -136,6 +146,16 @@ namespace SchoolMedicalWpf.App.Parent
         private void VaccinationStudentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             FilterVaccinationResults();
+        }
+
+        // Thêm double-click event cho Vaccination DataGrid
+        private void VaccinationHistoryDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var selectedItem = VaccinationHistoryDataGrid.SelectedItem as VaccinationResult;
+            if (selectedItem != null)
+            {
+                ShowVaccinationDetails(selectedItem);
+            }
         }
         #endregion
 
@@ -164,79 +184,101 @@ namespace SchoolMedicalWpf.App.Parent
         {
             FilterMedicalEvents();
         }
-        #endregion
 
-        #region Action Button Events
-        private void DetailsButton_Click(object sender, RoutedEventArgs e)
+        // Thêm double-click event cho Medical Events DataGrid
+        private void MedicalEventsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            try
+            var selectedItem = MedicalEventsDataGrid.SelectedItem as MedicalEvent;
+            if (selectedItem != null)
             {
-                var selectedTab = HistoryTabControl.SelectedIndex;
-
-                if (selectedTab == 0)
-                {
-                    var selectedHealth = HealthHistoryDataGrid.SelectedItem as HealthCheckResult;
-                    if (selectedHealth == null)
-                    {
-                        MessageBox.Show("⚠️ Vui lòng chọn một bản ghi để xem chi tiết.", "Thông báo",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-                        return;
-                    }
-                    ShowHealthDetails(selectedHealth);
-                }
-                else if (selectedTab == 1)
-                {
-                    var selectedVaccination = VaccinationHistoryDataGrid.SelectedItem as VaccinationResult;
-                    if (selectedVaccination == null)
-                    {
-                        MessageBox.Show("⚠️ Vui lòng chọn một bản ghi để xem chi tiết.", "Thông báo",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-                        return;
-                    }
-                    ShowVaccinationDetails(selectedVaccination);
-                }
-                else if (selectedTab == 2)
-                {
-                    var selectedEvent = MedicalEventsDataGrid.SelectedItem as MedicalEvent;
-                    if (selectedEvent == null)
-                    {
-                        MessageBox.Show("⚠️ Vui lòng chọn một sự kiện để xem chi tiết.", "Thông báo",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-                        return;
-                    }
-                    ShowMedicalEventDetailsAsync(selectedEvent);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết: {ex.Message}\n\n" +
-                    $"🕐 Thời gian: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                    $"👤 User: {_currentUser?.FullName ?? "N/A"}", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ExportButton_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedTab = HistoryTabControl.SelectedIndex;
-
-            if (selectedTab == 0)
-            {
-                ExportHealthReport();
-            }
-            else if (selectedTab == 1)
-            {
-                ExportVaccinationReport();
-            }
-            else if (selectedTab == 2)
-            {
-                ExportMedicalEventsReport();
+                ShowMedicalEventDetailsAsync(selectedItem);
             }
         }
         #endregion
         #endregion
 
         #region Private Methods
+        // ... (giữ nguyên tất cả các methods LoadStudentsAsync, LoadAllHealthHistoryAsync, etc.)
+
+        private void ShowHealthDetails(HealthCheckResult healthResult)
+        {
+            try
+            {
+                var detailsWindow = new HealthResultDetailWindow(healthResult);
+                detailsWindow.Owner = Window.GetWindow(this);
+                detailsWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết khám sức khỏe: {ex.Message}\n\n" +
+                    $"🕐 Thời gian: 2025-07-04 12:31:14 UTC\n" +
+                    $"👤 User: {_currentUser?.FullName ?? "danielleit241"}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ShowVaccinationDetails(VaccinationResult vaccinationResult)
+        {
+            try
+            {
+                var detailsWindow = new VaccinationResultDetailWindow(vaccinationResult);
+                detailsWindow.Owner = Window.GetWindow(this);
+                detailsWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết tiêm chủng: {ex.Message}\n\n" +
+                    $"🕐 Thời gian: 2025-07-04 12:31:14 UTC\n" +
+                    $"👤 User: {_currentUser?.FullName ?? "danielleit241"}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void ShowMedicalEventDetailsAsync(MedicalEvent medicalEvent)
+        {
+            try
+            {
+                var staffNurseName = "N/A";
+                var currentUserName = _currentUser?.FullName ?? "danielleit241";
+
+                if (medicalEvent.StaffNurseId.HasValue)
+                {
+                    try
+                    {
+                        var staffNurse = await _userService.GetUserById(medicalEvent.StaffNurseId.Value);
+                        staffNurseName = staffNurse?.FullName ?? currentUserName;
+                    }
+                    catch
+                    {
+                        staffNurseName = currentUserName;
+                    }
+                }
+
+                var detailsWindow = new MedicalEventDetailWindow(medicalEvent, staffNurseName, currentUserName);
+                detailsWindow.Owner = Window.GetWindow(this);
+                detailsWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết sự kiện y tế: {ex.Message}\n\n" +
+                    $"🕐 Thời gian: 2025-07-04 12:31:14 UTC\n" +
+                    $"👤 User: {_currentUser?.FullName ?? "danielleit241"}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string GetSeverityDisplayText(string severityLevel)
+        {
+            return severityLevel?.ToLower() switch
+            {
+                "high" or "nghiêm trọng" => "Nghiêm trọng",
+                "medium" or "trung bình" => "Trung bình",
+                "low" or "nhẹ" => "Nhẹ",
+                _ => "N/A"
+            };
+        }
+
+        // ... (giữ nguyên tất cả các methods khác: LoadStudentsAsync, FilterHealthResults, etc.)
         private async Task LoadStudentsAsync()
         {
             try
@@ -280,17 +322,15 @@ namespace SchoolMedicalWpf.App.Parent
         {
             try
             {
-                // Debug: Kiểm tra service có hoạt động không
                 var allResults = await Task.Run(() => _healthCheckResultService.GetAll());
                 Console.WriteLine($"Total results from service: {allResults?.Count() ?? 0}");
 
-                // Debug: Kiểm tra Students collection
                 var userStudentIds = Students.Where(s => s.StudentId != Guid.Empty).Select(s => s.StudentId).ToList();
                 Console.WriteLine($"User student IDs count: {userStudentIds.Count}");
 
                 var userResults = new List<HealthCheckResult>();
 
-                foreach (var result in allResults)
+                foreach (var result in allResults!)
                 {
                     try
                     {
@@ -314,7 +354,6 @@ namespace SchoolMedicalWpf.App.Parent
 
                 _originalHealthResults = userResults.OrderByDescending(r => r.DatePerformed).ToList();
 
-                // Debug: Kiểm tra UI thread
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     AllHealthResults = new ObservableCollection<HealthCheckResult>(_originalHealthResults);
@@ -638,188 +677,6 @@ namespace SchoolMedicalWpf.App.Parent
             UpdateMedicalEventSummary();
         }
 
-        private void ShowHealthDetails(HealthCheckResult healthResult)
-        {
-            try
-            {
-                var studentName = healthResult.HealthProfile?.Student?.FullName ?? "N/A";
-                var studentClass = healthResult.HealthProfile?.Student?.Grade ?? "N/A";
-
-                var details = $"🏥 Chi tiết khám sức khỏe\n\n" +
-                             $"👨‍🎓 Học sinh: {studentName} - Lớp: {studentClass}\n" +
-                             $"📅 Ngày khám: {healthResult.DatePerformed:dd/MM/yyyy}\n" +
-                             $"📏 Chiều cao: {healthResult.Height} cm\n" +
-                             $"⚖️ Cân nặng: {healthResult.Weight} kg\n" +
-                             $"👁️ Thị lực trái: {healthResult.VisionLeft}\n" +
-                             $"👁️ Thị lực phải: {healthResult.VisionRight}\n" +
-                             $"👂 Thính lực: {healthResult.Hearing}\n" +
-                             $"🫁 Mũi họng: {healthResult.Nose}\n" +
-                             $"💓 Huyết áp: {healthResult.BloodPressure}\n" +
-                             $"📝 Ghi chú: {healthResult.Notes ?? "Không có"}";
-
-                MessageBox.Show(details, "Chi tiết khám sức khỏe",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết khám sức khỏe: {ex.Message}", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ShowVaccinationDetails(VaccinationResult vaccinationResult)
-        {
-            try
-            {
-                var studentName = vaccinationResult.HealthProfile?.Student?.FullName ?? "N/A";
-                var studentClass = vaccinationResult.HealthProfile?.Student?.Grade ?? "N/A";
-                var vaccineName = vaccinationResult.Schedule?.Vaccine?.VaccineName ?? "N/A";
-                var manufacturer = vaccinationResult.Schedule?.Vaccine?.Manufacturer ?? "N/A";
-
-                var details = $"💉 Chi tiết tiêm chủng\n\n" +
-                             $"👨‍🎓 Học sinh: {studentName} - Lớp: {studentClass}\n" +
-                             $"📅 Ngày tiêm: {vaccinationResult.VaccinationDate:dd/MM/yyyy}\n" +
-                             $"💊 Tên vaccine: {vaccineName}\n" +
-                             $"🔢 Liều số: {vaccinationResult.DoseNumber}\n" +
-                             $"🏭 Nhà sản xuất: {manufacturer}\n" +
-                             $"📦 Số lô: {vaccinationResult.Schedule?.Vaccine?.BatchNumber ?? "N/A"}\n" +
-                             $"📍 Vị trí tiêm: {vaccinationResult.InjectionSite}\n" +
-                             $"📝 Ghi chú: {vaccinationResult.Notes ?? "Không có"}";
-
-                MessageBox.Show(details, "Chi tiết tiêm chủng",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết tiêm chủng: {ex.Message}", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private async void ShowMedicalEventDetailsAsync(MedicalEvent medicalEvent)
-        {
-            try
-            {
-                var studentName = medicalEvent.Student?.FullName ?? "N/A";
-                var studentClass = medicalEvent.Student?.Grade ?? "N/A";
-                var staffNurseName = "N/A";
-
-                if (medicalEvent.StaffNurseId.HasValue)
-                {
-                    try
-                    {
-                        var staffNurseTask = _userService.GetUserById(medicalEvent.StaffNurseId.Value);
-                        var staffNurse = await staffNurseTask;
-                        staffNurseName = staffNurse?.FullName ?? _currentUser?.FullName ?? "N/A";
-                    }
-                    catch
-                    {
-                        staffNurseName = _currentUser?.FullName ?? "N/A";
-                    }
-                }
-
-                var details = $"🏥 Chi tiết sự kiện y tế\n\n" +
-                             $"👨‍🎓 Học sinh: {studentName} - Lớp: {studentClass}\n" +
-                             $"📅 Ngày giờ: {medicalEvent.EventDate:dd/MM/yyyy}\n" +
-                             $"🏷️ Loại sự kiện: {medicalEvent.EventType ?? "N/A"}\n" +
-                             $"📝 Mô tả: {medicalEvent.EventDescription ?? "N/A"}\n" +
-                             $"📍 Địa điểm: {medicalEvent.Location ?? "N/A"}\n" +
-                             $"⚠️ Mức độ nghiêm trọng: {GetSeverityDisplayText(medicalEvent.SeverityLevel)}\n" +
-                             $"👩‍⚕️ Y tá xử lý: {staffNurseName}\n" +
-                             $"📋 Ghi chú: {medicalEvent.Notes ?? "Không có"}\n\n" +
-                             $"🕐 Xem lúc: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                             $"👤 Bởi: {_currentUser?.FullName ?? "N/A"}";
-
-                MessageBox.Show(details, "Chi tiết sự kiện y tế",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết sự kiện y tế: {ex.Message}", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private string GetSeverityDisplayText(string severityLevel)
-        {
-            return severityLevel?.ToLower() switch
-            {
-                "high" or "nghiêm trọng" => "🔴 Nghiêm trọng",
-                "medium" or "trung bình" => "🟡 Trung bình",
-                "low" or "nhẹ" => "🟢 Nhẹ",
-                _ => "⚪ Không xác định"
-            };
-        }
-
-        private void ExportHealthReport()
-        {
-            try
-            {
-                var recordCount = AllHealthResults.Count;
-                var studentCount = AllHealthResults.Select(r => r.HealthProfile?.Student?.StudentId).Distinct().Where(id => id.HasValue).Count();
-
-                var summary = $"📊 Báo cáo lịch sử khám sức khỏe\n\n" +
-                             $"📋 Tổng số bản ghi: {recordCount}\n" +
-                             $"👨‍🎓 Số học sinh: {studentCount}\n" +
-                             $"📅 Ngày xuất báo cáo: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                             $"👤 Được xuất bởi: {_currentUser?.FullName ?? "N/A"}";
-
-                MessageBox.Show(summary, "Xuất báo cáo", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ Lỗi khi xuất báo cáo: {ex.Message}", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ExportVaccinationReport()
-        {
-            try
-            {
-                var recordCount = AllVaccinations.Count;
-                var studentCount = AllVaccinations.Select(r => r.HealthProfile?.Student?.StudentId).Distinct().Where(id => id.HasValue).Count();
-
-                var summary = $"💉 Báo cáo lịch sử tiêm chủng\n\n" +
-                             $"💊 Tổng số mũi tiêm: {recordCount}\n" +
-                             $"👨‍🎓 Số học sinh: {studentCount}\n" +
-                             $"📅 Ngày xuất báo cáo: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                             $"👤 Được xuất bởi: {_currentUser?.FullName ?? "N/A"}";
-
-                MessageBox.Show(summary, "Xuất báo cáo", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ Lỗi khi xuất báo cáo: {ex.Message}", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ExportMedicalEventsReport()
-        {
-            try
-            {
-                var recordCount = AllMedicalEvents.Count;
-                var studentCount = AllMedicalEvents.Select(e => e.StudentId).Distinct().Count();
-                var severeCount = AllMedicalEvents.Count(e =>
-                    e.SeverityLevel == "High" ||
-                    e.SeverityLevel == "Nghiêm trọng");
-
-                var summary = $"🏥 Báo cáo sự kiện y tế\n\n" +
-                             $"📋 Tổng số sự kiện: {recordCount}\n" +
-                             $"👨‍🎓 Số học sinh: {studentCount}\n" +
-                             $"🔴 Sự kiện nghiêm trọng: {severeCount}\n" +
-                             $"📅 Ngày xuất báo cáo: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                             $"👤 Được xuất bởi: {_currentUser?.FullName ?? "N/A"}";
-
-                MessageBox.Show(summary, "Xuất báo cáo", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ Lỗi khi xuất báo cáo: {ex.Message}", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
         #endregion
     }
 }

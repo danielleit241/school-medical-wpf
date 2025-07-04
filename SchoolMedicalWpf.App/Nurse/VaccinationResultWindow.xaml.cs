@@ -16,7 +16,7 @@ namespace SchoolMedicalWpf.App.Nurse
         // Track edit mode and existing result
         private bool _isEditMode = false;
         private Guid? _existingResultId = null;
-        private VaccinationResult _originalResult = null;
+        private VaccinationResult _originalResult = null!;
 
         public VaccinationResult Result { get; private set; }
         public bool IsSaved { get; private set; } = false;
@@ -161,7 +161,7 @@ namespace SchoolMedicalWpf.App.Nurse
                 {
                     if (cmbImmediateReaction.SelectedItem is ComboBoxItem item)
                     {
-                        string reaction = item.Content.ToString();
+                        string reaction = item.Content.ToString()!;
                         pnlReactionTime.Visibility = (reaction != "Không có") ? Visibility.Visible : Visibility.Collapsed;
                     }
                 };

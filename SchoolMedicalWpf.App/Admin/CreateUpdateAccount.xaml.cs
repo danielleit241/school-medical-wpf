@@ -10,7 +10,7 @@ namespace SchoolMedicalWpf.App.Admin
     /// </summary>
     public partial class CreateUpdateAccount : Window
     {
-        public User EditedUser { get; set; } = null;
+        public User EditedUser { get; set; } = null!;
 
         private readonly UserService _userService;
         private readonly RoleService _roleService;
@@ -72,7 +72,7 @@ namespace SchoolMedicalWpf.App.Admin
         {
             _userService = userService;
             _roleService = roleService;
-            EditedUser = editedUser;
+            EditedUser = editedUser!;
             InitializeComponent();
 
             // Xử lý loaded ở đây luôn

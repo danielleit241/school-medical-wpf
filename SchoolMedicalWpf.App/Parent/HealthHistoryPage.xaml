@@ -73,7 +73,6 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Health Check Search Bar -->
@@ -181,7 +180,8 @@
                                       AlternatingRowBackground="#F8F9FA"
                                       FontSize="14"
                                       GridLinesVisibility="Horizontal"
-                                      HorizontalGridLinesBrush="#F0F0F0">
+                                      HorizontalGridLinesBrush="#F0F0F0"
+                                      MouseDoubleClick="HealthHistoryDataGrid_MouseDoubleClick">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="Background" Value="#F5F9FE"/>
@@ -229,7 +229,6 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Vaccination Search Bar -->
@@ -343,7 +342,8 @@
                                       AlternatingRowBackground="#F8F9FA"
                                       FontSize="14"
                                       GridLinesVisibility="Horizontal"
-                                      HorizontalGridLinesBrush="#F0F0F0">
+                                      HorizontalGridLinesBrush="#F0F0F0"
+                                      MouseDoubleClick="VaccinationHistoryDataGrid_MouseDoubleClick">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="Background" Value="#F5F9FE"/>
@@ -389,7 +389,6 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Medical Events Search Bar -->
@@ -519,7 +518,8 @@
                                       AlternatingRowBackground="#F8F9FA"
                                       FontSize="14"
                                       GridLinesVisibility="Horizontal"
-                                      HorizontalGridLinesBrush="#F0F0F0">
+                                      HorizontalGridLinesBrush="#F0F0F0"
+                                      MouseDoubleClick="MedicalEventsDataGrid_MouseDoubleClick">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="Background" Value="#F5F9FE"/>
@@ -600,34 +600,5 @@
                 </TabItem>
             </TabControl>
         </Border>
-
-        <!-- Action Buttons - Fixed at bottom -->
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Margin="0,0,24,24">
-            <Button x:Name="DetailsButton"
-                    Content="Chi tiết"
-                    Background="{DynamicResource PrimaryBlueBrush}"
-                    Foreground="White"
-                    BorderThickness="0"
-                    Width="120"
-                    Height="40"
-                    Margin="10,0"
-                    Cursor="Hand"
-                    Click="DetailsButton_Click"/>
-            <Button x:Name="ExportButton"
-                    Content="Xuất báo cáo"
-                    Background="Transparent"
-                    Foreground="{DynamicResource PrimaryBlueBrush}"
-                    BorderBrush="{DynamicResource PrimaryBlueBrush}"
-                    BorderThickness="1"
-                    Width="120"
-                    Height="40"
-                    Margin="10,0"
-                    Cursor="Hand"
-                    Click="ExportButton_Click"/>
-        </StackPanel>
     </Grid>
 </UserControl>

@@ -1,0 +1,138 @@
+﻿<Window x:Class="SchoolMedicalWpf.App.Parent.VaccinationResultDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Chi tiết tiêm chủng" 
+        Width="600" 
+        Height="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F8F9FA">
+
+    <Border Margin="20" Background="White" CornerRadius="12">
+        <Border.Effect>
+            <DropShadowEffect Color="Gray" Direction="315" ShadowDepth="5" Opacity="0.3" BlurRadius="10"/>
+        </Border.Effect>
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock Text="💉 Chi tiết tiêm chủng" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="#4CAF50"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,10"/>
+                <Separator Background="#E0E0E0"/>
+            </StackPanel>
+
+            <!-- Content -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Student Info -->
+                    <Border Background="#E8F5E8" CornerRadius="8" Padding="16" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="👨‍🎓 Thông tin học sinh" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="16" 
+                                       Foreground="#4CAF50"
+                                       Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Họ tên:" FontWeight="Medium" Grid.Row="0" Grid.Column="0" Margin="0,0,10,5"/>
+                                <TextBlock x:Name="StudentNameText" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5"/>
+
+                                <TextBlock Text="Lớp:" FontWeight="Medium" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0"/>
+                                <TextBlock x:Name="StudentClassText" Grid.Row="1" Grid.Column="1"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Vaccination Details -->
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="16" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="💊 Thông tin vaccine" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="16" 
+                                       Foreground="#333"
+                                       Margin="0,0,0,15"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="📅 Ngày tiêm:" FontWeight="Medium" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="DateText" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"/>
+
+                                <TextBlock Text="💊 Tên vaccine:" FontWeight="Medium" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="VaccineNameText" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"/>
+
+                                <TextBlock Text="🔢 Liều số:" FontWeight="Medium" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="DoseNumberText" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
+
+                                <TextBlock Text="🏭 Nhà sản xuất:" FontWeight="Medium" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="ManufacturerText" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
+
+                                <TextBlock Text="📦 Số lô:" FontWeight="Medium" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="BatchNumberText" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center"/>
+
+                                <TextBlock Text="📍 Vị trí tiêm:" FontWeight="Medium" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="InjectionSiteText" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Notes -->
+                    <Border Background="#FFFBF3" CornerRadius="8" Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="📝 Ghi chú" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="16" 
+                                       Foreground="#FF9800"
+                                       Margin="0,0,0,10"/>
+                            <TextBlock x:Name="NotesText" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="20"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button x:Name="CloseButton"
+                        Content="Đóng"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Width="100"
+                        Height="35"
+                        Cursor="Hand"
+                        Click="CloseButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

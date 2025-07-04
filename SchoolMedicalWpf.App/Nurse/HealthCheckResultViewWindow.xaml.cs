@@ -71,6 +71,7 @@ namespace SchoolMedicalWpf.App.Nurse
             {
                 MessageBox.Show("Có lỗi khi tải dữ liệu kết quả khám sức khỏe.", "Lỗi",
                               MessageBoxButton.OK, MessageBoxImage.Warning);
+                Console.WriteLine($"Lỗi: {ex.Message}\n{ex.StackTrace}");
             }
         }
 

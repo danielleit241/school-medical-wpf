@@ -32,7 +32,7 @@ namespace SchoolMedicalWpf.App.Nurse
         {
             if (sender is Button button && button.Tag != null)
             {
-                string pageTag = button.Tag.ToString();
+                string pageTag = button.Tag.ToString()!;
                 LoadUserControl(pageTag);
             }
         }
@@ -41,7 +41,7 @@ namespace SchoolMedicalWpf.App.Nurse
         {
             try
             {
-                UserControl userControl = null;
+                UserControl userControl = null!;
 
                 switch (controlName)
                 {

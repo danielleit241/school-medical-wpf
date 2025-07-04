@@ -92,6 +92,7 @@ namespace SchoolMedicalWpf.App.Nurse
             {
                 MessageBox.Show("Có lỗi khi tải dữ liệu kết quả tiêm chủng.", "Lỗi",
                               MessageBoxButton.OK, MessageBoxImage.Warning);
+                Console.WriteLine($"Lỗi khi tải dữ liệu tiêm chủng: {ex.Message}");
             }
         }
 

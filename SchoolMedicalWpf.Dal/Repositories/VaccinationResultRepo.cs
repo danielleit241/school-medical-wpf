@@ -13,11 +13,12 @@ namespace SchoolMedicalWpf.Dal.Repositories
                     .AsNoTracking()
                     .Include(vr => vr.HealthProfile)
                     .ThenInclude(hp => hp.Student)
-                    .Include(vr => vr.Schedule).ThenInclude(s => s.Vaccine)
+                    .Include(vr => vr.Schedule).ThenInclude(s => s!.Vaccine)
                     .ToList();
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error fetching all vaccination results: {ex.Message}");
                 throw;
             }
         }
@@ -30,11 +31,12 @@ namespace SchoolMedicalWpf.Dal.Repositories
                     .AsNoTracking()
                     .Include(vr => vr.HealthProfile)
                     .ThenInclude(hp => hp.Student)
-                    .Include(vr => vr.Schedule).ThenInclude(s => s.Vaccine)
+                    .Include(vr => vr.Schedule).ThenInclude(s => s!.Vaccine)
                     .FirstOrDefault(v => v.VaccinationResultId == id);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error fetching vaccination result by ID: {ex.Message}");
                 throw;
             }
         }
@@ -119,6 +121,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error deleting vaccination result: {ex.Message}");
                 throw;
             }
         }
@@ -131,6 +134,8 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error clearing change tracker: {ex.Message}");
+                throw;
             }
         }
 
@@ -142,6 +147,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error fetching all simple vaccination results: {ex.Message}");
                 throw;
             }
         }

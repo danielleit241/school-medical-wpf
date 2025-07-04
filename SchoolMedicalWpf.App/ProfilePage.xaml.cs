@@ -146,7 +146,7 @@ namespace SchoolMedicalWpf.App
         private string SaveImageToAssets(string sourcePath)
         {
             if (string.IsNullOrEmpty(sourcePath) || !File.Exists(sourcePath))
-                return null;
+                return null!;
 
             // Lưu vào thư mục Assets cùng với file .exe khi chạy
             string assetsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets");
@@ -171,7 +171,7 @@ namespace SchoolMedicalWpf.App
             {
                 return openFileDialog.FileName;
             }
-            return null;
+            return null!;
         }
 
 

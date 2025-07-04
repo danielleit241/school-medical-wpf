@@ -108,7 +108,7 @@ namespace SchoolMedicalWpf.App.Nurse
             };
             selectButton.Click += (s, e) =>
             {
-                SelectedSchedule = listBox.SelectedItem as ScheduleItem;
+                SelectedSchedule = listBox.SelectedItem as ScheduleItem ?? null!;
                 if (SelectedSchedule != null)
                 {
                     DialogResult = true;

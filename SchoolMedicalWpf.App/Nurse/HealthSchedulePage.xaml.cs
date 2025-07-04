@@ -69,6 +69,7 @@ namespace SchoolMedicalWpf.App.Nurse
             catch (Exception ex)
             {
                 txtActiveSchedulesCount.Text = "(Lỗi tải dữ liệu)";
+                MessageBox.Show($"Lỗi khi tải số lượng schedule: {ex.Message}", "Lỗi");
             }
         }
 

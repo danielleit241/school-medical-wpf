@@ -16,7 +16,7 @@ namespace SchoolMedicalWpf.App.Nurse
         // Track edit mode and existing result
         private bool _isEditMode = false;
         private Guid? _existingResultId = null;
-        private HealthCheckResult _originalResult = null;
+        private HealthCheckResult _originalResult = null!;
 
         public HealthCheckResult Result { get; private set; }
         public bool IsSaved { get; private set; } = false;

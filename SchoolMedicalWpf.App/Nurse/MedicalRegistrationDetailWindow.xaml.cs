@@ -40,7 +40,7 @@ namespace SchoolMedicalWpf.App.Nurse
 
                 // Submission Information  
                 DateSubmittedText.Text = _registration.DateSubmitted?.ToString("dd/MM/yyyy") ?? "Không xác định";
-                ConsentText.Text = (bool)_registration.ParentalConsent ? "✓ Đã đồng ý" : "✗ Chưa đồng ý";
+                ConsentText.Text = (bool)_registration.ParentalConsent! ? "✓ Đã đồng ý" : "✗ Chưa đồng ý";
 
                 // Status Badge  
                 StatusBadge.Child = CreateStatusBadge(_registration.Status);

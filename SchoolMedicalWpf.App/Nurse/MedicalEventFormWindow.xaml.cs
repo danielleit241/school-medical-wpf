@@ -123,9 +123,9 @@ namespace SchoolMedicalWpf.App.Nurse
             if (EventTypeComboBox.SelectedItem is ComboBoxItem item)
             {
                 var content = item.Content.ToString();
-                return content.Contains(' ') ? content.Substring(content.IndexOf(' ') + 1) : content;
+                return content!.Contains(' ') ? content.Substring(content.IndexOf(' ') + 1) : content;
             }
-            return EventTypeComboBox.Text?.Trim();
+            return EventTypeComboBox.Text?.Trim()!;
         }
 
         private string GetSeverityLevel()

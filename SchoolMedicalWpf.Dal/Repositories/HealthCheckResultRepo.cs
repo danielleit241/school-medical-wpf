@@ -17,6 +17,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error fetching all health check results: {ex.Message}");
                 throw;
             }
         }
@@ -33,6 +34,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error fetching health check result by ID: {ex.Message}");
                 throw;
             }
         }
@@ -118,6 +120,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error deleting health check result: {ex.Message}");
                 throw;
             }
         }
@@ -130,6 +133,8 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error clearing change tracker: {ex.Message}");
+                throw;
             }
         }
 
@@ -143,6 +148,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error fetching health check result by ID: {ex.Message}");
                 throw;
             }
         }
@@ -155,6 +161,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error fetching all health check results: {ex.Message}");
                 throw;
             }
         }
