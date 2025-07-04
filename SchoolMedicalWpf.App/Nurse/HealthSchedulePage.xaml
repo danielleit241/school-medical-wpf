@@ -199,10 +199,6 @@
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
-
-                                            <!-- Debug text (có thể xóa sau khi test) -->
-                                            <TextBlock Text="{Binding HasExistingResults, StringFormat='[{0}]'}" 
-                                                       FontSize="8" Foreground="Gray" Margin="5,0,0,0" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

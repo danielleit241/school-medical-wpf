@@ -46,7 +46,7 @@ namespace SchoolMedicalWpf.App.Parent
                 {
                     MessageBox.Show("❌ Bạn phải có ít nhất một học sinh để tạo đơn đăng ký thuốc.\n\n" +
                         $"🕐 Thời gian: {DateTime.Now}\n" +
-                        $"👤 User: danielleit241", "Lỗi",
+                        $"👤 User: {_currentUser.FullName}", "Lỗi",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -62,7 +62,7 @@ namespace SchoolMedicalWpf.App.Parent
             {
                 MessageBox.Show($"❌ Lỗi khi mở form đăng ký: {ex.Message}\n\n" +
                     $"🕐 Thời gian: {DateTime.Now}\n" +
-                    $"👤 User: danielleit241", "Lỗi",
+                    $"👤 User: {_currentUser.FullName}", "Lỗi",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
@@ -150,7 +150,7 @@ namespace SchoolMedicalWpf.App.Parent
                 {
                     MessageBox.Show($"❌ Lỗi khi tải dữ liệu: {ex.Message}\n\n" +
                         $"🕐 Thời gian: {DateTime.Now}\n" +
-                        $"👤 User: danielleit241", "Lỗi",
+                        $"👤 User: {_currentUser.FullName}", "Lỗi",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 });
             }

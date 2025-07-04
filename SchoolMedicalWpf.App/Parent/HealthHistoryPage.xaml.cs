@@ -211,7 +211,7 @@ namespace SchoolMedicalWpf.App.Parent
             catch (Exception ex)
             {
                 MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết khám sức khỏe: {ex.Message}\n\n" +
-                    $"🕐 Thời gian: 2025-07-04 12:31:14 UTC\n" +
+                    $"🕐 Thời gian: {DateTime.Now}\n" +
                     $"👤 User: {_currentUser?.FullName ?? "danielleit241"}", "Lỗi",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -228,7 +228,7 @@ namespace SchoolMedicalWpf.App.Parent
             catch (Exception ex)
             {
                 MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết tiêm chủng: {ex.Message}\n\n" +
-                    $"🕐 Thời gian: 2025-07-04 12:31:14 UTC\n" +
+                    $"🕐 Thời gian: {DateTime.Now}\n" +
                     $"👤 User: {_currentUser?.FullName ?? "danielleit241"}", "Lỗi",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -261,7 +261,7 @@ namespace SchoolMedicalWpf.App.Parent
             catch (Exception ex)
             {
                 MessageBox.Show($"❌ Lỗi khi hiển thị chi tiết sự kiện y tế: {ex.Message}\n\n" +
-                    $"🕐 Thời gian: 2025-07-04 12:31:14 UTC\n" +
+                    $"🕐 Thời gian: {DateTime.Now}\n" +
                     $"👤 User: {_currentUser?.FullName ?? "danielleit241"}", "Lỗi",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }

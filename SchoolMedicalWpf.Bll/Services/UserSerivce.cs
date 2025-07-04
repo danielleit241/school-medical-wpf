@@ -37,7 +37,7 @@ namespace SchoolMedicalWpf.Bll.Services
         }
 
         // Update user information
-        public async Task UpdateUser(User user)
+        public async Task<bool> UpdateUser(User user)
         {
             if (user == null)
             {
@@ -45,6 +45,7 @@ namespace SchoolMedicalWpf.Bll.Services
             }
 
             await _userRepository.UpdateUser(user).ConfigureAwait(false);
+            return true;
         }
 
         // Get all users
@@ -85,6 +86,26 @@ namespace SchoolMedicalWpf.Bll.Services
                 throw new ArgumentException("User ID cannot be empty.", nameof(userId));
             }
             await _userRepository.DeleteUser(userId).ConfigureAwait(false);
+        }
+
+        public async Task<bool>? ChangePassword(string phone, string oldPass, string newPass)
+        {
+            var user = await _userRepository.GetUserByPhoneNumber(phone).ConfigureAwait(false);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found with the provided phone number.", nameof(phone));
+            }
+            var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, oldPass);
+            if (verificationResult == PasswordVerificationResult.Success)
+            {
+                user.PasswordHash = _passwordHasher.HashPassword(user, newPass);
+                await _userRepository.UpdateUser(user).ConfigureAwait(false);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

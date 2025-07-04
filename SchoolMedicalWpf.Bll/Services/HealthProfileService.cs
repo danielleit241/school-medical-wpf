@@ -31,11 +31,18 @@ namespace SchoolMedicalWpf.Bll.Services
             return _healthProfileRepo.GetHealthProfileByStudentId(studentId);
         }
 
-        public void Add(HealthProfile healthProfile)
+        public bool Add(HealthProfile healthProfile)
         {
             if (healthProfile == null)
                 throw new ArgumentNullException(nameof(healthProfile), "Health profile cannot be null");
-            _healthProfileRepo.Add(healthProfile);
+            return _healthProfileRepo.Add(healthProfile);
+        }
+
+        public bool Update(HealthProfile healthProfile)
+        {
+            if (healthProfile == null)
+                throw new ArgumentNullException(nameof(healthProfile), "Health profile cannot be null");
+            return _healthProfileRepo.Update(healthProfile);
         }
     }
 }

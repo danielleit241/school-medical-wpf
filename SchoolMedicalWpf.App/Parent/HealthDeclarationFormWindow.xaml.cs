@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Microsoft.IdentityModel.Tokens;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
 
@@ -7,110 +6,205 @@ namespace SchoolMedicalWpf.App.Parent
 {
     public partial class HealthDeclarationFormWindow : Window
     {
-        private Student _currentStudent;
-        private readonly HealthProfileService _profileService;
+        private readonly Student _student;
+        private readonly HealthProfileService _healthProfileService;
+        private bool _isProcessing = false;
 
-        public HealthDeclarationFormWindow(Student student, HealthProfileService profileService)
+        public bool IsInputEnabled => !_isProcessing;
+
+        public HealthDeclarationFormWindow(Student student, HealthProfileService healthProfileService)
         {
             InitializeComponent();
-            _currentStudent = student ?? throw new ArgumentNullException(nameof(student), "Student cannot be null");
-            _profileService = profileService ?? throw new ArgumentNullException(nameof(profileService), "HealthProfileService cannot be null");
+            _student = student ?? throw new ArgumentNullException(nameof(student));
+            _healthProfileService = healthProfileService ?? throw new ArgumentNullException(nameof(healthProfileService));
+
+            DataContext = this;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            FillData();
+            try
+            {
+                var currentDate = DateTime.UtcNow;
+                dpDeclarationDate.SelectedDate = currentDate;
+                CurrentDateText.Text = currentDate.ToString("yyyy-MM-dd HH:mm:ss") + " UTC";
+
+                StudentInfoText.Text = $"Học sinh: {_student.FullName} - {_student.StudentCode} - Lớp {_student.Grade}";
+
+                Title = $"Hồ sơ sức khỏe - {_student.FullName}";
+
+                await LoadExistingHealthProfileAsync();
+
+                dpDeclarationDate.Focus();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Lỗi khi khởi tạo form: {ex.Message}\n\n" +
+                    $"🕐 Thời gian: {DateTime.Now}\n", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void FillData()
+        private async Task LoadExistingHealthProfileAsync()
         {
-            var existedProfile = _profileService.GetHealthProfileByStudentId(_currentStudent.StudentId);
-            if (existedProfile != null)
+            try
             {
-                txtChronicDiseases.Text = existedProfile.ChronicDiseases ?? string.Empty;
-                txtDrugAllergies.Text = existedProfile.DrugAllergies ?? string.Empty;
-                txtFoodAllergies.Text = existedProfile.FoodAllergies ?? string.Empty;
-                txtNotes.Text = existedProfile.Notes ?? string.Empty;
-                dpDeclarationDate.SelectedDate = existedProfile.DeclarationDate.HasValue ? existedProfile.DeclarationDate.Value.ToDateTime(new TimeOnly(0, 0)) : null;
-                btnSubmit.Visibility = Visibility.Collapsed;
+                var existingProfile = await Task.Run(() => _healthProfileService.GetHealthProfileByStudentId(_student.StudentId));
+                if (existingProfile != null)
+                {
+                    if (existingProfile.DeclarationDate.HasValue)
+                    {
+                        dpDeclarationDate.SelectedDate = existingProfile.DeclarationDate.Value.ToDateTime(TimeOnly.MinValue);
+                    }
+
+                    txtChronicDiseases.Text = existingProfile.ChronicDiseases ?? "";
+                    txtDrugAllergies.Text = existingProfile.DrugAllergies ?? "";
+                    txtFoodAllergies.Text = existingProfile.FoodAllergies ?? "";
+                    txtNotes.Text = existingProfile.Notes ?? "";
+
+                    btnSubmit.Content = "🔄 Cập nhật hồ sơ";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading existing health profile: {ex.Message}");
             }
         }
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private async void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
+            if (_isProcessing) return;
 
-            if (_currentStudent == null)
+            try
             {
-                MessageBox.Show("Không tìm thấy thông tin học sinh!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                _isProcessing = true;
+                UpdateButtonStates();
+
+                if (!dpDeclarationDate.SelectedDate.HasValue)
+                {
+                    MessageBox.Show("❌ Vui lòng chọn ngày khai báo.\n\n" +
+                        $"🕐 Thời gian: {DateTime.Now}\n", "Thông báo",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    dpDeclarationDate.Focus();
+                    return;
+                }
+
+                var existingProfile = await Task.Run(() => _healthProfileService.GetHealthProfileByStudentId(_student.StudentId));
+
+                if (existingProfile != null)
+                {
+                    existingProfile.DeclarationDate = DateOnly.FromDateTime(dpDeclarationDate.SelectedDate.Value);
+                    existingProfile.ChronicDiseases = string.IsNullOrWhiteSpace(txtChronicDiseases.Text) ? null : txtChronicDiseases.Text.Trim();
+                    existingProfile.DrugAllergies = string.IsNullOrWhiteSpace(txtDrugAllergies.Text) ? null : txtDrugAllergies.Text.Trim();
+                    existingProfile.FoodAllergies = string.IsNullOrWhiteSpace(txtFoodAllergies.Text) ? null : txtFoodAllergies.Text.Trim();
+                    existingProfile.Notes = string.IsNullOrWhiteSpace(txtNotes.Text) ? null : txtNotes.Text.Trim();
+
+                    var updateResult = await Task.Run(() => _healthProfileService.Update(existingProfile));
+
+                    if (updateResult)
+                    {
+                        MessageBox.Show($"✅ Hồ sơ sức khỏe đã được cập nhật thành công!\n\n" +
+                            $"👨‍🎓 Học sinh: {_student.FullName}\n" +
+                            $"📅 Ngày khai báo: {existingProfile.DeclarationDate:dd/MM/yyyy}\n\n" +
+                            $"🕐 Thời gian: {DateTime.Now}\n", "Cập nhật thành công",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"❌ Không thể cập nhật hồ sơ sức khỏe. Vui lòng thử lại.\n\n" +
+                            $"🕐 Thời gian: {DateTime.Now}\n", "Lỗi",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    // Create new health profile
+                    var healthProfile = new HealthProfile
+                    {
+                        HealthProfileId = Guid.NewGuid(),
+                        StudentId = _student.StudentId,
+                        CreatedDate = DateTime.Now,
+                        DeclarationDate = DateOnly.FromDateTime(dpDeclarationDate.SelectedDate.Value),
+                        ChronicDiseases = string.IsNullOrWhiteSpace(txtChronicDiseases.Text) ? null : txtChronicDiseases.Text.Trim(),
+                        DrugAllergies = string.IsNullOrWhiteSpace(txtDrugAllergies.Text) ? null : txtDrugAllergies.Text.Trim(),
+                        FoodAllergies = string.IsNullOrWhiteSpace(txtFoodAllergies.Text) ? null : txtFoodAllergies.Text.Trim(),
+                        Notes = string.IsNullOrWhiteSpace(txtNotes.Text) ? null : txtNotes.Text.Trim()
+                    };
+
+                    btnSubmit.Content = "⏳ Đang lưu...";
+                    btnSubmit.IsEnabled = false;
+
+                    var createResult = await Task.Run(() => _healthProfileService.Add(healthProfile));
+
+                    if (createResult)
+                    {
+                        MessageBox.Show($"✅ Hồ sơ sức khỏe đã được tạo thành công!\n\n" +
+                            $"👨‍🎓 Học sinh: {_student.FullName}\n" +
+                            $"📅 Ngày khai báo: {healthProfile.DeclarationDate:dd/MM/yyyy}\n" +
+                            $"🆔 ID hồ sơ: {healthProfile.HealthProfileId}\n\n" +
+                            $"🕐 Thời gian: {DateTime.Now}\n", "Tạo thành công",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"❌ Không thể tạo hồ sơ sức khỏe. Vui lòng thử lại.\n\n" +
+                            $"🕐 Thời gian: {DateTime.Now}\n", "Lỗi",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                }
+
+                DialogResult = true;
+                Close();
             }
-
-            var existedProfile = _profileService.GetHealthProfileByStudentId(_currentStudent.StudentId);
-
-            if (existedProfile != null)
+            catch (Exception ex)
             {
-                btnSubmit.IsEnabled = false;
-                return;
+                MessageBox.Show($"❌ Lỗi khi lưu hồ sơ sức khỏe: {ex.Message}\n\n" +
+                    $"🕐 Thời gian: {DateTime.Now}\n", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-
-            if (txtChronicDiseases.Text.IsNullOrEmpty())
+            finally
             {
-                MessageBox.Show("Vui lòng khai báo bệnh mãn tính!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                _isProcessing = false;
+                UpdateButtonStates();
             }
-            if (txtDrugAllergies.Text.IsNullOrEmpty())
-            {
-                MessageBox.Show("Vui lòng khai báo dị ứng thuốc!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (txtFoodAllergies.Text.IsNullOrEmpty())
-            {
-                MessageBox.Show("Vui lòng khai báo dị ứng thực phẩm!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (dpDeclarationDate.SelectedDate < DateTime.Now.AddDays(-1))
-            {
-                MessageBox.Show("Ngày khai báo không được trước ngày hôm nay!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (dpDeclarationDate.SelectedDate == null)
-            {
-                MessageBox.Show("Vui lòng chọn ngày khai báo!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (txtNotes.Text.IsNullOrEmpty())
-            {
-                MessageBox.Show("Vui lòng nhập ghi chú!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var healthProfile = new HealthProfile
-            {
-                HealthProfileId = Guid.NewGuid(),
-                StudentId = _currentStudent.StudentId,
-                CreatedDate = DateTime.Now,
-                Notes = txtNotes.Text,
-                ChronicDiseases = txtChronicDiseases.Text,
-                DeclarationDate = DateOnly.FromDateTime(dpDeclarationDate.SelectedDate!.Value),
-                DrugAllergies = txtDrugAllergies.Text,
-                FoodAllergies = txtFoodAllergies.Text
-            };
-
-            _profileService.Add(healthProfile);
-
-            MessageBox.Show("Khai báo y tế đã được lưu!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            this.Close();
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)
         {
-            var res = MessageBox.Show("Bạn muốn thoát?", "Thoát", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.Yes)
+            if (_isProcessing)
             {
-                this.Close();
+                MessageBox.Show("⏳ Đang xử lý, vui lòng đợi...\n\n" +
+                    $"🕐 Thời gian: {DateTime.Now}\n", "Thông báo",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
+
+            var result = MessageBox.Show("❓ Bạn có chắc chắn muốn thoát mà không lưu?\n\n" +
+                $"🕐 Thời gian: {DateTime.Now}\n", "Xác nhận",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                DialogResult = false;
+                Close();
+            }
+        }
+
+        private void UpdateButtonStates()
+        {
+            if (_isProcessing)
+            {
+                btnSubmit.Content = "⏳ Đang lưu...";
+                btnSubmit.IsEnabled = false;
+            }
+            else
+            {
+                btnSubmit.Content = btnSubmit.Content.ToString()!.Contains("Cập nhật") ? "🔄 Cập nhật hồ sơ" : "✅ Lưu hồ sơ";
+                btnSubmit.IsEnabled = true;
+            }
+            btnExit.IsEnabled = !_isProcessing;
         }
     }
 }

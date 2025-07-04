@@ -1,135 +1,480 @@
 ﻿<UserControl x:Class="SchoolMedicalWpf.App.ProfilePage"
-   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-   Background="Transparent">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource LightGrayBrush}">
+
     <Grid>
-        <StackPanel x:Name="ViewPanel" Visibility="Visible"
-                   HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Border Margin="32" Padding="64" CornerRadius="24"
-                   Background="White" 
-                   BorderBrush="#2D9CDB" BorderThickness="2"
-                   Effect="{DynamicResource CardShadow}"
-                   Width="720" MaxWidth="900">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="Auto">
+        <!-- View Panel -->
+        <StackPanel x:Name="ViewPanel" 
+                    Visibility="Visible"
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Margin="24">
+
+            <!-- Header Card -->
+            <Border Background="{StaticResource BackgroundWhiteBrush}" 
+                    CornerRadius="12" 
+                    Padding="32"
+                    Margin="0,0,0,20"
+                    MaxWidth="800"
+                    Effect="{StaticResource CardShadow}">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
                     <!-- Avatar -->
-                    <Ellipse Width="140" Height="140" Stroke="#2D9CDB" StrokeThickness="2" Margin="0,0,0,24" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Ellipse.Fill>
-                            <ImageBrush x:Name="AvatarUrl" ImageSource="pack://application:,,,/Assets/avatar.png" Stretch="UniformToFill"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <!-- Buttons -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,28">
-                        <Button x:Name="UpdateInformationButton" Content="Sửa thông tin" Width="160" Height="44" Margin="0,0,16,0"
-                               Style="{StaticResource PrimaryButton}" Click="UpdateInformationButton_Click" />
-                        <Button x:Name="ChangePasswordButton" Content="Đổi mật khẩu" Width="160" Height="44"
-                               Style="{StaticResource SecondaryButtonStyle}" Click="ChangePasswordButton_Click"/>
+                    <Border Grid.Column="0"
+                            Width="100"
+                            Height="100"
+                            CornerRadius="50"
+                            Background="{StaticResource LightGrayBrush}"
+                            VerticalAlignment="Center"
+                            Margin="0,0,24,0">
+                        <Border.Clip>
+                            <EllipseGeometry RadiusX="50" RadiusY="50" Center="50,50"/>
+                        </Border.Clip>
+                        <Image x:Name="AvatarImage" 
+                               Source="pack://application:,,,/Assets/avatar.png" 
+                               Stretch="UniformToFill"/>
+                    </Border>
+
+                    <!-- User Info -->
+                    <StackPanel Grid.Column="1" 
+                                VerticalAlignment="Center"
+                                Margin="0,0,24,0">
+                        <TextBlock x:Name="FullNameTextBlock" 
+                                   FontWeight="Bold"
+                                   FontSize="24"
+                                   Foreground="{StaticResource PrimaryBlueBrush}"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock Text="👤 Tài khoản người dùng" 
+                                   FontSize="14"
+                                   Foreground="{StaticResource DarkGrayBrush}"
+                                   Margin="0,0,0,4"/>
+                        <TextBlock x:Name="LastLoginText"
+                                   FontSize="12"
+                                   Foreground="{StaticResource DarkGrayBrush}"/>
                     </StackPanel>
-                    <Grid HorizontalAlignment="Center" Margin="0,0,0,0">
+
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Column="2" 
+                                VerticalAlignment="Center">
+                        <Button x:Name="UpdateInformationButton" 
+                                Content="📝 Chỉnh sửa"
+                                Width="140" 
+                                Height="40"
+                                Style="{StaticResource PrimaryButton}" 
+                                Click="UpdateInformationButton_Click"
+                                Margin="0,0,0,8"/>
+                        <Button x:Name="ChangePasswordButton" 
+                                Content="🔒 Đổi mật khẩu"
+                                Width="140" 
+                                Height="40"
+                                Style="{StaticResource SecondaryButtonStyle}" 
+                                Click="ChangePasswordButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Info Card -->
+            <Border Background="{StaticResource BackgroundWhiteBrush}" 
+                    CornerRadius="12" 
+                    Padding="32"
+                    MaxWidth="800"
+                    Effect="{StaticResource CardShadow}">
+
+                <StackPanel>
+                    <TextBlock Text="📋 Thông tin cá nhân" 
+                               FontWeight="Bold"
+                               FontSize="20"
+                               Foreground="{StaticResource PrimaryBlueBrush}"
+                               Margin="0,0,0,24"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Họ tên:" FontWeight="Bold" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock x:Name="FullNameTextBlock" Grid.Row="0" Grid.Column="1" Text="" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Ngày sinh:" FontWeight="Bold" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock x:Name="DoBTextBlock" Grid.Row="1" Grid.Column="1" Text="" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Địa chỉ:" FontWeight="Bold" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock x:Name="AddressTextBlock" Grid.Row="2" Grid.Column="1" Text="" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Số điện thoại:" FontWeight="Bold" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock x:Name="PhoneNumberTextBlock" Grid.Row="3" Grid.Column="1" Text="" FontSize="20" Margin="0,0,0,16"/>
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Email:" FontWeight="Bold" FontSize="20"/>
-                        <TextBlock x:Name="EmailTextBlock" Grid.Row="4" Grid.Column="1" Text="" FontSize="20"/>
+
+                        <!-- Row 0 -->
+                        <Border Grid.Column="0" Grid.Row="0" 
+                                Background="{StaticResource LightGrayBrush}" 
+                                CornerRadius="8" 
+                                Padding="16"
+                                Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="📅 Ngày sinh" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource DarkGrayBrush}"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock x:Name="DoBTextBlock" 
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextGrayBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Grid.Row="0" 
+                                Background="{StaticResource LightGrayBrush}" 
+                                CornerRadius="8" 
+                                Padding="16"
+                                Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="📞 Số điện thoại" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource DarkGrayBrush}"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock x:Name="PhoneNumberTextBlock" 
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextGrayBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Row 1 -->
+                        <Border Grid.Column="0" Grid.Row="1" 
+                                Background="{StaticResource LightGrayBrush}" 
+                                CornerRadius="8" 
+                                Padding="16"
+                                Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="📧 Email" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource DarkGrayBrush}"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock x:Name="EmailTextBlock" 
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextGrayBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Grid.Row="1" 
+                                Background="{StaticResource LightGrayBrush}" 
+                                CornerRadius="8" 
+                                Padding="16"
+                                Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="👤 Tên đăng nhập" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource DarkGrayBrush}"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock x:Name="Username" 
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextGrayBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Row 2 -->
+                        <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3"
+                                Background="{StaticResource LightGrayBrush}" 
+                                CornerRadius="8" 
+                                Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="🏠 Địa chỉ" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource DarkGrayBrush}"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock x:Name="AddressTextBlock" 
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextGrayBrush}"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
                     </Grid>
                 </StackPanel>
             </Border>
         </StackPanel>
 
-        <Border x:Name="EditPanel" Visibility="Collapsed"
-       Background="White" CornerRadius="16"
-       BorderBrush="#2D9CDB" BorderThickness="1"
-       Padding="40" Width="700" MaxWidth="900"
-       HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!-- Edit Panel -->
+        <Border x:Name="EditPanel" 
+                Visibility="Collapsed"
+                Background="{StaticResource BackgroundWhiteBrush}" 
+                CornerRadius="12"
+                Padding="32" 
+                MaxWidth="900"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Margin="24"
+                Effect="{StaticResource CardShadow}">
+
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="220"/>
-                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="32"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <!-- Bên trái: upload ảnh -->
-                    <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center">
-                        <TextBlock Text="Ảnh đại diện" FontSize="16" FontWeight="Bold" Margin="0,0,0,18" Foreground="{StaticResource PrimaryBlueBrush}"/>
-                        <Ellipse Width="110" Height="110" Stroke="{StaticResource PrimaryBlueBrush}" StrokeThickness="2">
-                            <Ellipse.Fill>
-                                <ImageBrush x:Name="EditAvatar" ImageSource="pack://application:,,,/Assets/avatar.png" Stretch="UniformToFill"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <Button x:Name="ChangeAvatarButton" Content="Chọn ảnh..." Margin="0,18,0,0"
-                       Width="130"
-                       Style="{StaticResource SecondaryButtonStyle}" Click="ChangeAvatarButton_Click"/>
+
+                    <!-- Avatar Section -->
+                    <StackPanel Grid.Column="0" 
+                                VerticalAlignment="Top" 
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="📷 Ảnh đại diện" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Margin="0,0,0,16" 
+                                   Foreground="{StaticResource PrimaryBlueBrush}"
+                                   HorizontalAlignment="Center"/>
+
+                        <Border Width="120"
+                                Height="120"
+                                CornerRadius="60"
+                                Background="{StaticResource LightGrayBrush}"
+                                Margin="0,0,0,16">
+                            <Border.Clip>
+                                <EllipseGeometry RadiusX="60" RadiusY="60" Center="60,60"/>
+                            </Border.Clip>
+                            <Image x:Name="EditAvatar" 
+                                   Source="pack://application:,,,/Assets/avatar.png" 
+                                   Stretch="UniformToFill"/>
+                        </Border>
+
+                        <Button x:Name="ChangeAvatarButton" 
+                                Content="📁 Chọn ảnh"
+                                Width="140"
+                                Style="{StaticResource SecondaryButtonStyle}" 
+                                Click="ChangeAvatarButton_Click"/>
                     </StackPanel>
-                    <!-- Spacer -->
-                    <Grid Grid.Column="1"/>
-                    <!-- Bên phải: form điền thông tin -->
+
+                    <!-- Form Section -->
                     <StackPanel Grid.Column="2" VerticalAlignment="Top">
-                        <TextBlock Text="Cập nhật thông tin" FontSize="22" FontWeight="Bold" Margin="0,0,0,20" Foreground="{StaticResource PrimaryBlueBrush}"/>
+                        <TextBlock Text="✏️ Cập nhật thông tin" 
+                                   FontSize="22" 
+                                   FontWeight="Bold" 
+                                   Margin="0,0,0,24" 
+                                   Foreground="{StaticResource PrimaryBlueBrush}"/>
 
-                        <TextBlock Text="Họ tên" Style="{StaticResource LabelText}"/>
-                        <TextBox x:Name="EditName" Style="{StaticResource InputBox}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Text="Ngày sinh" Style="{StaticResource LabelText}"/>
-                        <DatePicker x:Name="EditBirthDate" Style="{StaticResource DatePickerStyle}"/>
+                            <!-- Row 0 -->
+                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,20">
+                                <TextBlock Text="👤 Họ tên *" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource TextGrayBrush}"
+                                           Margin="0,0,0,8"/>
+                                <TextBox x:Name="EditName" 
+                                         Style="{StaticResource TextBoxInputBox}"
+                                         Height="40"/>
+                            </StackPanel>
 
-                        <TextBlock Text="Địa chỉ" Style="{StaticResource LabelText}"/>
-                        <TextBox x:Name="EditAddress" Style="{StaticResource InputBox}"/>
+                            <StackPanel Grid.Column="2" Grid.Row="0" Margin="0,0,0,20">
+                                <TextBlock Text="📅 Ngày sinh" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource TextGrayBrush}"
+                                           Margin="0,0,0,8"/>
+                                <DatePicker x:Name="EditBirthDate" 
+                                            Style="{StaticResource DatePickerInputBox}"
+                                            Height="40"/>
+                            </StackPanel>
 
-                        <TextBlock Text="Email" Style="{StaticResource LabelText}"/>
-                        <TextBox x:Name="EditEmail" Style="{StaticResource InputBox}"/>
+                            <!-- Row 1 -->
+                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,0,20">
+                                <TextBlock Text="📧 Email *" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource TextGrayBrush}"
+                                           Margin="0,0,0,8"/>
+                                <TextBox x:Name="EditEmail" 
+                                         Style="{StaticResource TextBoxInputBox}"
+                                         Height="40"/>
+                            </StackPanel>
 
-                        <TextBlock Text="Số điện thoại" Style="{StaticResource LabelText}"/>
-                        <TextBox x:Name="EditPhoneNumber" Style="{StaticResource InputBox}"/>
+                            <StackPanel Grid.Column="2" Grid.Row="1" Margin="0,0,0,20">
+                                <TextBlock Text="📞 Số điện thoại *" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource TextGrayBrush}"
+                                           Margin="0,0,0,8"/>
+                                <TextBox x:Name="EditPhoneNumber" 
+                                         Style="{StaticResource TextBoxInputBox}"
+                                         Height="40"/>
+                            </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,28,0,0">
-                            <Button x:Name="SaveInformationButton" Content="Lưu" Width="110" Margin="0,0,18,0"
-                           Style="{StaticResource PrimaryButton}" Click="SaveInformationButton_Click"/>
-                            <Button x:Name="CancelButton" Content="Huỷ" Width="110" Style="{StaticResource SecondaryButtonStyle}" Click="CancelButton_Click"/>
-                        </StackPanel>
+                            <!-- Row 2 -->
+                            <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,0,0,32">
+                                <TextBlock Text="🏠 Địa chỉ" 
+                                           FontWeight="Medium" 
+                                           FontSize="14"
+                                           Foreground="{StaticResource TextGrayBrush}"
+                                           Margin="0,0,0,8"/>
+                                <TextBox x:Name="EditAddress" 
+                                         Style="{StaticResource TextBoxInputBox}"
+                                         Height="60"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <!-- Buttons -->
+                            <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" 
+                                        Orientation="Horizontal" 
+                                        HorizontalAlignment="Right">
+                                <Button x:Name="SaveInformationButton" 
+                                        Content="✅ Lưu thay đổi" 
+                                        Width="140"
+                                        Height="40"
+                                        Style="{StaticResource PrimaryButton}" 
+                                        Click="SaveInformationButton_Click"
+                                        Margin="0,0,12,0"/>
+                                <Button x:Name="CancelButton" 
+                                        Content="❌ Hủy bỏ" 
+                                        Width="120"
+                                        Height="40"
+                                        Style="{StaticResource SecondaryButtonStyle}" 
+                                        Click="CancelButton_Click"/>
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>
         </Border>
 
-        <Border x:Name="ChangePasswordPanel" Visibility="Collapsed"
-               Background="White" CornerRadius="16"
-               BorderBrush="#2D9CDB" BorderThickness="1"
-               Padding="40" Width="600" MaxWidth="800"
-               HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!-- Change Password Panel -->
+        <Border x:Name="ChangePasswordPanel" 
+                Visibility="Collapsed"
+                Background="{StaticResource BackgroundWhiteBrush}" 
+                CornerRadius="12"
+                Padding="24" 
+                Width="500"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Margin="24"
+                Effect="{StaticResource CardShadow}">
+
             <StackPanel>
-                <TextBlock Text="Đổi mật khẩu" FontSize="24" FontWeight="Bold" Margin="0,0,0,28" Foreground="{StaticResource PrimaryBlueBrush}"/>
+                <!-- Header -->
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            Width="40"
+                            Height="40"
+                            CornerRadius="20"
+                            Background="{StaticResource LightGrayBrush}"
+                            VerticalAlignment="Center"
+                            Margin="0,0,12,0">
+                        <TextBlock Text="🔒" 
+                                   FontSize="20" 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Đổi mật khẩu" 
+                                   FontSize="20" 
+                                   FontWeight="Bold" 
+                                   Foreground="{StaticResource PrimaryBlueBrush}"
+                                   Margin="0,0,0,2"/>
+                        <TextBlock Text="Cập nhật mật khẩu bảo mật của bạn" 
+                                   FontSize="12"
+                                   Foreground="{StaticResource DarkGrayBrush}"/>
+                    </StackPanel>
+                </Grid>
+
                 <!-- Form -->
-                <TextBlock Text="Số điện thoại" Style="{StaticResource LabelText}"/>
-                <TextBox x:Name="PhoneNumberChangePassword" Style="{StaticResource InputBox}"/>
+                <StackPanel>
+                    <!-- Phone Number -->
+                    <StackPanel Margin="0,0,0,16">
+                        <TextBlock Text="📞 Số điện thoại *" 
+                                   FontWeight="Medium" 
+                                   FontSize="13"
+                                   Foreground="{StaticResource TextGrayBrush}"
+                                   Margin="0,0,0,6"/>
+                        <TextBox x:Name="PhoneNumberChangePassword" 
+                                 Style="{StaticResource TextBoxInputBox}"
+                                 Height="36"/>
+                    </StackPanel>
 
-                <TextBlock Text="Mật khẩu cũ" Style="{StaticResource LabelText}"/>
-                <PasswordBox x:Name="OldPassword" Style="{StaticResource PasswordInputBox}"/>
+                    <!-- Old Password -->
+                    <StackPanel Margin="0,0,0,16">
+                        <TextBlock Text="🔑 Mật khẩu cũ *" 
+                                   FontWeight="Medium" 
+                                   FontSize="13"
+                                   Foreground="{StaticResource TextGrayBrush}"
+                                   Margin="0,0,0,6"/>
+                        <PasswordBox x:Name="OldPassword" 
+                                     Style="{StaticResource PasswordInputBox}"
+                                     Height="36"/>
+                    </StackPanel>
 
-                <TextBlock Text="Mật khẩu mới" Style="{StaticResource LabelText}"/>
-                <PasswordBox x:Name="NewPassword" Style="{StaticResource PasswordInputBox}"/>
+                    <!-- New Password -->
+                    <StackPanel Margin="0,0,0,16">
+                        <TextBlock Text="🆕 Mật khẩu mới *" 
+                                   FontWeight="Medium" 
+                                   FontSize="13"
+                                   Foreground="{StaticResource TextGrayBrush}"
+                                   Margin="0,0,0,6"/>
+                        <PasswordBox x:Name="NewPassword" 
+                                     Style="{StaticResource PasswordInputBox}"
+                                     Height="36"/>
+                    </StackPanel>
 
-                <TextBlock Text="Xác nhận mật khẩu mới" Style="{StaticResource LabelText}"/>
-                <PasswordBox x:Name="ConfirmedPassword" Style="{StaticResource PasswordInputBox}"/>
+                    <!-- Confirm Password -->
+                    <StackPanel Margin="0,0,0,20">
+                        <TextBlock Text="✔️ Xác nhận mật khẩu mới *" 
+                                   FontWeight="Medium" 
+                                   FontSize="13"
+                                   Foreground="{StaticResource TextGrayBrush}"
+                                   Margin="0,0,0,6"/>
+                        <PasswordBox x:Name="ConfirmedPassword" 
+                                     Style="{StaticResource PasswordInputBox}"
+                                     Height="36"/>
+                    </StackPanel>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,28,0,0">
-                    <Button x:Name="SaveChangePasswordButton" Content="Lưu" Width="110" Margin="0,0,18,0"
-                           Style="{StaticResource PrimaryButton}" Click="SaveChangePasswordButton_Click"/>
-                    <Button x:Name="CancelChangePasswordButton" Content="Huỷ" Width="110" Style="{StaticResource SecondaryButtonStyle}" Click="CancelChangePasswordButton_Click"/>
+                    <!-- Buttons -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="SaveChangePasswordButton" 
+                                Grid.Column="0"
+                                Content="✅ Đổi mật khẩu" 
+                                Height="40"
+                                Style="{StaticResource PrimaryButton}" 
+                                Click="SaveChangePasswordButton_Click"/>
+                        <Button x:Name="CancelChangePasswordButton" 
+                                Grid.Column="2"
+                                Content="❌ Hủy bỏ" 
+                                Height="40"
+                                Style="{StaticResource PrimaryButton}" 
+                                Click="CancelChangePasswordButton_Click"/>
+                    </Grid>
                 </StackPanel>
             </StackPanel>
         </Border>

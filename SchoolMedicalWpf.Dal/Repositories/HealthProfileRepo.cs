@@ -35,7 +35,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
                 .FirstOrDefault(hp => hp.HealthProfileId == id);
         }
 
-        public void Add(HealthProfile healthProfile)
+        public bool Add(HealthProfile healthProfile)
         {
             if (healthProfile == null)
             {
@@ -43,6 +43,18 @@ namespace SchoolMedicalWpf.Dal.Repositories
             }
             _context.HealthProfiles.Add(healthProfile);
             _context.SaveChanges();
+            return true;
+        }
+
+        public bool Update(HealthProfile healthProfile)
+        {
+            if (healthProfile == null)
+            {
+                throw new ArgumentNullException(nameof(healthProfile), "Health profile cannot be null");
+            }
+            _context.HealthProfiles.Update(healthProfile);
+            _context.SaveChanges();
+            return true;
         }
     }
 }
