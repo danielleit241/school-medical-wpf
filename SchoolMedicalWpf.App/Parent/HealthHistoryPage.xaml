@@ -373,7 +373,7 @@
                                     <DataGridTextColumn Header="Tên vaccine" Width="140" Binding="{Binding Schedule.Vaccine.VaccineName}" />
                                     <DataGridTextColumn Header="Liều" Width="70" Binding="{Binding DoseNumber}" />
                                     <DataGridTextColumn Header="Nhà sản xuất" Width="120" Binding="{Binding Schedule.Vaccine.Manufacturer}" />
-                                    <DataGridTextColumn Header="Số lô" Width="120" Binding="{Binding LotNumber}" />
+                                    <DataGridTextColumn Header="Số lô" Width="120" Binding="{Binding Schedule.Vaccine.BatchNumber}" />
                                     <DataGridTextColumn Header="Vị trí tiêm" Width="100" Binding="{Binding InjectionSite}" />
                                     <DataGridTextColumn Header="Ghi chú" Width="*" Binding="{Binding Notes}" />
                                 </DataGrid.Columns>
@@ -545,11 +545,11 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Học sinh" Width="120" Binding="{Binding Student.FullName}" />
                                     <DataGridTextColumn Header="Lớp" Width="60" Binding="{Binding Student.Grade}" />
-                                    <DataGridTextColumn Header="Ngày giờ" Width="120" Binding="{Binding EventDate, StringFormat=dd/MM/yyyy HH:mm}" />
+                                    <DataGridTextColumn Header="Ngày giờ" Width="120" Binding="{Binding EventDate, StringFormat=dd/MM/yyyy}" />
                                     <DataGridTextColumn Header="Loại sự kiện" Width="100" Binding="{Binding EventType}" />
                                     <DataGridTextColumn Header="Mô tả" Width="200" Binding="{Binding EventDescription}" />
                                     <DataGridTextColumn Header="Địa điểm" Width="120" Binding="{Binding Location}" />
-                                    <DataGridTemplateColumn Header="Mức độ" Width="80">
+                                    <DataGridTemplateColumn Header="Mức độ" Width="100">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Center">

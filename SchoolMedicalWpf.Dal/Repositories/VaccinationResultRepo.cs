@@ -13,6 +13,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
                     .AsNoTracking()
                     .Include(vr => vr.HealthProfile)
                     .ThenInclude(hp => hp.Student)
+                    .Include(vr => vr.Schedule).ThenInclude(s => s.Vaccine)
                     .ToList();
             }
             catch (Exception ex)
@@ -29,6 +30,7 @@ namespace SchoolMedicalWpf.Dal.Repositories
                     .AsNoTracking()
                     .Include(vr => vr.HealthProfile)
                     .ThenInclude(hp => hp.Student)
+                    .Include(vr => vr.Schedule).ThenInclude(s => s.Vaccine)
                     .FirstOrDefault(v => v.VaccinationResultId == id);
             }
             catch (Exception ex)
