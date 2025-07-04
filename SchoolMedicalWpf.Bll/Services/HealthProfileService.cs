@@ -12,6 +12,18 @@ namespace SchoolMedicalWpf.Bll.Services
             _healthProfileRepo = healthProfileRepo ?? throw new ArgumentNullException(nameof(healthProfileRepo));
         }
 
+        public List<HealthProfile> GetAllHealthProfiles()
+        {
+            return _healthProfileRepo.GetAllHealthProfiles();
+        }
+
+        public HealthProfile? GetHealthProfileById(Guid id)
+        {
+            if (id == Guid.Empty)
+                throw new ArgumentException("Invalid health profile ID.", nameof(id));
+            return _healthProfileRepo.GetHealthProfileById(id);
+        }
+
         public HealthProfile? GetHealthProfileByStudentId(Guid? studentId)
         {
             if (studentId == null || studentId == Guid.Empty)

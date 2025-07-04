@@ -6,6 +6,11 @@
              xmlns:local="clr-namespace:SchoolMedicalWpf.App.Nurse"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1400">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,7 +23,7 @@
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
             <TextBlock Text="Ghi nhận kết quả khám sức khỏe và tiêm chủng" 
                        FontSize="20" FontWeight="Bold" Margin="0,0,0,5"/>
-            <TextBlock Name="txtCurrentDateTime" Text="04/07/2025 02:33:37 UTC" 
+            <TextBlock Name="txtCurrentDateTime" Text="2025-07-04 05:28:41 UTC - User: danielleit241" 
                        FontSize="12" Foreground="Gray"/>
         </StackPanel>
 
@@ -88,6 +93,7 @@
                             <DataGridTextColumn Header="Họ và tên" Binding="{Binding StudentName}" Width="180" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Lớp" Binding="{Binding Grade}" Width="70" IsReadOnly="True"/>
                             <DataGridCheckBoxColumn Header="Đã thực hiện" Binding="{Binding IsCompleted}" Width="100"/>
+
                             <DataGridTemplateColumn Header="Ngày thực hiện" Width="120">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -95,13 +101,109 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Ghi chú" Binding="{Binding Notes}" Width="*"/>
-                            <DataGridTemplateColumn Header="Chi tiết" Width="100">
+
+                            <DataGridTemplateColumn Header="Trạng thái" Width="140">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="📝 Nhập KQ" Padding="5,3" Background="#17a2b8" 
-                                                Foreground="White" BorderThickness="0" Click="EnterResults_Click"
-                                                IsEnabled="{Binding IsCompleted}"/>
+                                        <Border CornerRadius="3" Padding="6,2">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="LightGray"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Chưa thực hiện">
+                                                            <Setter Property="Background" Value="#FFF3CD"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Đã có kết quả">
+                                                            <Setter Property="Background" Value="#D1ECF1"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Đã lưu kết quả khám">
+                                                            <Setter Property="Background" Value="#D4EDDA"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Đã lưu kết quả tiêm">
+                                                            <Setter Property="Background" Value="#D4EDDA"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Đã cập nhật kết quả">
+                                                            <Setter Property="Background" Value="#D4EDDA"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Đã lưu cơ bản">
+                                                            <Setter Property="Background" Value="#E2E3E5"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="{Binding Status}" FontSize="11" HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Header="Ghi chú" Binding="{Binding Notes}" Width="150"/>
+
+                            <!-- Updated Action Column with 3 buttons -->
+                            <DataGridTemplateColumn Header="Thao tác" Width="220">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <!-- Nút nhập kết quả mới (chỉ hiện khi chưa có kết quả và đã completed) -->
+                                            <Button Content="📝 Nhập" Padding="4,2" Margin="1" FontSize="10"
+                                                    Background="#17a2b8" Foreground="White" BorderThickness="0"
+                                                    Click="EnterResults_Click"
+                                                    IsEnabled="{Binding IsCompleted}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <!-- Hiện khi: IsCompleted = true VÀ HasExistingResults = false -->
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsCompleted}" Value="True"/>
+                                                                    <Condition Binding="{Binding HasExistingResults}" Value="False"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- Nút xem kết quả (chỉ hiện khi đã có kết quả) -->
+                                            <Button Content="👁️ Xem" Padding="4,2" Margin="1" FontSize="10"
+                                                    Background="#28a745" Foreground="White" BorderThickness="0"
+                                                    Click="ViewResult_Click"
+                                                    IsEnabled="{Binding HasExistingResults}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasExistingResults}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- Nút chỉnh sửa kết quả (chỉ hiện khi đã có kết quả) -->
+                                            <Button Content="✏️ Sửa" Padding="4,2" Margin="1" FontSize="10"
+                                                    Background="#ffc107" Foreground="Black" BorderThickness="0"
+                                                    Click="EditResult_Click"
+                                                    IsEnabled="{Binding HasExistingResults}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasExistingResults}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- Debug text (có thể xóa sau khi test) -->
+                                            <TextBlock Text="{Binding HasExistingResults, StringFormat='[{0}]'}" 
+                                                       FontSize="8" Foreground="Gray" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -154,7 +256,7 @@
                             <DataGridTemplateColumn Header="Ngày thực hiện" Width="120">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <DatePicker SelectedDate="{Binding DatePerformed}" IsEnabled="{Binding IsCompleted}"/>
+                                        <DatePicker SelectedDate="{Binding DatePerformed}" IsEnabled="False"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -179,6 +281,9 @@
                                                         <DataTrigger Binding="{Binding Status}" Value="Đã lưu kết quả tiêm">
                                                             <Setter Property="Background" Value="#D4EDDA"/>
                                                         </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Đã cập nhật kết quả">
+                                                            <Setter Property="Background" Value="#D4EDDA"/>
+                                                        </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="Đã lưu cơ bản">
                                                             <Setter Property="Background" Value="#E2E3E5"/>
                                                         </DataTrigger>
@@ -193,12 +298,66 @@
 
                             <DataGridTextColumn Header="Ghi chú" Binding="{Binding Notes}" Width="150"/>
 
-                            <DataGridTemplateColumn Header="Chi tiết" Width="100">
+                            <!-- Same 3-button logic for summary tab -->
+                            <DataGridTemplateColumn Header="Thao tác" Width="220">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="📝 Nhập KQ" Padding="5,3" Background="#17a2b8" 
-                        Foreground="White" BorderThickness="0" Click="EnterResults_Click"
-                        IsEnabled="{Binding IsCompleted}"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <!-- Nút nhập kết quả mới -->
+                                            <Button Content="📝 Nhập" Padding="4,2" Margin="1" FontSize="10"
+                                                    Background="#17a2b8" Foreground="White" BorderThickness="0"
+                                                    Click="EnterResults_Click"
+                                                    IsEnabled="{Binding IsCompleted}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsCompleted}" Value="True"/>
+                                                                    <Condition Binding="{Binding HasExistingResults}" Value="False"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- Nút xem kết quả -->
+                                            <Button Content="👁️ Xem" Padding="4,2" Margin="1" FontSize="10"
+                                                    Background="#28a745" Foreground="White" BorderThickness="0"
+                                                    Click="ViewResult_Click"
+                                                    IsEnabled="{Binding HasExistingResults}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasExistingResults}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- Nút chỉnh sửa kết quả -->
+                                            <Button Content="✏️ Sửa" Padding="4,2" Margin="1" FontSize="10"
+                                                    Background="#ffc107" Foreground="Black" BorderThickness="0"
+                                                    Click="EditResult_Click"
+                                                    IsEnabled="{Binding HasExistingResults}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasExistingResults}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

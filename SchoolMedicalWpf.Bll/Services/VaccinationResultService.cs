@@ -7,23 +7,23 @@ namespace SchoolMedicalWpf.Bll.Services
     {
         public List<VaccinationResult> GetAllVaccinationResults()
         {
-            return vaccinationResultRepo.GetAllVaccinationResults();
+            return vaccinationResultRepo.GetAll();
         }
         public VaccinationResult? GetVaccinationResultById(Guid id)
         {
-            return vaccinationResultRepo.GetVaccinationResultById(id);
+            return vaccinationResultRepo.GetById(id);
         }
         public void AddVaccinationResult(VaccinationResult vaccinationResult)
         {
-            vaccinationResultRepo.AddVaccinationResult(vaccinationResult);
+            vaccinationResultRepo.Add(vaccinationResult);
         }
         public void UpdateVaccinationResult(VaccinationResult vaccinationResult)
         {
-            vaccinationResultRepo.UpdateVaccinationResult(vaccinationResult);
+            vaccinationResultRepo.Update(vaccinationResult);
         }
         public void DeleteVaccinationResult(Guid id)
         {
-            vaccinationResultRepo.DeleteVaccinationResult(id);
+            vaccinationResultRepo.Delete(id);
         }
     }
 }

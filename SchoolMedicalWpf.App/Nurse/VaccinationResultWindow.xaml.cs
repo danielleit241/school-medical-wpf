@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
 
@@ -12,36 +11,38 @@ namespace SchoolMedicalWpf.App.Nurse
         private readonly Guid? _scheduleId;
         private readonly User _currentUser;
         private readonly VaccinationResultService _vaccinationResultService;
-        private readonly DateTime _currentDateTime = new DateTime(2025, 7, 4, 2, 38, 7, DateTimeKind.Utc);
+        private readonly DateTime _currentDateTime = DateTime.Now;
+
+        // Track edit mode and existing result
+        private bool _isEditMode = false;
+        private Guid? _existingResultId = null;
+        private VaccinationResult _originalResult = null;
 
         public VaccinationResult Result { get; private set; }
         public bool IsSaved { get; private set; } = false;
 
-        public VaccinationResultWindow(Guid healthProfileId, Guid? scheduleId, User currentUser,
-                                       VaccinationResultService vaccinationResultService,
-                                       string studentCode, string studentName,
-                                       string grade)
+        // Fixed constructor to match the calling pattern
+        public VaccinationResultWindow(Guid healthProfileId,
+                                      Guid? scheduleId,
+                                      User currentUser,
+                                      VaccinationResultService vaccinationResultService,
+                                      string studentCode = "",
+                                      string studentName = "",
+                                      string grade = "")
         {
             InitializeComponent();
             _healthProfileId = healthProfileId;
             _scheduleId = scheduleId;
-            _currentUser = currentUser;
-            _vaccinationResultService = vaccinationResultService;
+            _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
+            _vaccinationResultService = vaccinationResultService ?? throw new ArgumentNullException(nameof(vaccinationResultService));
 
             InitializeWindow(studentCode, studentName, grade);
             SetupEventHandlers();
         }
 
-        // Overload constructor to handle optional parameters
-        public VaccinationResultWindow(Guid healthProfileId, Guid? scheduleId, User currentUser,
-                                       VaccinationResultService vaccinationResultService)
-            : this(healthProfileId, scheduleId, currentUser, vaccinationResultService, "", "", "")
-        {
-        }
-
         private void InitializeWindow(string studentCode, string studentName, string grade)
         {
-            txtDateTime.Text = $"{_currentDateTime:dd/MM/yyyy HH:mm:ss} UTC - Y tá: {_currentUser}";
+            txtDateTime.Text = $"{_currentDateTime:yyyy-MM-dd HH:mm:ss} UTC - Y tá: {_currentUser.FullName} ({_currentUser.FullName})";
 
             // Fill student information
             txtStudentCode.Text = studentCode;
@@ -59,25 +60,115 @@ namespace SchoolMedicalWpf.App.Nurse
             dpVaccinationDate.Focus();
         }
 
-        private void SetupEventHandlers()
+        // Added LoadExistingData method
+        public void LoadExistingData(VaccinationResult existingResult)
         {
-            // Show/hide reaction time based on immediate reaction selection
-            cmbImmediateReaction.SelectionChanged += (s, e) =>
-            {
-                if (cmbImmediateReaction.SelectedItem is ComboBoxItem item)
-                {
-                    var hasReaction = item.Content.ToString() != "Không có phản ứng";
-                    pnlReactionTime.Visibility = hasReaction ? Visibility.Visible : Visibility.Collapsed;
+            if (existingResult == null) return;
 
-                    if (hasReaction)
+            try
+            {
+                // Set edit mode flags
+                _isEditMode = true;
+                _existingResultId = existingResult.VaccinationResultId;
+                _originalResult = existingResult;
+
+                // Load existing data into controls
+                if (FindName("txtDoseNumber") is TextBox txtDoseNumber)
+                    txtDoseNumber.Text = existingResult.DoseNumber?.ToString() ?? "";
+
+                if (FindName("dpVaccinationDate") is DatePicker dpVaccinationDate && existingResult.VaccinationDate.HasValue)
+                    dpVaccinationDate.SelectedDate = existingResult.VaccinationDate.Value.ToDateTime(TimeOnly.MinValue);
+
+                if (FindName("cmbInjectionSite") is ComboBox cmbInjectionSite)
+                {
+                    foreach (ComboBoxItem item in cmbInjectionSite.Items)
                     {
-                        dtpReactionStartTime.SelectedDate = _currentDateTime;
+                        if (item.Content.ToString() == existingResult.InjectionSite)
+                        {
+                            cmbInjectionSite.SelectedItem = item;
+                            break;
+                        }
                     }
                 }
-            };
+
+                if (FindName("cmbImmediateReaction") is ComboBox cmbImmediateReaction)
+                {
+                    foreach (ComboBoxItem item in cmbImmediateReaction.Items)
+                    {
+                        if (item.Content.ToString() == existingResult.ImmediateReaction)
+                        {
+                            cmbImmediateReaction.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+
+                if (FindName("dtpReactionStartTime") is DatePicker dtpReactionStartTime && existingResult.ReactionStartTime.HasValue)
+                    dtpReactionStartTime.SelectedDate = existingResult.ReactionStartTime.Value;
+
+                if (FindName("cmbReactionType") is ComboBox cmbReactionType)
+                {
+                    foreach (ComboBoxItem item in cmbReactionType.Items)
+                    {
+                        if (item.Content.ToString() == existingResult.ReactionType)
+                        {
+                            cmbReactionType.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+
+                if (FindName("cmbSeverityLevel") is ComboBox cmbSeverityLevel)
+                {
+                    foreach (ComboBoxItem item in cmbSeverityLevel.Items)
+                    {
+                        if (item.Content.ToString() == existingResult.SeverityLevel)
+                        {
+                            cmbSeverityLevel.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+
+                if (FindName("txtNotes") is TextBox txtNotes)
+                    txtNotes.Text = existingResult.Notes ?? "";
+
+                // Update UI for edit mode
+                Title = Title.Replace("Ghi nhận", "Chỉnh sửa");
+                if (FindName("btnSave") is Button btnSave)
+                    btnSave.Content = "💾 Cập nhật kết quả";
+
+                // Show reaction panel if there are reactions
+                if (!string.IsNullOrEmpty(existingResult.ImmediateReaction) &&
+                    existingResult.ImmediateReaction != "Không có")
+                {
+                    pnlReactionTime.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu hiện có: {ex.Message}", "Lỗi",
+                              MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
-        private void SaveResult_Click(object sender, RoutedEventArgs e)
+        private void SetupEventHandlers()
+        {
+            // Handle immediate reaction selection
+            if (FindName("cmbImmediateReaction") is ComboBox cmbImmediateReaction)
+            {
+                cmbImmediateReaction.SelectionChanged += (s, e) =>
+                {
+                    if (cmbImmediateReaction.SelectedItem is ComboBoxItem item)
+                    {
+                        string reaction = item.Content.ToString();
+                        pnlReactionTime.Visibility = (reaction != "Không có") ? Visibility.Visible : Visibility.Collapsed;
+                    }
+                };
+            }
+        }
+
+        private async void SaveResult_Click(object sender, RoutedEventArgs e)
         {
             if (ValidateInput())
             {
@@ -85,12 +176,21 @@ namespace SchoolMedicalWpf.App.Nurse
                 {
                     Result = CreateVaccinationResult();
 
-                    // TODO: Save to database here
-                    // await _vaccinationService.SaveResultAsync(Result);
+                    if (_isEditMode && _existingResultId.HasValue)
+                    {
+                        // UPDATE existing result
+                        await Task.Run(() => _vaccinationResultService.UpdateVaccinationResult(Result));
+                    }
+                    else
+                    {
+                        // CREATE new result
+                        await Task.Run(() => _vaccinationResultService.AddVaccinationResult(Result));
+                    }
 
                     IsSaved = true;
 
-                    MessageBox.Show("✅ Kết quả tiêm chủng đã được lưu thành công!",
+                    string action = _isEditMode ? "cập nhật" : "tạo mới";
+                    MessageBox.Show($"✅ Kết quả tiêm chủng đã được {action} thành công!",
                                     "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     DialogResult = true;
@@ -98,138 +198,78 @@ namespace SchoolMedicalWpf.App.Nurse
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"❌ Lỗi khi lưu kết quả: {ex.Message}",
-                                    "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
+                    string action = _isEditMode ? "cập nhật" : "tạo mới";
 
-        private bool ValidateInput()
-        {
-            txtValidationMessage.Visibility = Visibility.Collapsed;
-
-            if (!dpVaccinationDate.SelectedDate.HasValue)
-            {
-                ShowValidationError("Vui lòng chọn ngày tiêm!");
-                dpVaccinationDate.Focus();
-                return false;
-            }
-
-            if (dpVaccinationDate.SelectedDate.Value > _currentDateTime.Date)
-            {
-                ShowValidationError("Ngày tiêm không thể là ngày tương lai!");
-                dpVaccinationDate.Focus();
-                return false;
-            }
-
-            if (cmbDoseNumber.SelectedItem == null)
-            {
-                ShowValidationError("Vui lòng chọn liều thứ!");
-                cmbDoseNumber.Focus();
-                return false;
-            }
-
-            if (cmbInjectionSite.SelectedItem == null)
-            {
-                ShowValidationError("Vui lòng chọn vị trí tiêm!");
-                cmbInjectionSite.Focus();
-                return false;
-            }
-
-            // Validate reaction start time if reaction exists
-            if (pnlReactionTime.Visibility == Visibility.Visible)
-            {
-                if (dtpReactionStartTime.SelectedDate.HasValue)
-                {
-                    var reactionTime = dtpReactionStartTime.SelectedDate.Value;
-                    var vaccinationTime = dpVaccinationDate.SelectedDate.Value;
-
-                    if (reactionTime < vaccinationTime)
+                    if (ex.Message.Contains("optimistic concurrency") || ex.Message.Contains("database operation was expected"))
                     {
-                        ShowValidationError("Thời gian phản ứng không thể trước thời gian tiêm!");
-                        dtpReactionStartTime.Focus();
-                        return false;
+                        MessageBox.Show(
+                            $"❌ Xung đột dữ liệu!\n\n" +
+                            $"Kết quả này đã được thay đổi bởi người dùng khác.\n" +
+                            $"Vui lòng đóng cửa sổ này và thử lại.",
+                            "Xung đột dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"❌ Lỗi khi {action} kết quả:\n{ex.Message}",
+                                        "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
-
-            return true;
         }
 
-        private void ShowValidationError(string message)
-        {
-            txtValidationMessage.Text = $"⚠️ {message}";
-            txtValidationMessage.Visibility = Visibility.Visible;
-
-            // Highlight the window border
-            BorderBrush = Brushes.Red;
-            BorderThickness = new Thickness(2);
-
-            // Reset after 3 seconds
-            var timer = new System.Windows.Threading.DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(3)
-            };
-            timer.Tick += (s, e) =>
-            {
-                BorderBrush = SystemColors.ActiveBorderBrush;
-                BorderThickness = new Thickness(1);
-                timer.Stop();
-            };
-            timer.Start();
-        }
-
+        // *** FIX CHÍNH: Logic tạo VaccinationResultId đúng ***
         private VaccinationResult CreateVaccinationResult()
         {
+            // QUAN TRỌNG: Sử dụng existing VaccinationResultId nếu đang edit
+            Guid resultId = _isEditMode && _existingResultId.HasValue
+                ? _existingResultId.Value
+                : Guid.NewGuid();
+
             var result = new VaccinationResult
             {
-                VaccinationResultId = Guid.NewGuid(),
+                VaccinationResultId = resultId, // *** SỬA CHÍNH Ở ĐÂY ***
                 ScheduleId = _scheduleId,
                 HealthProfileId = _healthProfileId,
-                VaccinationDate = DateOnly.FromDateTime(dpVaccinationDate.SelectedDate.Value),
+                VaccinationDate = DateOnly.FromDateTime(dpVaccinationDate.SelectedDate!.Value),
                 Notes = string.IsNullOrWhiteSpace(txtNotes.Text) ? null : txtNotes.Text.Trim(),
-                RecordedId = Guid.Parse("12345678-1234-1234-1234-123456789012") // danielleit241's ID
+                RecordedId = _currentUser.UserId
             };
 
-            // Get dose number
-            if (cmbDoseNumber.SelectedItem is ComboBoxItem doseItem)
+            // Parse dose number
+            if (FindName("cmbDoseNumber") is ComboBox cmbDoseNumber && cmbDoseNumber.SelectedItem is ComboBoxItem doseItem)
             {
                 if (int.TryParse(doseItem.Content.ToString(), out int dose))
                 {
                     result.DoseNumber = dose;
                 }
-                else
-                {
-                    result.DoseNumber = 0; // For "Nhắc lại"
-                }
             }
 
-            // Get injection site
-            if (cmbInjectionSite.SelectedItem is ComboBoxItem siteItem)
+            // Parse injection site
+            if (FindName("cmbInjectionSite") is ComboBox cmbInjectionSite && cmbInjectionSite.SelectedItem is ComboBoxItem siteItem)
             {
                 result.InjectionSite = siteItem.Content.ToString();
             }
 
-            // Get immediate reaction
-            if (cmbImmediateReaction.SelectedItem is ComboBoxItem reactionItem)
+            // Parse immediate reaction
+            if (FindName("cmbImmediateReaction") is ComboBox cmbImmediateReaction && cmbImmediateReaction.SelectedItem is ComboBoxItem reactionItem)
             {
                 result.ImmediateReaction = reactionItem.Content.ToString();
             }
 
-            // Get reaction start time
-            if (dtpReactionStartTime.SelectedDate.HasValue)
+            // Parse reaction start time
+            if (FindName("dtpReactionStartTime") is DatePicker dtpReactionStartTime && dtpReactionStartTime.SelectedDate.HasValue)
             {
                 result.ReactionStartTime = dtpReactionStartTime.SelectedDate.Value;
             }
 
-            // Get reaction type
-            if (cmbReactionType.SelectedItem is ComboBoxItem typeItem)
+            // Parse reaction type
+            if (FindName("cmbReactionType") is ComboBox cmbReactionType && cmbReactionType.SelectedItem is ComboBoxItem typeItem)
             {
                 result.ReactionType = typeItem.Content.ToString();
             }
 
-            // Get severity level
-            if (cmbSeverityLevel.SelectedItem is ComboBoxItem severityItem)
+            // Parse severity level
+            if (FindName("cmbSeverityLevel") is ComboBox cmbSeverityLevel && cmbSeverityLevel.SelectedItem is ComboBoxItem severityItem)
             {
                 result.SeverityLevel = severityItem.Content.ToString();
             }
@@ -237,28 +277,53 @@ namespace SchoolMedicalWpf.App.Nurse
             return result;
         }
 
+        private bool ValidateInput()
+        {
+            var errors = new List<string>();
+
+            if (!dpVaccinationDate.SelectedDate.HasValue)
+            {
+                errors.Add("Vui lòng chọn ngày tiêm chủng");
+            }
+
+            if (FindName("cmbDoseNumber") is ComboBox cmbDoseNumber && cmbDoseNumber.SelectedItem == null)
+            {
+                errors.Add("Vui lòng chọn liều tiêm");
+            }
+
+            if (FindName("cmbInjectionSite") is ComboBox cmbInjectionSite && cmbInjectionSite.SelectedItem == null)
+            {
+                errors.Add("Vui lòng chọn vị trí tiêm");
+            }
+
+            if (errors.Any())
+            {
+                MessageBox.Show($"Vui lòng sửa các lỗi sau:\n\n{string.Join("\n", errors)}",
+                              "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show("Bạn có chắc chắn muốn hủy? Dữ liệu đã nhập sẽ bị mất.",
-                                         "Xác nhận hủy", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                DialogResult = false;
-                Close();
-            }
+            DialogResult = false;
+            Close();
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if (!IsSaved && !DialogResult.HasValue)
+            if (!IsSaved)
             {
-                var result = MessageBox.Show("Bạn có chắc chắn muốn đóng? Dữ liệu đã nhập sẽ bị mất.",
-                                             "Xác nhận đóng", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show(
+                    "Bạn có những thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng không?",
+                    "Xác nhận đóng", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.No)
                 {
                     e.Cancel = true;
+                    return;
                 }
             }
 

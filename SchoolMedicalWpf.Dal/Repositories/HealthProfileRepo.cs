@@ -17,6 +17,24 @@ namespace SchoolMedicalWpf.Dal.Repositories
             return _context.HealthProfiles.Include(hp => hp.Student).FirstOrDefault(hp => hp.StudentId == studentId);
         }
 
+        public List<HealthProfile> GetAllHealthProfiles()
+        {
+            return _context.HealthProfiles
+                .Include(hp => hp.Student)
+                .Include(hp => hp.VaccinationResults)
+                .Include(hp => hp.HealthCheckResults)
+                .ToList();
+        }
+
+        public HealthProfile? GetHealthProfileById(Guid id)
+        {
+            return _context.HealthProfiles
+                .Include(hp => hp.Student)
+                .Include(hp => hp.VaccinationResults)
+                .Include(hp => hp.HealthCheckResults)
+                .FirstOrDefault(hp => hp.HealthProfileId == id);
+        }
+
         public void Add(HealthProfile healthProfile)
         {
             if (healthProfile == null)
