@@ -106,10 +106,8 @@ namespace SchoolMedicalWpf.App.Nurse
             {
                 var detailWindow = new MedicalRegistrationDetailWindow(registration, _medicalRegistrationService);
 
-                // Subscribe to refresh event
                 detailWindow.RegistrationUpdated += () =>
                 {
-                    // Refresh display
                     LoadRegistrations();
                 };
 
@@ -156,17 +154,13 @@ namespace SchoolMedicalWpf.App.Nurse
             try
             {
                 LoadingGrid.Visibility = Visibility.Visible;
-
-                // Update status
                 registration.Status = newStatus;
-                // If your entity has ProcessedDate and ProcessedBy fields, uncomment these:
-                // registration.ProcessedDate = DateTime.Now;
-                // registration.ProcessedBy = "danielleit241";
+                registration.StaffNurseId = _currentUser.UserId;
+                registration.DateApproved = DateOnly.FromDateTime(DateTime.Now);
 
                 // Save to database
                 await Task.Run(() => _medicalRegistrationService.UpdateRegistration(registration));
 
-                // Update local list
                 var index = _allRegistrations.FindIndex(r => r.RegistrationId == registration.RegistrationId);
                 if (index >= 0)
                 {
