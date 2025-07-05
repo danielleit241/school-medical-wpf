@@ -11,15 +11,16 @@ namespace SchoolMedicalWpf.App.Nurse
         public NurseMainWindow(User currentUser)
         {
             InitializeComponent();
-            LoadNurseHomePage();
             _currentUser = currentUser;
+            LoadNurseHomePage();
+
         }
 
         private void LoadNurseHomePage()
         {
             try
             {
-                var homePage = new NurseHomePage();
+                var homePage = new NurseHomePage(_currentUser);
                 MainContent.Content = homePage;
             }
             catch (Exception ex)
@@ -46,7 +47,7 @@ namespace SchoolMedicalWpf.App.Nurse
                 switch (controlName)
                 {
                     case "Home":
-                        userControl = new NurseHomePage();
+                        userControl = new NurseHomePage(_currentUser);
                         break;
                     case "HealthSchedule":
                         userControl = ActivatorUtilities.CreateInstance<HealthSchedulePage>(App.Services, _currentUser);
@@ -61,7 +62,7 @@ namespace SchoolMedicalWpf.App.Nurse
                         userControl = ActivatorUtilities.CreateInstance<ProfilePage>(App.Services, _currentUser);
                         break;
                     default:
-                        userControl = new NurseHomePage();
+                        userControl = new NurseHomePage(_currentUser);
                         break;
                 }
 

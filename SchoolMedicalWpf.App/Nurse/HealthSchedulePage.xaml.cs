@@ -24,14 +24,14 @@ namespace SchoolMedicalWpf.App.Nurse
         private readonly HealthCheckResultService _healthCheckResultService;
         private readonly VaccinationResultService _vaccinationResultService;
 
-        public HealthSchedulePage(User currentUser,
-                                 UserService userService,
+        public HealthSchedulePage(UserService userService,
                                  StudentService studentService,
                                  HealthProfileService healthProfileService,
                                  HealthCheckScheduleService healthCheckScheduleService,
                                  VaccinationScheduleService vaccinationScheduleService,
                                  HealthCheckResultService healthCheckResultService,
-                                 VaccinationResultService vaccinationResultService)
+                                 VaccinationResultService vaccinationResultService,
+                                 User currentUser)
         {
             InitializeComponent();
             _currentUser = currentUser;
