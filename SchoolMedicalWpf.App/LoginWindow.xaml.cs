@@ -1,8 +1,8 @@
-﻿using System.Windows;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.App.Parent;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
+using System.Windows;
 
 namespace SchoolMedicalWpf.App
 {
@@ -48,7 +48,7 @@ namespace SchoolMedicalWpf.App
                 }
                 else if (user.RoleId == 1)
                 {
-                    var amw = new Admin.AdminMainWindow(user, _userService, _roleService, _studentService); // Pass StudentService to AdminMainWindow
+                    var amw = ActivatorUtilities.CreateInstance<Admin.AdminMainWindow>(App.Services, _currentUser);
                     amw.Show();
                     this.Close();
                 }

@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +8,7 @@ using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal;
 using SchoolMedicalWpf.Dal.Entities;
 using SchoolMedicalWpf.Dal.Repositories;
+using System.Windows;
 
 namespace SchoolMedicalWpf.App
 {
@@ -60,6 +60,9 @@ namespace SchoolMedicalWpf.App
                     services.AddTransient<MedicalRegistrationHistoryPage>();
                     services.AddTransient<MedicalRegistrationFormWindow>();
                     services.AddTransient<HealthHistoryPage>();
+                    services.AddTransient<HealthResultDetailWindow>();
+                    services.AddTransient<VaccinationResultDetailWindow>();
+                    services.AddTransient<MedicalEventDetailWindow>();
 
                     services.AddTransient<Nurse.NurseMainWindow>();
                     services.AddTransient<Nurse.NurseHomePage>();

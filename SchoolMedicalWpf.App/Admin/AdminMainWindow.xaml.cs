@@ -1,8 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace SchoolMedicalWpf.App.Admin
 {
@@ -43,7 +43,7 @@ namespace SchoolMedicalWpf.App.Admin
                     MainContent.Content = new AccountManagementPage(_userService, _roleService);
                     break;
                 case "Student":
-                    MainContent.Content = new StudentManagementPage(_studentService); // Pass StudentService to StudentManagementPage
+                    MainContent.Content = ActivatorUtilities.CreateInstance<StudentManagementPage>(App.Services, _currentUser);
                     break;
                 case "Profile":
                     MainContent.Content = ActivatorUtilities.CreateInstance<ProfilePage>(App.Services, _currentUser);
