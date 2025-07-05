@@ -1,11 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using SchoolMedicalWpf.Bll.Services;
+using SchoolMedicalWpf.Dal.Entities;
+using SchoolMedicalWpf.Dal.Repositories;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using SchoolMedicalWpf.Bll.Services;
-using SchoolMedicalWpf.Dal.Entities;
-using SchoolMedicalWpf.Dal.Repositories;
 
 namespace SchoolMedicalWpf.App.Nurse
 {
@@ -14,7 +14,7 @@ namespace SchoolMedicalWpf.App.Nurse
         private ObservableCollection<StudentResultItem> _studentResults;
         private ScheduleItem _currentSchedule;
         private readonly User _currentUser;
-        private readonly DateTime _currentDateTime = new DateTime(2025, 7, 4, 6, 23, 34, DateTimeKind.Utc);
+        private readonly DateTime _currentDateTime = DateTime.Now;
 
         private readonly UserService _userService;
         private readonly StudentService _studentService;
@@ -54,10 +54,12 @@ namespace SchoolMedicalWpf.App.Nurse
 
         private void InitializePage()
         {
-            txtCurrentDateTime.Text = $"{_currentDateTime:yyyy-MM-dd HH:mm:ss} UTC - User: {_currentUser.FullName} ({_currentUser.FullName})";
+            txtCurrentDateTime.Text = $"{_currentDateTime:yyyy-MM-dd HH:mm:ss} UTC - User: {_currentUser.FullName} (danielleit241)";
             UpdateLastUpdateTime("Khởi tạo trang");
             LoadActiveSchedulesCount();
         }
+
+        // ... (other code unchanged)
 
         private async void LoadActiveSchedulesCount()
         {
@@ -69,7 +71,7 @@ namespace SchoolMedicalWpf.App.Nurse
             catch (Exception ex)
             {
                 txtActiveSchedulesCount.Text = "(Lỗi tải dữ liệu)";
-                MessageBox.Show($"Lỗi khi tải số lượng schedule: {ex.Message}", "Lỗi");
+                // MessageBox removed
             }
         }
 
@@ -96,7 +98,7 @@ namespace SchoolMedicalWpf.App.Nurse
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải danh sách schedule: {ex.Message}", "Lỗi");
+                // MessageBox removed
             }
         }
 
@@ -134,13 +136,13 @@ namespace SchoolMedicalWpf.App.Nurse
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải danh sách sinh viên: {ex.Message}", "Lỗi");
+                // MessageBox removed
                 btnLoadStudents.Content = "👥 Tải danh sách sinh viên";
                 btnLoadStudents.IsEnabled = true;
             }
         }
 
-        // *** FIX CHÍNH: LoadStudentsForSchedule với logic đúng từ RESULTS ***
+        // *** UPDATED: LoadStudentsForSchedule với bool Status ***
         private async Task LoadStudentsForSchedule()
         {
             _studentResults.Clear();
@@ -165,39 +167,32 @@ namespace SchoolMedicalWpf.App.Nurse
             }
         }
 
-        // *** NEW: Load students từ HealthCheckResults ***
+        // *** UPDATED: Load students từ HealthCheckResults với bool Status ***
         private async Task LoadStudentsFromHealthCheckResults()
         {
             var allHealthResults = await Task.Run(() => _healthCheckResultService.GetAll());
             var scheduleResults = allHealthResults.Where(r => r.ScheduleId == _currentSchedule.Id).ToList();
             var healthProfileIds = scheduleResults.Select(r => r.HealthProfileId).Distinct().ToList();
+
             foreach (var healthProfileId in healthProfileIds)
             {
                 try
                 {
                     // Get health profile
                     var healthProfile = await Task.Run(() => _healthProfileService.GetHealthProfileById(healthProfileId));
-                    if (healthProfile == null)
-                    {
-                        continue;
-                    }
+                    if (healthProfile == null) continue;
 
                     // Get student from health profile
                     var student = await Task.Run(() => _studentService.GetStudentById((Guid)healthProfile.StudentId!));
-                    if (student == null)
-                    {
-                        continue;
-                    }
+                    if (student == null) continue;
+
                     var studentResults = scheduleResults
                         .Where(r => r.HealthProfileId == healthProfileId)
                         .OrderByDescending(r => r.DatePerformed)
                         .ToList();
 
                     var latestResult = studentResults.FirstOrDefault();
-                    if (latestResult == null)
-                    {
-                        continue;
-                    }
+                    if (latestResult == null) continue;
 
                     var resultItem = new StudentResultItem
                     {
@@ -211,8 +206,9 @@ namespace SchoolMedicalWpf.App.Nurse
 
                         IsCompleted = true,
                         HasExistingResults = true,
-                        HasExistingHealthData = true,
+                        HasExistingHealthData = latestResult.Status, // true = có kết quả
                         ExistingResultId = latestResult.ResultId,
+                        DatabaseStatus = latestResult.Status, // Store database status
 
                         DatePerformed = latestResult.DatePerformed?.ToDateTime(TimeOnly.MinValue) ?? _currentDateTime.Date,
                         Notes = latestResult.Notes ?? "",
@@ -226,14 +222,12 @@ namespace SchoolMedicalWpf.App.Nurse
                         BloodPressure = latestResult.BloodPressure ?? ""
                     };
 
-                    if (HasComprehensiveHealthData(latestResult))
+                    // Set status based on database Status column (bool)
+                    resultItem.Status = latestResult.Status switch
                     {
-                        resultItem.Status = "Đã có kết quả đầy đủ";
-                    }
-                    else
-                    {
-                        resultItem.Status = "Đã có kết quả cơ bản";
-                    }
+                        false => "Chưa có kết quả",
+                        true => HasComprehensiveHealthData(latestResult) ? "Đã có kết quả đầy đủ" : "Đã có kết quả cơ bản"
+                    };
 
                     _studentResults.Add(resultItem);
                 }
@@ -244,7 +238,7 @@ namespace SchoolMedicalWpf.App.Nurse
             }
         }
 
-        // *** NEW: Load students từ VaccinationResults ***
+        // *** UPDATED: Load students từ VaccinationResults với bool Status ***
         private async Task LoadStudentsFromVaccinationResults()
         {
             var allVaccinationResults = await Task.Run(() => _vaccinationResultService.GetAllVaccinationResults());
@@ -256,25 +250,18 @@ namespace SchoolMedicalWpf.App.Nurse
                 try
                 {
                     var healthProfile = await Task.Run(() => _healthProfileService.GetHealthProfileById(healthProfileId));
-                    if (healthProfile == null)
-                    {
-                        continue;
-                    }
+                    if (healthProfile == null) continue;
+
                     var student = await Task.Run(() => _studentService.GetStudentById((Guid)healthProfile.StudentId!));
-                    if (student == null)
-                    {
-                        continue;
-                    }
+                    if (student == null) continue;
+
                     var studentResults = scheduleResults
                         .Where(r => r.HealthProfileId == healthProfileId)
                         .OrderByDescending(r => r.VaccinationDate)
                         .ToList();
 
                     var latestResult = studentResults.FirstOrDefault();
-                    if (latestResult == null)
-                    {
-                        continue;
-                    }
+                    if (latestResult == null) continue;
 
                     var resultItem = new StudentResultItem
                     {
@@ -288,8 +275,9 @@ namespace SchoolMedicalWpf.App.Nurse
 
                         IsCompleted = true,
                         HasExistingResults = true,
-                        HasExistingVaccinationData = true,
+                        HasExistingVaccinationData = latestResult.Status, // true = có kết quả
                         ExistingResultId = latestResult.VaccinationResultId,
+                        DatabaseStatus = latestResult.Status, // Store database status
 
                         DatePerformed = latestResult.VaccinationDate?.ToDateTime(TimeOnly.MinValue) ?? _currentDateTime.Date,
                         Notes = latestResult.Notes ?? "",
@@ -302,21 +290,16 @@ namespace SchoolMedicalWpf.App.Nurse
                         SeverityLevel = latestResult.SeverityLevel ?? ""
                     };
 
-                    if (HasSignificantReaction(latestResult))
+                    // Set status based on database Status column (bool) and reaction data
+                    resultItem.Status = latestResult.Status switch
                     {
-                        resultItem.Status = "Đã tiêm - Có phản ứng";
-                    }
-                    else if (HasComprehensiveVaccinationData(latestResult))
-                    {
-                        resultItem.Status = "Đã tiêm - Hoàn tất";
-                    }
-                    else
-                    {
-                        resultItem.Status = "Đã tiêm - Cơ bản";
-                    }
+                        false => "Chưa có kết quả",
+                        true when HasSignificantReaction(latestResult) => "Đã tiêm - Có phản ứng",
+                        true when HasComprehensiveVaccinationData(latestResult) => "Đã tiêm - Hoàn tất",
+                        true => "Đã tiêm - Cơ bản"
+                    };
 
                     _studentResults.Add(resultItem);
-
                 }
                 catch (Exception ex)
                 {
@@ -349,9 +332,6 @@ namespace SchoolMedicalWpf.App.Nurse
                     (result.SeverityLevel.Contains("Vừa") || result.SeverityLevel.Contains("Nặng")));
         }
 
-
-        #region Button Event Handlers
-
         private void ViewResult_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -361,10 +341,7 @@ namespace SchoolMedicalWpf.App.Nurse
             {
                 ViewExistingResult(resultItem);
             }
-            else
-            {
-                MessageBox.Show("Không có kết quả để xem!", "Thông báo");
-            }
+            // MessageBox removed
         }
 
         private void EditResult_Click(object sender, RoutedEventArgs e)
@@ -386,10 +363,7 @@ namespace SchoolMedicalWpf.App.Nurse
                     EditExistingResult(resultItem);
                 }
             }
-            else
-            {
-                MessageBox.Show("Không có kết quả để chỉnh sửa!", "Thông báo");
-            }
+            // MessageBox removed
         }
 
         private void EnterResults_Click(object sender, RoutedEventArgs e)
@@ -401,13 +375,8 @@ namespace SchoolMedicalWpf.App.Nurse
             {
                 OpenResultWindow(resultItem, false);
             }
-            else
-            {
-                MessageBox.Show("Vui lòng đánh dấu 'Đã thực hiện' trước khi nhập kết quả!", "Thông báo");
-            }
+            // MessageBox removed
         }
-
-        #endregion
 
         private void ViewExistingResult(StudentResultItem resultItem)
         {
@@ -490,12 +459,13 @@ namespace SchoolMedicalWpf.App.Nurse
                         var savedResult = healthCheckWindow.Result;
                         UpdateStudentResultFromHealthCheck(resultItem, savedResult);
 
-                        resultItem.Status = isEditMode ? "Đã cập nhật kết quả" : "Đã lưu kết quả khám";
+                        resultItem.Status = isEditMode ? "Đã cập nhật kết quả" : "Đã lưu kết quả";
                         resultItem.HasExistingResults = true;
+                        resultItem.DatabaseStatus = true; // Set status to true when saved with details
                         UpdateStatistics();
                         UpdateLastUpdateTime($"Đã {(isEditMode ? "cập nhật" : "lưu")} kết quả khám cho {resultItem.StudentName}");
 
-                        MessageBox.Show($"✅ Đã {(isEditMode ? "cập nhật" : "lưu")} kết quả khám sức khỏe cho {resultItem.StudentName}!",
+                        MessageBox.Show($"✅ Đã {(isEditMode ? "cập nhật" : "lưu")} kết quả khám sức khỏe cho {resultItem.StudentName}!\nStatus = true (Có kết quả)",
                                       "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
@@ -521,12 +491,13 @@ namespace SchoolMedicalWpf.App.Nurse
                         var savedResult = vaccinationWindow.Result;
                         UpdateStudentResultFromVaccination(resultItem, savedResult);
 
-                        resultItem.Status = isEditMode ? "Đã cập nhật kết quả" : "Đã lưu kết quả tiêm";
+                        resultItem.Status = isEditMode ? "Đã cập nhật kết quả (Status=true)" : "Đã lưu kết quả tiêm (Status=true)";
                         resultItem.HasExistingResults = true;
+                        resultItem.DatabaseStatus = true; // Set status to true when saved with details
                         UpdateStatistics();
                         UpdateLastUpdateTime($"Đã {(isEditMode ? "cập nhật" : "lưu")} kết quả tiêm cho {resultItem.StudentName}");
 
-                        MessageBox.Show($"✅ Đã {(isEditMode ? "cập nhật" : "lưu")} kết quả tiêm chủng cho {resultItem.StudentName}!",
+                        MessageBox.Show($"✅ Đã {(isEditMode ? "cập nhật" : "lưu")} kết quả tiêm chủng cho {resultItem.StudentName}!\nStatus = true (Có kết quả)",
                                       "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
@@ -546,6 +517,7 @@ namespace SchoolMedicalWpf.App.Nurse
                 ScheduleId = item.ScheduleId,
                 HealthProfileId = item.HealthProfileId,
                 DatePerformed = DateOnly.FromDateTime(item.DatePerformed),
+                Status = item.DatabaseStatus, // Use stored database status (bool)
                 Height = item.Height,
                 Weight = item.Weight,
                 VisionLeft = item.VisionLeft,
@@ -566,6 +538,7 @@ namespace SchoolMedicalWpf.App.Nurse
                 ScheduleId = item.ScheduleId,
                 HealthProfileId = item.HealthProfileId,
                 VaccinationDate = DateOnly.FromDateTime(item.DatePerformed),
+                Status = item.DatabaseStatus, // Use stored database status (bool)
                 DoseNumber = item.DoseNumber,
                 InjectionSite = item.InjectionSite,
                 ImmediateReaction = item.ImmediateReaction,
@@ -577,11 +550,13 @@ namespace SchoolMedicalWpf.App.Nurse
             };
         }
 
+        // *** UPDATED: UpdateStudentResultFromHealthCheck với bool Status ***
         private void UpdateStudentResultFromHealthCheck(StudentResultItem item, HealthCheckResult result)
         {
             item.DatePerformed = result.DatePerformed?.ToDateTime(TimeOnly.MinValue) ?? _currentDateTime.Date;
             item.Notes = result.Notes ?? "";
             item.ExistingResultId = result.ResultId;
+            item.DatabaseStatus = result.Status; // Update database status (bool)
 
             item.Height = result.Height;
             item.Weight = result.Weight;
@@ -590,34 +565,58 @@ namespace SchoolMedicalWpf.App.Nurse
             item.Hearing = result.Hearing ?? "";
             item.Nose = result.Nose ?? "";
             item.BloodPressure = result.BloodPressure ?? "";
-            item.HasExistingHealthData = true;
+
+            // Update based on Status column (bool)
+            item.HasExistingHealthData = result.Status;
+
+            // Update status display
+            item.Status = result.Status switch
+            {
+                false => "Chưa có kết quả",
+                true => HasComprehensiveHealthData(result) ? "Đã có kết quả đầy đủ" : "Đã có kết quả cơ bản"
+            };
         }
 
+        // *** UPDATED: UpdateStudentResultFromVaccination với bool Status ***
         private void UpdateStudentResultFromVaccination(StudentResultItem item, VaccinationResult result)
         {
             item.DatePerformed = result.VaccinationDate?.ToDateTime(TimeOnly.MinValue) ?? _currentDateTime.Date;
             item.Notes = result.Notes ?? "";
             item.ExistingResultId = result.VaccinationResultId;
+            item.DatabaseStatus = result.Status; // Update database status (bool)
 
-            // Update additional vaccination specific data
+            // Update vaccination specific data
             item.DoseNumber = result.DoseNumber;
             item.InjectionSite = result.InjectionSite ?? "";
             item.ImmediateReaction = result.ImmediateReaction ?? "";
             item.ReactionStartTime = result.ReactionStartTime;
             item.ReactionType = result.ReactionType ?? "";
             item.SeverityLevel = result.SeverityLevel ?? "";
-            item.HasExistingVaccinationData = true;
+
+            // Update based on Status column (bool)
+            item.HasExistingVaccinationData = result.Status;
+
+            // Update status display
+            item.Status = result.Status switch
+            {
+                false => "Chưa có kết quả",
+                true when HasSignificantReaction(result) => "Đã tiêm - Có phản ứng",
+                true when HasComprehensiveVaccinationData(result) => "Đã tiêm - Hoàn tất",
+                true => "Đã tiêm - Cơ bản"
+            };
         }
 
+        // *** UPDATED: SaveAll_Click với bool Status ***
         private async void SaveAll_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                // Lọc những kết quả đã completed nhưng chưa có kết quả chi tiết (Status = false hoặc chưa có)
                 var completedResults = _studentResults.Where(x => x.IsCompleted &&
-                    !x.HasExistingResults &&
-                    x.Status != "Đã lưu kết quả khám" &&
-                    x.Status != "Đã lưu kết quả tiêm" &&
-                    x.Status != "Đã cập nhật kết quả").ToList();
+                    (!x.HasExistingResults || // Chưa có record
+                     x.DatabaseStatus == false) && // Hoặc có record nhưng Status = false
+                    !x.Status.Contains("Đã lưu") &&
+                    !x.Status.Contains("Đã cập nhật")).ToList();
 
                 if (!completedResults.Any())
                 {
@@ -628,8 +627,8 @@ namespace SchoolMedicalWpf.App.Nurse
                 var result = MessageBox.Show(
                     $"Bạn có {completedResults.Count} kết quả chưa được nhập chi tiết.\n" +
                     $"Bạn có muốn mở từng cửa sổ để nhập kết quả chi tiết không?\n\n" +
-                    $"Chọn 'Yes' để nhập từng kết quả\n" +
-                    $"Chọn 'No' để lưu với thông tin cơ bản",
+                    $"Chọn 'Yes' để nhập từng kết quả (Status = true)\n" +
+                    $"Chọn 'No' để lưu với thông tin cơ bản (Status = false)",
                     "Nhập kết quả chi tiết", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Cancel)
@@ -637,7 +636,7 @@ namespace SchoolMedicalWpf.App.Nurse
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    // Open detail windows for each result
+                    // Open detail windows for each result - this will set Status = true
                     foreach (var item in completedResults)
                     {
                         var confirmResult = MessageBox.Show(
@@ -649,33 +648,36 @@ namespace SchoolMedicalWpf.App.Nurse
 
                         if (confirmResult == MessageBoxResult.Yes)
                         {
-                            OpenResultWindow(item, false);
+                            OpenResultWindow(item, false); // This will save with Status = true
                         }
                         else
                         {
-                            // Save basic info only
+                            // Save basic info only with Status = false
                             await SaveBasicResultItem(item);
-                            item.Status = "Đã lưu cơ bản";
+                            item.Status = "Đã lưu cơ bản (Status=false)";
                             item.HasExistingResults = true;
+                            item.DatabaseStatus = false;
                         }
                     }
                 }
                 else
                 {
-                    // Save basic info for all
+                    // Save basic info for all with Status = false
                     btnSaveAll.IsEnabled = false;
                     btnSaveAll.Content = "⏳ Đang lưu...";
 
                     int savedCount = 0;
                     foreach (var item in completedResults)
                     {
-                        await SaveBasicResultItem(item);
-                        item.Status = "Đã lưu cơ bản";
+                        await SaveBasicResultItem(item); // Saves with Status = false
+                        item.Status = "Đã lưu cơ bản (Status=false)";
                         item.HasExistingResults = true;
+                        item.DatabaseStatus = false;
                         savedCount++;
                     }
 
-                    MessageBox.Show($"Đã lưu thông tin cơ bản cho {savedCount} sinh viên!", "Thành công");
+                    MessageBox.Show($"Đã lưu thông tin cơ bản (Status=false) cho {savedCount} sinh viên!\n" +
+                                  "Y tá có thể cập nhật chi tiết sau để chuyển Status=true.", "Thành công");
                     btnSaveAll.Content = "💾 Lưu tất cả";
                     btnSaveAll.IsEnabled = true;
                 }
@@ -691,6 +693,7 @@ namespace SchoolMedicalWpf.App.Nurse
             }
         }
 
+        // *** UPDATED: SaveBasicResultItem với Status = false ***
         private async Task SaveBasicResultItem(StudentResultItem item)
         {
             try
@@ -705,13 +708,14 @@ namespace SchoolMedicalWpf.App.Nurse
                         ScheduleId = item.ScheduleId,
                         HealthProfileId = item.HealthProfileId,
                         DatePerformed = DateOnly.FromDateTime(item.DatePerformed),
+                        Status = false, // false = chưa có kết quả (chỉ lưu thông tin cơ bản)
                         Notes = $"[Lưu cơ bản từ HealthSchedulePage lúc {_currentDateTime:yyyy-MM-dd HH:mm:ss}] {item.Notes}",
                         RecordedId = recordedId
                     };
 
                     await Task.Run(() => _healthCheckResultService.Add(healthResult));
                     item.ExistingResultId = healthResult.ResultId;
-                    Console.WriteLine($"[{_currentDateTime:yyyy-MM-dd HH:mm:ss}] Saved basic health check for {item.StudentName} by {_currentUser.FullName}");
+                    Console.WriteLine($"[{_currentDateTime:yyyy-MM-dd HH:mm:ss}] Saved basic health check (Status=false) for {item.StudentName} by {_currentUser.FullName}");
                 }
                 else if (item.ScheduleType == "Vaccination")
                 {
@@ -721,13 +725,14 @@ namespace SchoolMedicalWpf.App.Nurse
                         ScheduleId = item.ScheduleId,
                         HealthProfileId = item.HealthProfileId,
                         VaccinationDate = DateOnly.FromDateTime(item.DatePerformed),
+                        Status = false, // false = chưa có kết quả (chỉ lưu thông tin cơ bản)
                         Notes = $"[Lưu cơ bản từ HealthSchedulePage lúc {_currentDateTime:yyyy-MM-dd HH:mm:ss}] {item.Notes}",
                         RecordedId = recordedId
                     };
 
                     await Task.Run(() => _vaccinationResultService.AddVaccinationResult(vaccinationResult));
                     item.ExistingResultId = vaccinationResult.VaccinationResultId;
-                    Console.WriteLine($"[{_currentDateTime:yyyy-MM-dd HH:mm:ss}] Saved basic vaccination for {item.StudentName} by {_currentUser.FullName}");
+                    Console.WriteLine($"[{_currentDateTime:yyyy-MM-dd HH:mm:ss}] Saved basic vaccination (Status=false) for {item.StudentName} by {_currentUser.FullName}");
                 }
             }
             catch (Exception ex)
@@ -769,6 +774,8 @@ namespace SchoolMedicalWpf.App.Nurse
             var total = _studentResults.Count;
             var completed = _studentResults.Count(x => x.IsCompleted);
             var pending = total - completed;
+            var hasResults = _studentResults.Count(x => x.DatabaseStatus == true); // Status = true
+            var noResults = _studentResults.Count(x => x.DatabaseStatus == false);   // Status = false
 
             txtTotalStudents.Text = total.ToString();
             txtCompletedStudents.Text = completed.ToString();
@@ -890,6 +897,9 @@ namespace SchoolMedicalWpf.App.Nurse
             get => _status;
             set { _status = value; OnPropertyChanged(); }
         }
+
+        // UPDATED: Database Status tracking với bool
+        public bool DatabaseStatus { get; set; } // false: chưa có kết quả, true: có kết quả
 
         // Validation and tracking properties
         public bool HasExistingResults { get; set; }

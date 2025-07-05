@@ -37,7 +37,7 @@ namespace SchoolMedicalWpf.App.Admin
                     MainContent.Content = new AdminHomePage(_currentUser);
                     break;
                 case "Campaign":
-                    MainContent.Content = new CampaignPage();
+                    MainContent.Content = ActivatorUtilities.CreateInstance<CampaignPage>(App.Services, _currentUser);
                     break;
                 case "Account":
                     MainContent.Content = new AccountManagementPage(_userService, _roleService);

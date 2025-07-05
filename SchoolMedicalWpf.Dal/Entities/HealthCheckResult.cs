@@ -27,6 +27,7 @@ public partial class HealthCheckResult
     public Guid? RecordedId { get; set; }
 
     public Guid HealthProfileId { get; set; }
+    public bool Status { get; set; }
 
     public virtual HealthProfile HealthProfile { get; set; } = null!;
 

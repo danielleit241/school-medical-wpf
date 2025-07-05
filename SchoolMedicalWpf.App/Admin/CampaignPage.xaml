@@ -5,12 +5,173 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SchoolMedicalWpf.App.Admin"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Campaign Management" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       HorizontalAlignment="Center" 
-                       Margin="0,20,0,20"/>
+             d:DesignHeight="600" d:DesignWidth="1000">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="Quản Lý Lịch Khám Sức Khỏe và Tiêm Chủng" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
+
+        <!-- Main Content -->
+        <TabControl Grid.Row="1">
+
+            <!-- Health Check Tab -->
+            <TabItem Header="Lịch Khám Sức Khỏe">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Controls -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+                        <Button Content="Tạo Lịch Khám Mới"
+                                Width="150"
+                                Height="35"
+                                Background="#27AE60"
+                                Foreground="White"
+                                FontWeight="SemiBold"
+                                Click="btnCreateHealthCheck_Click"/>
+                        <Button Content="Làm Mới"
+                                Width="100"
+                                Height="35"
+                                Background="#3498DB"
+                                Foreground="White"
+                                FontWeight="SemiBold"
+                                Margin="10,0,0,0"
+                                Click="btnRefreshHealthCheck_Click"/>
+                    </StackPanel>
+
+                    <!-- DataGrid -->
+                    <DataGrid Grid.Row="1" 
+                              x:Name="dgHealthCheck"
+                              ItemsSource="{Binding HealthCheckSchedules}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              AlternatingRowBackground="#F8F9FA">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Tiêu Đề" Binding="{Binding Title}" Width="200"/>
+                            <DataGridTextColumn Header="Mô Tả" Binding="{Binding Description}" Width="250"/>
+                            <DataGridTextColumn Header="Ngày Bắt Đầu" Binding="{Binding StartDate, StringFormat=dd/MM/yyyy}" Width="120"/>
+                            <DataGridTextColumn Header="Ngày Kết Thúc" Binding="{Binding EndDate, StringFormat=dd/MM/yyyy}" Width="120"/>
+                            <DataGridTextColumn Header="Khối/Lớp" Binding="{Binding TargetGrade}" Width="100"/>
+                            <DataGridTextColumn Header="Loại Khám" Binding="{Binding HealthCheckType}" Width="120"/>
+                            <DataGridTemplateColumn Header="Thao Tác" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Sửa" 
+                                                    Width="50"
+                                                    Height="25"
+                                                    Background="#F39C12"
+                                                    Foreground="White"
+                                                    Margin="2"
+                                                    Click="btnEditHealthCheck_Click"
+                                                    Tag="{Binding}"/>
+                                            <Button Content="Xóa" 
+                                                    Width="50"
+                                                    Height="25"
+                                                    Background="#E74C3C"
+                                                    Foreground="White"
+                                                    Margin="2"
+                                                    Click="btnDeleteHealthCheck_Click"
+                                                    Tag="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- Vaccination Tab -->
+            <TabItem Header="Lịch Tiêm Chủng">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Controls -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+                        <Button Content="Tạo Lịch Tiêm Mới"
+                                Width="150"
+                                Height="35"
+                                Background="#27AE60"
+                                Foreground="White"
+                                FontWeight="SemiBold"
+                                Click="btnCreateVaccination_Click"/>
+                        <Button Content="Làm Mới"
+                                Width="100"
+                                Height="35"
+                                Background="#3498DB"
+                                Foreground="White"
+                                FontWeight="SemiBold"
+                                Margin="10,0,0,0"
+                                Click="btnRefreshVaccination_Click"/>
+                    </StackPanel>
+
+                    <!-- DataGrid -->
+                    <DataGrid Grid.Row="1" 
+                              x:Name="dgVaccination"
+                              ItemsSource="{Binding VaccinationSchedules}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              AlternatingRowBackground="#F8F9FA">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Tiêu Đề" Binding="{Binding Title}" Width="180"/>
+                            <DataGridTextColumn Header="Vaccine" Binding="{Binding Vaccine.VaccineName}" Width="120"/>
+                            <DataGridTextColumn Header="Đợt" Binding="{Binding Round}" Width="60"/>
+                            <DataGridTextColumn Header="Mô Tả" Binding="{Binding Description}" Width="200"/>
+                            <DataGridTextColumn Header="Ngày Bắt Đầu" Binding="{Binding StartDate, StringFormat=dd/MM/yyyy}" Width="120"/>
+                            <DataGridTextColumn Header="Ngày Kết Thúc" Binding="{Binding EndDate, StringFormat=dd/MM/yyyy}" Width="120"/>
+                            <DataGridTextColumn Header="Khối/Lớp" Binding="{Binding TargetGrade}" Width="100"/>
+                            <DataGridTemplateColumn Header="Thao Tác" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Sửa" 
+                                                    Width="50"
+                                                    Height="25"
+                                                    Background="#F39C12"
+                                                    Foreground="White"
+                                                    Margin="2"
+                                                    Click="btnEditVaccination_Click"
+                                                    Tag="{Binding}"/>
+                                            <Button Content="Xóa" 
+                                                    Width="50"
+                                                    Height="25"
+                                                    Background="#E74C3C"
+                                                    Foreground="White"
+                                                    Margin="2"
+                                                    Click="btnDeleteVaccination_Click"
+                                                    Tag="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

@@ -14,7 +14,7 @@ public class StudentRepository
     public async Task<List<Student>> GetAllStudents()
     {
         using var context = new SchoolmedicalWpfContext(_options);
-        return await context.Students.ToListAsync();
+        return await context.Students.Include(s => s.HealthProfiles).ToListAsync();
     }
 
     public async Task<Student?> GetStudentById(Guid studentId)
