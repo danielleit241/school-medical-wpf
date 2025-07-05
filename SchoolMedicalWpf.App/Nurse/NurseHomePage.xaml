@@ -1,19 +1,580 @@
 ﻿<UserControl x:Class="SchoolMedicalWpf.App.Nurse.NurseHomePage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SchoolMedicalWpf.App.Nurse"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <StackPanel>
-            <TextBlock Text="Chào mừng Nurse đến với hệ thống chăm sóc sức khỏe học đường!"
-               Style="{StaticResource TitleText}" Margin="0,0,0,16" TextWrapping="Wrap"/>
-            <TextBlock Text="Tại đây, Nurse có thể:" Style="{StaticResource SubtitleText}"/>
-            <TextBlock Text="• Xem lịch tiêm chủng" Margin="0,4,0,0"/>
-            <TextBlock Text="• Xem hồ sơ cá nhân"/>
-            <TextBlock Text="Chúc bạn thành công!" Margin="0,16,0,0"/>
-        </StackPanel>
-    </Grid>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SchoolMedicalWpf.App;component/Themes/SchoolMedicalTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Custom gradient brushes for nurse theme -->
+            <LinearGradientBrush x:Key="NurseGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFFFFF" Offset="0"/>
+                <GradientStop Color="#FFFFFF" Offset="1"/>
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="NurseCardHover" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFFFFF" Offset="0"/>
+                <GradientStop Color="#F0F8FF" Offset="1"/>
+            </LinearGradientBrush>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+        <Grid>
+            <!-- Background -->
+            <Border Background="{StaticResource NurseGradient}" Opacity="0.9"/>
+
+            <StackPanel Margin="20">
+                <!-- Hero Section -->
+                <Border Background="White" 
+                        CornerRadius="20" 
+                        Padding="40,30" 
+                        Margin="0,0,0,30"
+                        Effect="{StaticResource CardShadow}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="Chào mừng Y tá" 
+                                       FontSize="28" 
+                                       FontWeight="Light" 
+                                       Foreground="{StaticResource SecondaryGreenBrush}" 
+                                       Margin="0,0,0,5"/>
+                            <TextBlock Text="Hệ thống chăm sóc sức khỏe học đường" 
+                                       FontSize="36" 
+                                       FontWeight="Bold" 
+                                       Foreground="{StaticResource TextGrayBrush}" 
+                                       Margin="0,0,0,15"/>
+                            <TextBlock Text="Theo dõi và chăm sóc sức khỏe học sinh một cách chuyên nghiệp" 
+                                       FontSize="16" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       TextWrapping="Wrap"
+                                       MaxWidth="450"
+                                       LineHeight="24"/>
+                        </StackPanel>
+
+                        <!-- Medical Icon -->
+                        <Border Grid.Column="1" 
+                                Background="{StaticResource SecondaryGreenBrush}" 
+                                CornerRadius="60" 
+                                Width="120" 
+                                Height="120"
+                                VerticalAlignment="Center">
+                            <Border.Effect>
+                                <DropShadowEffect Color="{StaticResource SecondaryGreen}" 
+                                                  BlurRadius="20" 
+                                                  ShadowDepth="0" 
+                                                  Opacity="0.4"/>
+                            </Border.Effect>
+                            <TextBlock Text="🩺" 
+                                       FontSize="48" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Quick Stats Section -->
+                <TextBlock Text="Thống kê hôm nay" 
+                           FontSize="22" 
+                           FontWeight="SemiBold" 
+                           Foreground="{StaticResource TextGrayBrush}" 
+                           Margin="5,0,0,20"/>
+
+                <Grid Margin="0,0,0,30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Pending Vaccinations -->
+                    <Border Grid.Column="0" 
+                            Background="White" 
+                            CornerRadius="15" 
+                            Padding="20,15" 
+                            Margin="0,0,10,0"
+                            Effect="{StaticResource CardShadow}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <Border Background="{StaticResource SecondaryGreenBrush}" 
+                                    CornerRadius="20" 
+                                    Width="40" 
+                                    Height="40" 
+                                    HorizontalAlignment="Center" 
+                                    Margin="0,0,0,10">
+                                <TextBlock Text="💉" 
+                                           FontSize="20" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="12" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Foreground="{StaticResource SecondaryGreenBrush}" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Tiêm chủng chờ" 
+                                       FontSize="12" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Health Checks Today -->
+                    <Border Grid.Column="1" 
+                            Background="White" 
+                            CornerRadius="15" 
+                            Padding="20,15" 
+                            Margin="5,0,5,0"
+                            Effect="{StaticResource CardShadow}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <Border Background="{StaticResource PrimaryBlueBrush}" 
+                                    CornerRadius="20" 
+                                    Width="40" 
+                                    Height="40" 
+                                    HorizontalAlignment="Center" 
+                                    Margin="0,0,0,10">
+                                <TextBlock Text="🩺" 
+                                           FontSize="20" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="8" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Foreground="{StaticResource PrimaryBlueBrush}" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Khám hôm nay" 
+                                       FontSize="12" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Medical Events -->
+                    <Border Grid.Column="2" 
+                            Background="White" 
+                            CornerRadius="15" 
+                            Padding="20,15" 
+                            Margin="5,0,5,0"
+                            Effect="{StaticResource CardShadow}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <Border Background="{StaticResource WarningOrangeBrush}" 
+                                    CornerRadius="20" 
+                                    Width="40" 
+                                    Height="40" 
+                                    HorizontalAlignment="Center" 
+                                    Margin="0,0,0,10">
+                                <TextBlock Text="⚠️" 
+                                           FontSize="20" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="3" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Foreground="{StaticResource WarningOrangeBrush}" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Sự kiện y tế" 
+                                       FontSize="12" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Completed Tasks -->
+                    <Border Grid.Column="3" 
+                            Background="White" 
+                            CornerRadius="15" 
+                            Padding="20,15" 
+                            Margin="10,0,0,0"
+                            Effect="{StaticResource CardShadow}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <Border Background="{StaticResource SuccessGreenBrush}" 
+                                    CornerRadius="20" 
+                                    Width="40" 
+                                    Height="40" 
+                                    HorizontalAlignment="Center" 
+                                    Margin="0,0,0,10">
+                                <TextBlock Text="✅" 
+                                           FontSize="20" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="25" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Foreground="{StaticResource SuccessGreenBrush}" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Hoàn thành" 
+                                       FontSize="12" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Main Functions Section -->
+                <TextBlock Text="Chức năng chính" 
+                           FontSize="22" 
+                           FontWeight="SemiBold" 
+                           Foreground="{StaticResource TextGrayBrush}" 
+                           Margin="5,0,0,20"/>
+
+                <Grid Margin="0,0,0,30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Vaccination Schedule -->
+                    <Border Grid.Row="0" Grid.Column="0" 
+                            Background="White" 
+                            CornerRadius="18" 
+                            Padding="30,25" 
+                            Margin="0,0,15,15"
+                            Effect="{StaticResource CardShadow}"
+                            Cursor="Hand"
+                            RenderTransformOrigin="0.5,0.5" MouseLeftButtonUp="ScheduleBorder_MouseLeftButtonUp"
+                            >
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource NurseCardHover}"/>
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                                           To="1.05" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                                           To="1.05" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                                           To="1" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                                           To="1" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <StackPanel>
+                            <Border Background="{StaticResource SecondaryGreenBrush}" 
+                                    CornerRadius="15" 
+                                    Width="60" 
+                                    Height="60" 
+                                    HorizontalAlignment="Left" 
+                                    Margin="0,0,0,15">
+                                <TextBlock Text="💉" 
+                                           FontSize="30" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Lịch tiêm chủng" 
+                                       FontSize="20" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="{StaticResource TextGrayBrush}" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="Xem và cập nhật lịch tiêm chủng cho học sinh" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="20"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Health Check Schedule -->
+                    <Border Grid.Row="0" Grid.Column="1" 
+                            Background="White" 
+                            CornerRadius="18" 
+                            Padding="30,25" 
+                            Margin="15,0,0,15"
+                            Effect="{StaticResource CardShadow}"
+                            Cursor="Hand"
+                            RenderTransformOrigin="0.5,0.5"
+                            MouseLeftButtonUp="MedicalRegistrationBorder_MouseLeftButtonUp">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource NurseCardHover}"/>
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                                           To="1.05" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                                           To="1.05" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                                           To="1" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                                           To="1" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <StackPanel>
+                            <Border Background="{StaticResource PrimaryBlueBrush}" 
+                                    CornerRadius="15" 
+                                    Width="60" 
+                                    Height="60" 
+                                    HorizontalAlignment="Left" 
+                                    Margin="0,0,0,15">
+                                <TextBlock Text="🩺" 
+                                           FontSize="30" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Nhận thuốc từ phụ huynh" 
+                                       FontSize="20" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="{StaticResource TextGrayBrush}" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="Nhận thuốc từ phụ huynh" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="20"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Medical Events -->
+                    <Border Grid.Row="1" Grid.Column="0" 
+                            Background="White" 
+                            CornerRadius="18" 
+                            Padding="30,25" 
+                            Margin="0,0,15,0"
+                            Effect="{StaticResource CardShadow}"
+                            Cursor="Hand"
+                            RenderTransformOrigin="0.5,0.5"
+                            MouseLeftButtonUp="MedicalEventsBorder_MouseLeftButtonUp">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource NurseCardHover}"/>
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                                           To="1.05" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                                           To="1.05" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                                           To="1" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                                           To="1" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <StackPanel>
+                            <Border Background="{StaticResource WarningOrangeBrush}" 
+                                    CornerRadius="15" 
+                                    Width="60" 
+                                    Height="60" 
+                                    HorizontalAlignment="Left" 
+                                    Margin="0,0,0,15">
+                                <TextBlock Text="📋" 
+                                           FontSize="30" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Sự kiện y tế" 
+                                       FontSize="20" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="{StaticResource TextGrayBrush}" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="Quản lý và xử lý các sự kiện y tế khẩn cấp" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="20"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Profile -->
+                    <Border Grid.Row="1" Grid.Column="1" 
+                            Background="White" 
+                            CornerRadius="18" 
+                            Padding="30,25" 
+                            Margin="15,0,0,0"
+                            Effect="{StaticResource CardShadow}"
+                            Cursor="Hand"
+                            RenderTransformOrigin="0.5,0.5"
+                            MouseLeftButtonUp="ProfileBorder_MouseLeftButtonUp">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource NurseCardHover}"/>
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                                           To="1.05" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                                           To="1.05" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                                           To="1" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                                           To="1" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <StackPanel>
+                            <Border Background="{StaticResource DarkGrayBrush}" 
+                                    CornerRadius="15" 
+                                    Width="60" 
+                                    Height="60" 
+                                    HorizontalAlignment="Left" 
+                                    Margin="0,0,0,15">
+                                <TextBlock Text="👤" 
+                                           FontSize="30" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"
+                                           Foreground="White"/>
+                            </Border>
+                            <TextBlock Text="Hồ sơ cá nhân" 
+                                       FontSize="20" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="{StaticResource TextGrayBrush}" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="Xem và cập nhật thông tin cá nhân" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="20"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Tips Section -->
+                <Border Background="White" 
+                        CornerRadius="15" 
+                        Padding="25,20" 
+                        Effect="{StaticResource CardShadow}">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" 
+                                    Background="{StaticResource SecondaryGreenBrush}" 
+                                    CornerRadius="25" 
+                                    Width="50" 
+                                    Height="50" 
+                                    Margin="0,0,15,0">
+                                <TextBlock Text="💡" 
+                                           FontSize="24" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="Lưu ý cho y tá" 
+                                           FontSize="18" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="{StaticResource TextGrayBrush}"/>
+                                <TextBlock Text="Những điều quan trọng trong công việc hàng ngày" 
+                                           FontSize="14" 
+                                           Foreground="{StaticResource DarkGrayBrush}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource BorderGrayBrush}" Margin="0,0,0,15"/>
+
+                        <StackPanel>
+                            <TextBlock Text="• Luôn cập nhật thông tin sức khỏe học sinh kịp thời và chính xác" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       Margin="15,5,0,5"/>
+                            <TextBlock Text="• Kiểm tra lịch tiêm chủng và khám sức khỏe thường xuyên" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       Margin="15,0,0,5"/>
+                            <TextBlock Text="• Phối hợp với giáo viên và phụ huynh khi có sự kiện y tế" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       Margin="15,0,0,5"/>
+                            <TextBlock Text="• Đảm bảo an toàn và vệ sinh trong quá trình chăm sóc" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource DarkGrayBrush}" 
+                                       Margin="15,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </UserControl>
