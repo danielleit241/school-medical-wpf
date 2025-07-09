@@ -48,6 +48,13 @@ namespace SchoolMedicalWpf.App.Admin
                 case "Profile":
                     MainContent.Content = ActivatorUtilities.CreateInstance<ProfilePage>(App.Services, _currentUser);
                     break;
+                case "Quit":
+                    var result = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        Application.Current.Shutdown();
+                    }
+                    break;
                 default:
                     MainContent.Content = new AdminHomePage(_currentUser);
                     break;

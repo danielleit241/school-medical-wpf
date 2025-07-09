@@ -26,7 +26,5 @@ public partial class User
 
     public virtual ICollection<MedicalRegistration> MedicalRegistrations { get; set; } = new List<MedicalRegistration>();
 
-    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
-
     public virtual Role? Role { get; set; }
 }

@@ -132,7 +132,6 @@
                 <ComboBoxItem Content="Mức độ cao" Tag="Nghiêm trọng"/>
                 <ComboBoxItem Content="Mức độ trung bình" Tag="Trung bình"/>
                 <ComboBoxItem Content="Mức độ thấp" Tag="Nhẹ"/>
-                <ComboBoxItem Content="Chưa thông báo" Tag="NotNotified"/>
             </ComboBox>
 
             <Button Content="🔄 Làm mới" 
@@ -312,27 +311,6 @@
                                         Click="ViewDetailsButton_Click"
                                         Margin="2"
                                         ToolTip="Xem chi tiết sự kiện"/>
-
-                                <!-- Notify Parent Button (only if not notified) -->
-                                <Button Content="📞 TB PH"
-                                        Background="#F39C12"
-                                        Foreground="White"
-                                        Tag="{Binding}"
-                                        Click="NotifyParentButton_Click"
-                                        Margin="2"
-                                        ToolTip="Thông báo phụ huynh">
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ParentNotified}" Value="False">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

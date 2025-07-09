@@ -1,8 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace SchoolMedicalWpf.App.Nurse
 {
@@ -73,9 +73,6 @@ namespace SchoolMedicalWpf.App.Nurse
                     break;
                 case "Nhẹ":
                     filteredEvents = _allEvents.Where(e => e.SeverityLevel == "Nhẹ").ToList();
-                    break;
-                case "NotNotified":
-                    filteredEvents = _allEvents.Where(e => e.ParentNotified == false).ToList();
                     break;
                 default:
                     filteredEvents = _allEvents;
@@ -162,62 +159,6 @@ namespace SchoolMedicalWpf.App.Nurse
                         $"👤 User: {_currentUser?.FullName ?? "N/A"}", "Lỗi",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-            }
-        }
-
-        private async void NotifyParentButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.Tag is MedicalEvent medicalEvent)
-            {
-                var studentName = medicalEvent.Student?.FullName ?? "Không xác định";
-                var result = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn thông báo cho phụ huynh về sự kiện của {studentName}?\n" +
-                    $"Y tá: {_currentUser.FullName}",
-                    "Xác nhận thông báo",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    await UpdateParentNotification(medicalEvent);
-                }
-            }
-        }
-
-        private async Task UpdateParentNotification(MedicalEvent medicalEvent)
-        {
-            try
-            {
-                LoadingGrid.Visibility = Visibility.Visible;
-
-                medicalEvent.ParentNotified = true;
-
-                await Task.Run(() => _medicalEventService.UpdateMedicalEvent(medicalEvent));
-
-                var index = _allEvents.FindIndex(e => e.EventId == medicalEvent.EventId);
-                if (index >= 0)
-                {
-                    _allEvents[index] = medicalEvent;
-                }
-
-                FilterAndDisplayEvents();
-                UpdateEventCounts();
-
-                MessageBox.Show(
-                    $"Đã thông báo phụ huynh thành công!\n" +
-                    $"Y tá: {_currentUser.FullName}",
-                    "Thành công",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi thông báo phụ huynh: {ex.Message}", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                LoadingGrid.Visibility = Visibility.Collapsed;
             }
         }
     }

@@ -56,6 +56,13 @@
                 </StackPanel>
             </Button>
 
+            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Quit" Click="SidebarButton_Click" Margin="0,30,0,0">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image Source="/Assets/logout.png" Width="32" Height="32"/>
+                    <TextBlock Text="Đăng xuất" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
         </StackPanel>
 
         <!-- Main content: Card with margin -->

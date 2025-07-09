@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using SchoolMedicalWpf.Bll.Services;
+﻿using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
+using System.Windows;
+using System.Windows.Media;
 
 namespace SchoolMedicalWpf.App.Nurse
 {
@@ -64,10 +64,6 @@ namespace SchoolMedicalWpf.App.Nurse
                 ParentNotifiedText.Foreground = isNotified
                     ? new SolidColorBrush(Color.FromRgb(39, 174, 96))
                     : new SolidColorBrush(Color.FromRgb(231, 76, 60));
-                if (!isNotified && NotifyParentButton != null)
-                {
-                    NotifyParentButton.Visibility = Visibility.Visible;
-                }
                 NotesText.Text = string.IsNullOrEmpty(_medicalEvent.Notes) ? "Không có ghi chú" : _medicalEvent.Notes;
                 this.Title = $"Chi tiết sự kiện y tế - {_medicalEvent.Student?.FullName ?? "N/A"} - {DateTime.Now:dd/MM/yyyy HH:mm}";
             }
@@ -111,90 +107,6 @@ namespace SchoolMedicalWpf.App.Nurse
                     SeverityText.Text = "⚪ KHÔNG XÁC ĐỊNH";
                     SeverityText.Foreground = Brushes.White;
                     break;
-            }
-        }
-
-        private async void NotifyParentButton_Click(object sender, RoutedEventArgs e)
-        {
-            var studentName = _medicalEvent.Student?.FullName ?? "Không xác định";
-            var eventType = _medicalEvent.EventType ?? "Không xác định";
-            var currentUserName = _currentUser?.FullName ?? _currentUser?.FullName ?? "Không xác định";
-
-            var result = MessageBox.Show(
-                $"🤔 Bạn có chắc chắn muốn thông báo cho phụ huynh?\n\n" +
-                $"👨‍👩‍👧‍👦 Học sinh: {studentName}\n" +
-                $"🏥 Loại sự kiện: {eventType}\n" +
-                $"📅 Ngày: {_medicalEvent.EventDate?.ToString("dd/MM/yyyy") ?? "N/A"}\n\n" +
-                $"🕐 Thời gian hiện tại: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                $"👩‍⚕️ Y tá thực hiện: {currentUserName}",
-                "Xác nhận thông báo phụ huynh",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                await UpdateParentNotification();
-            }
-        }
-
-        private async Task UpdateParentNotification()
-        {
-            try
-            {
-                if (NotifyParentButton != null)
-                {
-                    NotifyParentButton.IsEnabled = false;
-                    NotifyParentButton.Content = "⏳ Đang xử lý...";
-                }
-
-                _medicalEvent.ParentNotified = true;
-                await Task.Run(() => _medicalEventService.UpdateMedicalEvent(_medicalEvent))
-                    .ConfigureAwait(true);
-                Dispatcher.Invoke(() =>
-                {
-                    ParentNotifiedText.Text = "✅ Đã thông báo";
-                    ParentNotifiedText.Foreground = new SolidColorBrush(Color.FromRgb(39, 174, 96));
-
-                    if (NotifyParentButton != null)
-                        NotifyParentButton.Visibility = Visibility.Collapsed;
-                });
-
-                EventUpdated?.Invoke();
-
-                var studentName = _medicalEvent.Student?.FullName ?? "Không xác định";
-                var currentUserName = _currentUser?.FullName ?? _currentUser?.FullName ?? "Không xác định";
-
-                MessageBox.Show(
-                    $"🎉 Đã thông báo phụ huynh thành công!\n\n" +
-                    $"👨‍👩‍👧‍👦 Học sinh: {studentName}\n" +
-                    $"🕐 Thời gian thông báo: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                    $"👩‍⚕️ Y tá thực hiện: {currentUserName}\n" +
-                    $"📱 Phụ huynh sẽ nhận thông báo qua SMS/Email\n" +
-                    $"📝 Trạng thái: Đã cập nhật thành công",
-                    "Thông báo thành công",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                var currentUserName = _currentUser?.FullName ?? _currentUser?.FullName ?? "Không xác định";
-                MessageBox.Show($"❌ Lỗi khi cập nhật thông báo phụ huynh:\n\n" +
-                    $"📋 Chi tiết lỗi: {ex.Message}\n" +
-                    $"🕐 Thời gian: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC\n" +
-                    $"👤 User: {currentUserName}\n\n" +
-                    $"🔄 Vui lòng thử lại sau hoặc liên hệ quản trị viên.", "Lỗi",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    if (NotifyParentButton != null)
-                    {
-                        NotifyParentButton.IsEnabled = true;
-                        NotifyParentButton.Content = "📞 Thông báo phụ huynh";
-                    }
-                });
             }
         }
 

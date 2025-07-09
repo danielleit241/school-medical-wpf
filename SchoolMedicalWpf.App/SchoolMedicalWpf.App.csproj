@@ -17,6 +17,7 @@
     <None Remove="Assets\checkup.png" />
     <None Remove="Assets\heart.png" />
     <None Remove="Assets\home.png" />
+    <None Remove="Assets\logout.png" />
     <None Remove="Assets\medical-event.png" />
     <None Remove="Assets\pill.png" />
     <None Remove="Assets\registration.png" />
@@ -58,6 +59,7 @@
     <Resource Include="Assets\home.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\logout.png" />
     <Resource Include="Assets\medical-event.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

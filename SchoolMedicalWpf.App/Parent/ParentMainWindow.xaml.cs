@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Dal.Entities;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace SchoolMedicalWpf.App.Parent
 {
@@ -40,9 +40,14 @@ namespace SchoolMedicalWpf.App.Parent
                 case "Exam":
                     MainContent.Content = ActivatorUtilities.CreateInstance<HealthHistoryPage>(App.Services, _currentUser, MainContent);
                     break;
-                //case "Notification":
-                //    MainContent.Content = new NotificationPage();
-                //    break;
+                case "Quit":
+                    var result = MessageBox.Show("Bạn có chắc chắn muốn thoát?", "Xác nhận thoát", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+                    Application.Current.Shutdown();
+                    break;
                 default:
                     MainContent.Content = new ParentHomePage(_currentUser);
                     break;

@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SchoolMedicalWpf.Dal.Entities;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace SchoolMedicalWpf.App.Nurse
 {
@@ -59,6 +59,13 @@ namespace SchoolMedicalWpf.App.Nurse
                         break;
                     case "Profile":
                         userControl = ActivatorUtilities.CreateInstance<ProfilePage>(App.Services, _currentUser);
+                        break;
+                    case "Quit":
+                        var result = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            Application.Current.Shutdown();
+                        }
                         break;
                     default:
                         userControl = new NurseHomePage();

@@ -25,8 +25,6 @@ public partial class SchoolmedicalWpfContext : DbContext
 
     public virtual DbSet<MedicalRegistration> MedicalRegistrations { get; set; }
 
-    public virtual DbSet<Notification> Notifications { get; set; }
-
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Student> Students { get; set; }
@@ -153,26 +151,6 @@ public partial class SchoolmedicalWpfContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.MedicalRegistrations)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__MedicalRe__UserI__5EBF139D");
-        });
-
-        modelBuilder.Entity<Notification>(entity =>
-        {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32D1A83A45");
-
-            entity.ToTable("Notification");
-
-            entity.Property(e => e.NotificationId)
-                .ValueGeneratedNever()
-                .HasColumnName("NotificationID");
-            entity.Property(e => e.ConfirmedAt).HasColumnType("datetime");
-            entity.Property(e => e.SendDate).HasColumnType("datetime");
-            entity.Property(e => e.SenderId).HasColumnName("SenderID");
-            entity.Property(e => e.SourceId).HasColumnName("SourceID");
-            entity.Property(e => e.UserId).HasColumnName("UserID");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Notifications)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Notificat__UserI__619B8048");
         });
 
         modelBuilder.Entity<Role>(entity =>

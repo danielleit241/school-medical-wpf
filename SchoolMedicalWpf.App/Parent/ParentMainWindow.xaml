@@ -50,10 +50,10 @@
                     <TextBlock Text="Lịch sử sức khỏe" FontSize="12" Foreground="White" TextAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Notification" Click="SidebarButton_Click">
+            <Button Style="{StaticResource SidebarButtonStyle}" Tag="Quit" Click="SidebarButton_Click">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <Image Source="/Assets/bell.png" Width="32" Height="32"/>
-                    <TextBlock Text="Thông báo" FontSize="12" Foreground="White" TextAlignment="Center"/>
+                    <Image Source="/Assets/logout.png" Width="32" Height="32"/>
+                    <TextBlock Text="Thoát" FontSize="12" Foreground="White" TextAlignment="Center"/>
                 </StackPanel>
             </Button>
         </StackPanel>

@@ -140,20 +140,6 @@
                                 <TextBlock x:Name="ParentNotifiedText" Style="{StaticResource ValueText}" FontWeight="Bold"/>
                             </StackPanel>
 
-                            <!-- Action Button -->
-                            <Button x:Name="NotifyParentButton"
-                                    Content="📞 Thông báo phụ huynh"
-                                    Background="#F39C12"
-                                    Foreground="White"
-                                    FontWeight="Bold"
-                                    BorderThickness="0"
-                                    Padding="12,8"
-                                    FontSize="13"
-                                    Margin="0,8,0,16"
-                                    Cursor="Hand"
-                                    Visibility="Collapsed"
-                                    Click="NotifyParentButton_Click"/>
-
                             <!-- Notes -->
                             <TextBlock Text="📝 Ghi chú" 
                                        Style="{StaticResource SectionHeaderText}"/>
