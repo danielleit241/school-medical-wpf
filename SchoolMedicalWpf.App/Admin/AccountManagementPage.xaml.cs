@@ -10,14 +10,16 @@ namespace SchoolMedicalWpf.App.Admin
     {
         private readonly UserService _userService;
         private readonly RoleService _roleService;
+        private readonly User _currentUser;
         private ObservableCollection<User> _users = new();
         private ObservableCollection<Role> _roles = new();
 
-        public AccountManagementPage(UserService userService, RoleService roleService)
+        public AccountManagementPage(UserService userService, RoleService roleService, User currentUser)
         {
             InitializeComponent();
             _userService = userService;
             _roleService = roleService;
+            _currentUser = currentUser;
             LoadData();
         }
         private async void LoadData()
