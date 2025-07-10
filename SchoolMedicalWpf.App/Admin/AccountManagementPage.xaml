@@ -3,95 +3,230 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SchoolMedicalWpf.App.Admin"
              MinHeight="450" MinWidth="800"
-             Background="{StaticResource BackgroundWhiteBrush}">
+             Background="{StaticResource LightGrayBrush}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SchoolMedicalWpf.App;component/Themes/SchoolMedicalTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <local:StatusToStringConverter x:Key="StatusToStringConverter"/>
+
+            <!-- Custom button styles using theme colors -->
+            <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+                <Setter Property="Background" Value="{StaticResource BackgroundWhiteBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource PrimaryBlueBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryBlueBrush}"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Style>
+
+            <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+                <Setter Property="Background" Value="{StaticResource DangerRedBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+
+            <!-- Custom shadow effect -->
+            <DropShadowEffect x:Key="CardDropShadowEffect"
+                              Color="#22000000"
+                              BlurRadius="20"
+                              ShadowDepth="5"
+                              Opacity="0.3"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2.5*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
+    <Border Style="{StaticResource CardContainer}" Effect="{StaticResource CardDropShadowEffect}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Tiêu đề và lời chào -->
-        <DockPanel Grid.Row="0" Grid.ColumnSpan="2" LastChildFill="False" Margin="0,0,0,24">
-            <TextBlock Text="Quản Lý Tài Khoản"
-                       Style="{StaticResource TitleText}"
-                       VerticalAlignment="Center" DockPanel.Dock="Left"/>
-            <TextBlock Text="Hello, Administrator"
-                       FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryBlueBrush}"
-                       VerticalAlignment="Center" DockPanel.Dock="Right" Margin="0,0,16,0"/>
-        </DockPanel>
+            <!-- Header Section -->
+            <Border Grid.Row="0" Grid.ColumnSpan="2" 
+                    Background="{StaticResource PrimaryBlueBrush}" 
+                    CornerRadius="12,12,0,0" 
+                    Margin="-48,-48,-48,24"
+                    Padding="48,24">
+                <DockPanel LastChildFill="False">
+                    <TextBlock Text="Quản Lý Tài Khoản"
+                               Style="{StaticResource TitleText}"
+                               Foreground="White"
+                               VerticalAlignment="Center" 
+                               DockPanel.Dock="Left"/>
+                    <Border Background="{StaticResource AccentYellowBrush}" 
+                            CornerRadius="20" 
+                            Padding="16,8" 
+                            DockPanel.Dock="Right">
+                        <TextBlock Text="Hello, Administrator"
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryBlueBrush}"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                </DockPanel>
+            </Border>
 
-        <!-- Bộ lọc và DataGrid -->
-        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,24,0">
-            <Border Background="{StaticResource AccentYellowBrush}" CornerRadius="8" Padding="12" Margin="0,0,0,16">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Lọc theo quyền:"
-                               FontWeight="Bold" Foreground="{StaticResource TextGrayBrush}" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="FilterRoleComboBox"
-                              Style="{StaticResource ComboBoxInputBox}"
-                              DisplayMemberPath="RoleName"
-                              SelectedValuePath="RoleId"
-                              Width="180"
-                              Margin="8,0,0,0"
-                              SelectionChanged="FilterRoleComboBox_SelectionChanged"/>
-                    <Button Content="Xóa lọc"
+            <!-- Main Content Area -->
+            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,32,0">
+                <!-- Filter Section -->
+                <Border Style="{StaticResource InfoCardContainer}" Margin="0,0,0,20">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="🔍" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Lọc theo quyền:"
+                                   Style="{StaticResource FieldLabelText}"
+                                   VerticalAlignment="Center" 
+                                   FontSize="16"
+                                   FontWeight="SemiBold"/>
+                        <ComboBox x:Name="FilterRoleComboBox"
+                                  Style="{StaticResource ComboBoxInputBox}"
+                                  DisplayMemberPath="RoleName"
+                                  SelectedValuePath="RoleId"
+                                  Width="200"
+                                  Margin="16,0,0,0"
+                                  Height="36"
+                                  SelectionChanged="FilterRoleComboBox_SelectionChanged"/>
+                        <Button Content="Xóa lọc"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="16,0,0,0"
+                                Padding="20,8"
+                                Height="36"
+                                FontSize="14"
+                                Click="ClearFilterButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Data Grid Section -->
+                <Border Style="{StaticResource SectionContainer}" Padding="0">
+                    <DataGrid x:Name="AccountDataGrid"
+                              AutoGenerateColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              Background="Transparent"
+                              Foreground="{StaticResource TextGrayBrush}"
+                              FontWeight="Normal"
+                              RowHeight="44"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              ColumnHeaderHeight="48"
+                              AlternatingRowBackground="{StaticResource LightGrayBrush}"
+                              BorderThickness="0">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource DataGridHeaderStyle}">
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Height" Value="48"/>
+                                <Setter Property="Padding" Value="12,0"/>
+                            </Style>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderGrayBrush}"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource AccentYellowBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource PrimaryBlueBrush}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Padding" Value="12,8"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="DataGridCell">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Họ tên" Binding="{Binding FullName}" Width="1.2*"/>
+                            <DataGridTextColumn Header="SĐT" Binding="{Binding PhoneNumber}" Width="1.1*"/>
+                            <DataGridTextColumn Header="Ngày sinh" Binding="{Binding DayOfBirth}" Width="1*"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding EmailAddress}" Width="1.5*"/>
+                            <DataGridTextColumn Header="Địa chỉ" Binding="{Binding Address}" Width="1.3*"/>
+                            <DataGridTextColumn Header="Trạng thái"
+                                                Binding="{Binding Status, Converter={StaticResource StatusToStringConverter}}"
+                                                Width="1*"/>
+                            <DataGridTextColumn Header="Quyền" Binding="{Binding Role.RoleName}" Width="0.8*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </StackPanel>
+
+            <!-- Action Buttons Section -->
+            <Border Grid.Row="1" Grid.Column="1" 
+                    Style="{StaticResource InfoCardContainer}"
+                    VerticalAlignment="Top"
+                    Margin="0,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="⚙️ Thao tác" 
+                               Style="{StaticResource SectionHeaderText}"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,20"/>
+
+                    <Button x:Name="CreateButton" 
+                            Content="➕ Tạo tài khoản"
                             Style="{StaticResource PrimaryButton}"
-                            Margin="8,0,0,0"
-                            Click="ClearFilterButton_Click"/>
+                            FontSize="16" 
+                            Height="50" 
+                            Margin="0,0,0,16"
+                            Click="CreateButton_Click"/>
+
+                    <Button x:Name="UpdateButton" 
+                            Content="✏️ Sửa tài khoản"
+                            Style="{StaticResource PrimaryButton}"
+                            FontSize="16" 
+                            Height="50" 
+                            Margin="0,0,0,16"
+                            Background="{StaticResource SuccessGreenBrush}"
+                            Click="UpdateButton_Click"/>
+
+                    <Button Content="🗑️ Xóa tài khoản"
+                            Style="{StaticResource DangerButton}"
+                            FontSize="16" 
+                            Height="50" 
+                            Margin="0,0,0,0"
+                            Click="DeleteButton_Click"/>
+
+                    <!-- Separator -->
+                    <Border Style="{StaticResource HorizontalSeparator}" Margin="0,24,0,16"/>
+
+                    <!-- Additional Info -->
+                    <Border Background="{StaticResource AccentYellowBrush}" 
+                            CornerRadius="8" 
+                            Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="💡 Gợi ý" 
+                                       FontWeight="Bold" 
+                                       FontSize="14"
+                                       Foreground="{StaticResource PrimaryBlueBrush}"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="• Chọn một dòng trước khi sửa/xóa"
+                                       Style="{StaticResource InfoText}"
+                                       Foreground="{StaticResource TextGrayBrush}"/>
+                            <TextBlock Text="• Sử dụng bộ lọc để tìm kiếm nhanh"
+                                       Style="{StaticResource InfoText}"
+                                       Foreground="{StaticResource TextGrayBrush}"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Border>
-            <DataGrid x:Name="AccountDataGrid"
-                      AutoGenerateColumns="False"
-                      SelectionMode="Single"
-                      IsReadOnly="True"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      Background="{StaticResource BackgroundWhiteBrush}"
-                      Foreground="{StaticResource TextGrayBrush}"
-                      FontWeight="SemiBold"
-                      RowHeight="32"
-                      HeadersVisibility="Column"
-                      Margin="0,0,0,0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Họ tên" Binding="{Binding FullName}" Width="*"/>
-                    <DataGridTextColumn Header="SĐT" Binding="{Binding PhoneNumber}" Width="*"/>
-                    <DataGridTextColumn Header="Ngày sinh" Binding="{Binding DayOfBirth}" Width="*"/>
-                    <DataGridTextColumn Header="Email" Binding="{Binding EmailAddress}" Width="*"/>
-                    <DataGridTextColumn Header="Địa chỉ" Binding="{Binding Address}" Width="*"/>
-                    <DataGridTextColumn Header="Trạng thái"
-                                        Binding="{Binding Status, Converter={StaticResource StatusToStringConverter}}"
-                                        Width="*" />
-                    <DataGridTextColumn Header="Quyền" Binding="{Binding Role.RoleName}" Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
-
-        <!-- Các nút chức năng -->
-        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" >
-            <Button x:Name="CreateButton" Content="Tạo tài khoản"
-                    Style="{StaticResource PrimaryButton}"
-                    FontSize="16" Height="48" Margin="0,0,0,16"
-                    Click="CreateButton_Click"/>
-            <Button x:Name="UpdateButton" Content="Sửa tài khoản"
-                    Style="{StaticResource PrimaryButton}"
-                    FontSize="16" Height="48" Margin="0,0,0,16"
-                    Click="UpdateButton_Click"/>
-            <Button Content="Xóa tài khoản"
-                    Style="{StaticResource PrimaryButton}"
-                    FontSize="16" Height="48" Margin="0,0,0,16"
-                    Click="DeleteButton_Click"/>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </Border>
 </UserControl>

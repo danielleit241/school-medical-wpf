@@ -41,12 +41,13 @@ namespace SchoolMedicalWpf.App.Parent
                     MainContent.Content = ActivatorUtilities.CreateInstance<HealthHistoryPage>(App.Services, _currentUser, MainContent);
                     break;
                 case "Quit":
-                    var result = MessageBox.Show("Bạn có chắc chắn muốn thoát?", "Xác nhận thoát", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (result == MessageBoxResult.No)
+                    var res = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (res == MessageBoxResult.Yes)
                     {
-                        return;
+                        var loginWindow = ActivatorUtilities.CreateInstance<LoginWindow>(App.Services);
+                        loginWindow.Show();
+                        this.Close();
                     }
-                    Application.Current.Shutdown();
                     break;
                 default:
                     MainContent.Content = new ParentHomePage(_currentUser);

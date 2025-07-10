@@ -4,7 +4,7 @@
         Title="Tạo/Sửa Lịch Tiêm Chủng" 
         Height="600" 
         Width="500"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
 
     <Grid Margin="20">

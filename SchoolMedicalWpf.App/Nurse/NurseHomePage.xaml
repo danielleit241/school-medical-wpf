@@ -138,7 +138,7 @@
                                     Height="40" 
                                     HorizontalAlignment="Center" 
                                     Margin="0,0,0,10">
-                                <TextBlock Text="🩺" 
+                                <TextBlock Text="🏥" 
                                            FontSize="20" 
                                            HorizontalAlignment="Center" 
                                            VerticalAlignment="Center"/>
@@ -174,7 +174,7 @@
                                            HorizontalAlignment="Center" 
                                            VerticalAlignment="Center"/>
                             </Border>
-                            <TextBlock Text="3" 
+                            <TextBlock x:Name="TotalMedicalEvent" Text="3" 
                                        FontSize="24" 
                                        FontWeight="Bold" 
                                        Foreground="{StaticResource WarningOrangeBrush}" 
@@ -357,7 +357,7 @@
                                     Height="60" 
                                     HorizontalAlignment="Left" 
                                     Margin="0,0,0,15">
-                                <TextBlock Text="🩺" 
+                                <TextBlock Text="💊" 
                                            FontSize="30" 
                                            HorizontalAlignment="Center" 
                                            VerticalAlignment="Center"/>

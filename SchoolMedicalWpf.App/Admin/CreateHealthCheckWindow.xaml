@@ -4,7 +4,7 @@
         Title="Tạo/Sửa Lịch Khám Sức Khỏe" 
         Height="600" 
         Width="500"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize" Loaded="Window_Loaded">
 
     <Grid Margin="20">

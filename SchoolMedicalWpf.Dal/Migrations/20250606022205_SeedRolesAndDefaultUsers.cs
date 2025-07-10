@@ -334,10 +334,10 @@ namespace SchoolMedicalWpf.Dal.Migrations
                 columns: new[] { "UserID", "Address", "AvatarUrl", "DayOfBirth", "EmailAddress", "FullName", "PasswordHash", "PhoneNumber", "RoleID", "Status" },
                 values: new object[,]
                 {
-                    { new Guid("14c6ffeb-7df3-4c6b-a444-3b64683839f0"), null, null, null, "admin@system.local", "System Admin", "AQAAAAIAAYagAAAAEKQpu5cJf+JT8hUM0THsrVe5E/G43pp4QFMu3Qp+1O6Th+5iuH9ZHSxfOkyQvpT4mA==", "0900000001", 1, null },
-                    { new Guid("3941ef8f-9141-469a-abf5-42dbb38e6dc8"), null, null, null, "nurse@system.local", "System Nurse", "AQAAAAIAAYagAAAAEK1yY/fJJSIoXw2E+hrXt4K1vne5KtuQywNSBA6XagQj8ohqh2lmFUmTM1MxbHb4GQ==", "0900000003", 3, null },
-                    { new Guid("bb3c6cbe-0c50-4ec2-8650-9e5e07967037"), null, null, null, "parent@system.local", "System Parent", "AQAAAAIAAYagAAAAEOITkxUKTMZbjct0+sOzYgq65vYUeNpWhSyoy3s0LHqgU/ihiHnd2fLRpl2k5lckHw==", "0900000004", 4, null },
-                    { new Guid("f7135d34-2ec8-4de0-8663-bbee6ae66f18"), null, null, null, "manager@system.local", "System Manager", "AQAAAAIAAYagAAAAENYi/7BRP9Vh++yWX3TbbB1qepLlglqoQHYsMjnv7aFd/jlQW1F9V/xB6qmdcY/D5Q==", "0900000002", 2, null }
+                    { new Guid("14c6ffeb-7df3-4c6b-a444-3b64683839f0"), null, null, null, "admin@system.local", "System Admin", "AQAAAAIAAYagAAAAEKQpu5cJf+JT8hUM0THsrVe5E/G43pp4QFMu3Qp+1O6Th+5iuH9ZHSxfOkyQvpT4mA==", "0900000001", 1, true },
+                    { new Guid("3941ef8f-9141-469a-abf5-42dbb38e6dc8"), null, null, null, "nurse@system.local", "System Nurse", "AQAAAAIAAYagAAAAEK1yY/fJJSIoXw2E+hrXt4K1vne5KtuQywNSBA6XagQj8ohqh2lmFUmTM1MxbHb4GQ==", "0900000003", 3, true },
+                    { new Guid("bb3c6cbe-0c50-4ec2-8650-9e5e07967037"), null, null, null, "parent@system.local", "System Parent", "AQAAAAIAAYagAAAAEOITkxUKTMZbjct0+sOzYgq65vYUeNpWhSyoy3s0LHqgU/ihiHnd2fLRpl2k5lckHw==", "0900000004", 4, true },
+                    { new Guid("f7135d34-2ec8-4de0-8663-bbee6ae66f18"), null, null, null, "manager@system.local", "System Manager", "AQAAAAIAAYagAAAAENYi/7BRP9Vh++yWX3TbbB1qepLlglqoQHYsMjnv7aFd/jlQW1F9V/xB6qmdcY/D5Q==", "0900000002", 2, true }
                 });
 
             migrationBuilder.CreateIndex(

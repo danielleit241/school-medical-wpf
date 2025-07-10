@@ -49,10 +49,12 @@ namespace SchoolMedicalWpf.App.Admin
                     MainContent.Content = ActivatorUtilities.CreateInstance<ProfilePage>(App.Services, _currentUser);
                     break;
                 case "Quit":
-                    var result = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (result == MessageBoxResult.Yes)
+                    var res = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (res == MessageBoxResult.Yes)
                     {
-                        Application.Current.Shutdown();
+                        var loginWindow = ActivatorUtilities.CreateInstance<LoginWindow>(App.Services);
+                        loginWindow.Show();
+                        this.Close();
                     }
                     break;
                 default:
