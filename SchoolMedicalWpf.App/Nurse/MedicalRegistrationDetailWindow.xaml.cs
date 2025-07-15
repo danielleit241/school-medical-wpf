@@ -1,8 +1,8 @@
-﻿using System.Windows;
+﻿using SchoolMedicalWpf.Bll.Services;
+using SchoolMedicalWpf.Dal.Entities;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using SchoolMedicalWpf.Bll.Services;
-using SchoolMedicalWpf.Dal.Entities;
 
 namespace SchoolMedicalWpf.App.Nurse
 {
@@ -10,15 +10,17 @@ namespace SchoolMedicalWpf.App.Nurse
     {
         private MedicalRegistration _registration;
         private readonly MedicalRegistrationService _medicalRegistrationService;
+        private readonly User _currentUser;
 
         // Simple event for notifying parent window
         public event Action RegistrationUpdated;
 
-        public MedicalRegistrationDetailWindow(MedicalRegistration registration, MedicalRegistrationService medicalRegistrationService)
+        public MedicalRegistrationDetailWindow(MedicalRegistration registration, MedicalRegistrationService medicalRegistrationService, User currentUser)
         {
             InitializeComponent();
             _registration = registration;
             _medicalRegistrationService = medicalRegistrationService;
+            _currentUser = currentUser;
             LoadRegistrationDetails();
         }
 
@@ -135,9 +137,8 @@ namespace SchoolMedicalWpf.App.Nurse
             try
             {
                 _registration.Status = newStatus;
-                // If you have these fields, uncomment:
-                // _registration.ProcessedDate = DateTime.Now;
-                // _registration.ProcessedBy = "danielleit241";
+                _registration.DateApproved = DateOnly.FromDateTime(DateTime.Now);
+                _registration.StaffNurseId = _currentUser.UserId;
 
                 // Save to database
                 await Task.Run(() => _medicalRegistrationService.UpdateRegistration(_registration));

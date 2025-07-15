@@ -84,7 +84,7 @@
 
             <!-- Auto Generate -->
             <CheckBox x:Name="chkAutoGenerate" 
-                      Content="Tự động tạo kết quả khám cho học sinh"
+                      Content="Thêm sinh viên vào lịch khám sức khỏe"
                       FontSize="14"
                       IsChecked="True"
                       Margin="0,10,0,0"/>

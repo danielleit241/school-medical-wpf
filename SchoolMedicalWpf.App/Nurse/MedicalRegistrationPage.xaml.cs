@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using SchoolMedicalWpf.Bll.Services;
+﻿using SchoolMedicalWpf.Bll.Services;
 using SchoolMedicalWpf.Dal.Entities;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace SchoolMedicalWpf.App.Nurse
 {
@@ -104,7 +104,7 @@ namespace SchoolMedicalWpf.App.Nurse
         {
             if (sender is Button button && button.Tag is MedicalRegistration registration)
             {
-                var detailWindow = new MedicalRegistrationDetailWindow(registration, _medicalRegistrationService);
+                var detailWindow = new MedicalRegistrationDetailWindow(registration, _medicalRegistrationService, _currentUser);
 
                 detailWindow.RegistrationUpdated += () =>
                 {
